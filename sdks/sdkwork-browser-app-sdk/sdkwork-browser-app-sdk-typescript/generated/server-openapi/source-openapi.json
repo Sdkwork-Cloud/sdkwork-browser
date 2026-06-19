@@ -1,0 +1,287 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "SDKWork Browser App API",
+    "version": "1.0.0",
+    "description": "App/client contract for SDKWork browser sessions, tabs, and AI actions.",
+    "x-sdkwork-api-authority": "sdkwork-browser-app-api",
+    "x-sdkwork-sdk-family": "sdkwork-browser-app-sdk",
+    "x-sdkwork-audience": "PC, desktop, mobile, H5, and user-facing browser clients"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local sdkwork-browser runtime"
+    }
+  ],
+  "tags": [
+    {
+      "name": "browser",
+      "description": "Browser runtime platform resources."
+    }
+  ],
+  "security": [
+    {
+      "AuthToken": [],
+      "AccessToken": []
+    }
+  ],
+  "paths": {
+    "/app/v3/api/browser/ai/actions": {
+      "post": {
+        "tags": [
+          "browser"
+        ],
+        "summary": "browser.aiActions.create",
+        "operationId": "browser.aiActions.create",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrowserApiResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-browser",
+        "x-sdkwork-api-authority": "sdkwork-browser-app-api",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowserOperationCommand"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/v3/api/browser/sessions": {
+      "post": {
+        "tags": [
+          "browser"
+        ],
+        "summary": "browser.sessions.create",
+        "operationId": "browser.sessions.create",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrowserApiResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-browser",
+        "x-sdkwork-api-authority": "sdkwork-browser-app-api",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowserOperationCommand"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/v3/api/browser/tabs": {
+      "post": {
+        "tags": [
+          "browser"
+        ],
+        "summary": "browser.tabs.create",
+        "operationId": "browser.tabs.create",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrowserApiResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-browser",
+        "x-sdkwork-api-authority": "sdkwork-browser-app-api",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowserOperationCommand"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AuthToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Access-Token"
+      }
+    },
+    "schemas": {
+      "BrowserApiResult": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "BrowserOperationCommand": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    }
+  }
+}

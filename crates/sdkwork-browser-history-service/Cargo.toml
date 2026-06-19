@@ -1,0 +1,12 @@
+﻿[package]
+name = "sdkwork-browser-history-service"
+description = "Browsing history, search, and cleanup."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+serde.workspace = true
+uuid.workspace = true
+sdkwork-browser-shared-service.workspace = true

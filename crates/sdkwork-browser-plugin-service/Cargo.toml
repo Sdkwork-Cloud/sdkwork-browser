@@ -1,0 +1,11 @@
+﻿[package]
+name = "sdkwork-browser-plugin-service"
+description = "Unified browser plugin registry."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
+sdkwork-browser-agent-service = { path = "../sdkwork-browser-agent-service" }
+sdkwork-browser-mcp-service = { path = "../sdkwork-browser-mcp-service" }

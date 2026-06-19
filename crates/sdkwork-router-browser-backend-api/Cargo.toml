@@ -1,0 +1,25 @@
+[package]
+name = "sdkwork-router-browser-backend-api"
+description = "Axum handlers for SDKWork Browser backend-api (browser.sessions.list and browser.engines.list)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+axum.workspace = true
+serde_json.workspace = true
+tokio = { workspace = true, features = ["sync"] }
+sdkwork-browser-platform-service = { path = "../sdkwork-browser-platform-service" }
+sdkwork-router-browser-app-api = { path = "../sdkwork-router-browser-app-api" }
+sdkwork-routes-browser-backend-api = { path = "../sdkwork-routes-browser-backend-api" }
+
+[dev-dependencies]
+axum.workspace = true
+http = "1"
+http-body-util = "0.1"
+serde_json.workspace = true
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tower = { version = "0.5", features = ["util"] }
+sdkwork-browser-service-host = { path = "../sdkwork-browser-service-host" }
+sdkwork-iam-web-adapter = { path = "../../../sdkwork-appbase/crates/sdkwork-iam-web-adapter" }
+sdkwork-routes-browser-backend-api = { path = "../sdkwork-routes-browser-backend-api" }

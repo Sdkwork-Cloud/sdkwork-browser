@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "generator": "@sdkwork/sdk-generator",
+  "artifacts": {
+    "stateDir": ".sdkwork",
+    "manifestPath": ".sdkwork/sdkwork-generator-manifest.json",
+    "changeSummaryPath": ".sdkwork/sdkwork-generator-changes.json",
+    "executionReportPath": ".sdkwork/sdkwork-generator-report.json",
+    "manualBackupDir": ".sdkwork/manual-backups"
+  },
+  "status": "ok",
+  "mode": "apply",
+  "hasChanges": true,
+  "hasDestructiveChanges": false,
+  "changeFingerprint": "8911eef8adfd902c4d4b516c4bd3b633384d2340884d09595d509948b19e48c4",
+  "changeImpact": {
+    "schemaVersion": 1,
+    "areas": [
+      "api-surface",
+      "models"
+    ],
+    "details": [
+      {
+        "area": "api-surface",
+        "paths": [
+          "src/main/java/com/sdkwork/browser/backend/sdk/api/BrowserApi.java"
+        ]
+      },
+      {
+        "area": "models",
+        "paths": [
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentProviderDiagnostic.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentRuntimeDiagnostics.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserOperatorSession.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListData.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResult.java"
+        ]
+      }
+    ],
+    "requiresVerification": true,
+    "summary": "Detected impact areas: api-surface, models. Verification is required."
+  },
+  "executionDecision": {
+    "schemaVersion": 1,
+    "riskLevel": "medium",
+    "nextAction": "verify",
+    "requiresManualReview": false,
+    "applyRequiresExpectedFingerprint": false,
+    "summary": "Changes have been applied. Run the required verification plan now.",
+    "reasons": [
+      "verification-required"
+    ]
+  },
+  "executionHandoff": {
+    "schemaVersion": 1,
+    "summary": "Run the required verification commands now.",
+    "steps": [
+      {
+        "id": "verify-check",
+        "title": "Unified package check",
+        "required": true,
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
+        "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-java\\generated\\server-openapi",
+        "command": "node",
+        "args": [
+          "./bin/publish-core.mjs",
+          "--language",
+          "java",
+          "--project-dir",
+          ".",
+          "--action",
+          "check"
+        ],
+        "displayCommand": "node ./bin/publish-core.mjs --language java --project-dir . --action check"
+      }
+    ]
+  },
+  "verificationPlan": {
+    "shouldRun": true,
+    "runPhase": "now",
+    "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
+    "steps": [
+      {
+        "id": "check",
+        "title": "Unified package check",
+        "required": true,
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
+        "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-java\\generated\\server-openapi",
+        "command": "node",
+        "args": [
+          "./bin/publish-core.mjs",
+          "--language",
+          "java",
+          "--project-dir",
+          ".",
+          "--action",
+          "check"
+        ],
+        "displayCommand": "node ./bin/publish-core.mjs --language java --project-dir . --action check"
+      }
+    ]
+  },
+  "sdk": {
+    "name": "sdkwork-browser-backend-sdk",
+    "version": "0.1.0",
+    "language": "java",
+    "sdkType": "backend",
+    "protocol": "http",
+    "outputPath": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-java\\generated\\server-openapi",
+    "packageName": "com.sdkwork:sdkwork-browser-backend-sdk"
+  },
+  "versioning": {
+    "resolvedVersion": "0.1.0",
+    "localVersions": []
+  },
+  "stats": {
+    "totalFiles": 20,
+    "models": 6,
+    "apis": 1,
+    "types": 0
+  },
+  "warnings": [],
+  "syncSummary": {
+    "dryRun": false,
+    "controlPlaneEnabled": true,
+    "writtenFiles": 6,
+    "skippedScaffoldFiles": 1,
+    "skippedUnchangedGeneratedFiles": 13,
+    "deletedGeneratedFiles": 0,
+    "changeSummaryPath": ".sdkwork/sdkwork-generator-changes.json",
+    "changeFingerprint": "8911eef8adfd902c4d4b516c4bd3b633384d2340884d09595d509948b19e48c4",
+    "changes": {
+      "createdGeneratedFiles": [
+        "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentProviderDiagnostic.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentRuntimeDiagnostics.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserOperatorSession.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListData.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResult.java"
+      ],
+      "updatedGeneratedFiles": [
+        "src/main/java/com/sdkwork/browser/backend/sdk/api/BrowserApi.java"
+      ],
+      "unchangedGeneratedFiles": [
+        "bin/publish-core.mjs",
+        "bin/publish.ps1",
+        "bin/publish.sh",
+        "CHANGELOG.md",
+        "LICENSE",
+        "pom.xml",
+        "README.md",
+        "sdkwork-sdk.json",
+        "src/main/java/com/sdkwork/browser/backend/sdk/api/ApiPaths.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/api/package-info.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/http/HttpClient.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserApiResult.java",
+        "src/main/java/com/sdkwork/browser/backend/sdk/SdkworkBackendClient.java"
+      ],
+      "deletedGeneratedFiles": [],
+      "scaffoldedFiles": [],
+      "preservedScaffoldFiles": [
+        "custom/README.md"
+      ],
+      "backedUpFiles": []
+    },
+    "impact": {
+      "schemaVersion": 1,
+      "areas": [
+        "api-surface",
+        "models"
+      ],
+      "details": [
+        {
+          "area": "api-surface",
+          "paths": [
+            "src/main/java/com/sdkwork/browser/backend/sdk/api/BrowserApi.java"
+          ]
+        },
+        {
+          "area": "models",
+          "paths": [
+            "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentProviderDiagnostic.java",
+            "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentRuntimeDiagnostics.java",
+            "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserOperatorSession.java",
+            "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListData.java",
+            "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResult.java"
+          ]
+        }
+      ],
+      "requiresVerification": true,
+      "summary": "Detected impact areas: api-surface, models. Verification is required."
+    },
+    "verificationPlan": {
+      "shouldRun": true,
+      "runPhase": "now",
+      "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
+      "steps": [
+        {
+          "id": "check",
+          "title": "Unified package check",
+          "required": true,
+          "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
+          "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-java\\generated\\server-openapi",
+          "command": "node",
+          "args": [
+            "./bin/publish-core.mjs",
+            "--language",
+            "java",
+            "--project-dir",
+            ".",
+            "--action",
+            "check"
+          ],
+          "displayCommand": "node ./bin/publish-core.mjs --language java --project-dir . --action check"
+        }
+      ]
+    },
+    "executionDecision": {
+      "schemaVersion": 1,
+      "riskLevel": "medium",
+      "nextAction": "verify",
+      "requiresManualReview": false,
+      "applyRequiresExpectedFingerprint": false,
+      "summary": "Changes have been applied. Run the required verification plan now.",
+      "reasons": [
+        "verification-required"
+      ]
+    },
+    "backedUpFiles": [],
+    "preservedLegacyFiles": false
+  }
+}

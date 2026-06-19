@@ -1,0 +1,9 @@
+packages:
+  - "packages/common/*/*"
+  - "apps/sdkwork-browser-pc"
+  - "apps/sdkwork-browser-pc/packages/*"
+  - "apps/sdkwork-browser-h5/packages/*"
+  - "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
+  - "sdks/*"
+  - "sdks/sdkwork-browser-app-sdk/sdkwork-browser-app-sdk-typescript/generated/server-openapi"
+  - "sdks/sdkwork-browser-backend-sdk/sdkwork-browser-backend-sdk-typescript/generated/server-openapi"

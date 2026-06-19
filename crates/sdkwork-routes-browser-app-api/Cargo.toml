@@ -1,0 +1,18 @@
+[package]
+name = "sdkwork-routes-browser-app-api"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "SDKWork Browser app-api route manifest."
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+sdkwork-web-core.workspace = true
+sdkwork-web-axum.workspace = true
+sdkwork-iam-web-adapter.workspace = true
+axum.workspace = true
+
+[dev-dependencies]
+sdkwork-web-core.workspace = true

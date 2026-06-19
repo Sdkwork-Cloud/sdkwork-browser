@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.route.manifest",
+  "packageName": "sdkwork-routes-browser-backend-api",
+  "surface": "backend-api",
+  "owner": "sdkwork-browser",
+  "domain": "platform",
+  "capability": "browser",
+  "apiAuthority": "sdkwork-browser-backend-api",
+  "sdkFamily": "sdkwork-browser-backend-sdk",
+  "prefix": "/backend/v3/api",
+  "source": {
+    "crateRoot": "crates/sdkwork-routes-browser-backend-api",
+    "crateImport": "sdkwork_routes_browser_backend_api"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/browser/engines",
+      "operationId": "browser.engines.list",
+      "tags": [
+        "browser"
+      ],
+      "auth": {
+        "mode": "dual-token",
+        "required": true
+      },
+      "ownership": {
+        "owner": "sdkwork-browser",
+        "apiAuthority": "sdkwork-browser-backend-api",
+        "sdkFamily": "sdkwork-browser-backend-sdk",
+        "sourceRouteCrate": "sdkwork-routes-browser-backend-api"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/browser/sessions",
+      "operationId": "browser.sessions.list",
+      "tags": [
+        "browser"
+      ],
+      "auth": {
+        "mode": "dual-token",
+        "required": true
+      },
+      "ownership": {
+        "owner": "sdkwork-browser",
+        "apiAuthority": "sdkwork-browser-backend-api",
+        "sdkFamily": "sdkwork-browser-backend-sdk",
+        "sourceRouteCrate": "sdkwork-routes-browser-backend-api"
+      }
+    }
+  ]
+}

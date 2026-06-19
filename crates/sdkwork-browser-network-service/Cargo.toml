@@ -1,0 +1,9 @@
+﻿[package]
+name = "sdkwork-browser-network-service"
+description = "Browser network stack abstraction."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }

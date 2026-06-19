@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "generator": "@sdkwork/sdk-generator",
+  "sdk": {
+    "name": "sdkwork-browser-backend-sdk",
+    "version": "0.1.0",
+    "language": "typescript",
+    "sdkType": "backend",
+    "protocol": "http",
+    "packageName": "@sdkwork/browser-backend-sdk"
+  },
+  "generatedFiles": [
+    {
+      "path": "bin/publish-core.mjs",
+      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+    },
+    {
+      "path": "bin/publish.ps1",
+      "sha256": "78c6419400b988409d9393c2ecd85aa02dd6760f73edb3cc84cb28fefc51b41e"
+    },
+    {
+      "path": "bin/publish.sh",
+      "sha256": "899087c23e670b6951a12a13490fd557f761c96d78fabfb7e58a37e367db889f"
+    },
+    {
+      "path": "bin/sdk-gen.bat",
+      "sha256": "1fa0948b506e5deecf73be9371db39a042e48555d018292334fa0004a897fcbe"
+    },
+    {
+      "path": "bin/sdk-gen.sh",
+      "sha256": "215c7192b3f5891efebd79d6e2938a520ac6c9c6eb6b64979371c1ee7a58fd3d"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "fb941a0806986a54fc192f98a98f6d9c282b8d350b2b19a3e71dda404e92d545"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "7840cc7d2b36ff364ac16c2fc5ec15b861bfe96854eecf81fb59b00edb8b1447"
+    },
+    {
+      "path": "package.json",
+      "sha256": "757df463e80fea78408fdacbd4815e626eb0d7960ae8f96f0d68e52cb2c46f48"
+    },
+    {
+      "path": "README.md",
+      "sha256": "8ff92d82435f51c3020b90b52e492abac6ec564e0acb0ad86b1e589a85b4fbc1"
+    },
+    {
+      "path": "sdkwork-sdk.json",
+      "sha256": "c9ea641e0d69e2c000dd62778a695076ef98359f77eb086601c33f47f9a0ae33"
+    },
+    {
+      "path": "src/api/base.ts",
+      "sha256": "02ad25e6bf331ff241ba387c2947ddf1900dd849038e08c2757416a3aa788a04"
+    },
+    {
+      "path": "src/api/browser.ts",
+      "sha256": "d94f8dfa5e3d816fe0f4e4c905786777ad1094767a1d0418550cc437da8d4af1"
+    },
+    {
+      "path": "src/api/index.ts",
+      "sha256": "61afb3d7d3d5cb3b1c5f656904ff6750df174c53797bd0ae63424139dfa3b826"
+    },
+    {
+      "path": "src/api/paths.ts",
+      "sha256": "fb06a3db13e96bb5b349ddc1831aa6d350c17b09d05ea92a36438131140f666e"
+    },
+    {
+      "path": "src/auth/index.ts",
+      "sha256": "657fc63738bdcd61d83133120732a477dd127448cf2c51229b05d21f5e1f5c04"
+    },
+    {
+      "path": "src/http/client.ts",
+      "sha256": "1d339275acee6ec54660a32eb9effcc718ebf0992c5e9bfdb80a3452e0702137"
+    },
+    {
+      "path": "src/http/index.ts",
+      "sha256": "fc204fbe89750b9d25ecaffe41003e6ac243a1a895b65e65856202ab825d2dbe"
+    },
+    {
+      "path": "src/index.ts",
+      "sha256": "3a4a3f9c5ce1c5bf55baf261e7b648091cbef7ba2c30ea402dd15f3f37820956"
+    },
+    {
+      "path": "src/sdk.ts",
+      "sha256": "eca03683c31cb6f513061ee65da62cd1c24efeae6a9711bde667d2b59409733f"
+    },
+    {
+      "path": "src/types/agent-provider-diagnostic.ts",
+      "sha256": "8f409c81069148ca3b7f2d47665031d0ee3eef3d3eb4ddc6e617b6b69906b797"
+    },
+    {
+      "path": "src/types/agent-runtime-diagnostics.ts",
+      "sha256": "02f4de9742e6913e1e9d870ed91f163a5e7d290a302293d4dab1e1e4be7a2f20"
+    },
+    {
+      "path": "src/types/browser-api-result.ts",
+      "sha256": "62cdccb3215b37bb20f04028165bb53d3ffa308513f6179b29f40abf19a0917f"
+    },
+    {
+      "path": "src/types/browser-operation-command.ts",
+      "sha256": "e2837b2e62d41cea3dde80d7019068dbe79d40885aa1d663e94c65c6677b820f"
+    },
+    {
+      "path": "src/types/browser-operator-session.ts",
+      "sha256": "37afe448fa584c2d52f7957d1062e6b750131a81cfcca8e5358754891219064d"
+    },
+    {
+      "path": "src/types/browser-sessions-list-data.ts",
+      "sha256": "6d4d89c02dc257e48d234ac4240cdb269f187b3ce6b409d57fb6a5af87eddf41"
+    },
+    {
+      "path": "src/types/browser-sessions-list-result.ts",
+      "sha256": "8ee85c77f1f8876b0ec8615f6236b4e2879ac8f555a31647221f81561532a2c2"
+    },
+    {
+      "path": "src/types/common.ts",
+      "sha256": "351d721c3c6f48f4453f92276856105120d72eb8d2fa9cd28de8e3854bf10f6c"
+    },
+    {
+      "path": "src/types/index.ts",
+      "sha256": "35570730ce1d28d040d4c0f2d53a80830d6c8fa9a7d1b388b7db4ef7194cfff4"
+    },
+    {
+      "path": "src/types/problem-detail.ts",
+      "sha256": "33b2a7bc22ddff8154a463c3a0dcb83c4f42a0f92545ff7ca09125c480db985b"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "7c8a6c2b00fb208ec28e1e6045194487d1b3e563d6c44cef4783fd4fe0e8ffad"
+    }
+  ],
+  "scaffoldFiles": [
+    "custom/build-runtime.mjs",
+    "custom/README.md"
+  ],
+  "customRoots": [
+    "custom/"
+  ]
+}

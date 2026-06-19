@@ -1,0 +1,15 @@
+﻿[package]
+name = "sdkwork-browser-agent-service"
+description = "Agent runtime integration for page understanding and automation."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+ureq = { version = "2.12", default-features = false, features = ["json"] }
+sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
+sdkwork-browser-mcp-service = { path = "../sdkwork-browser-mcp-service" }
+sdkwork-browser-tab-service = { path = "../sdkwork-browser-tab-service" }

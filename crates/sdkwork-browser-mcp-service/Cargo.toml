@@ -1,0 +1,11 @@
+﻿[package]
+name = "sdkwork-browser-mcp-service"
+description = "MCP client/server integration for enterprise connectors."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
+serde.workspace = true
+serde_json.workspace = true

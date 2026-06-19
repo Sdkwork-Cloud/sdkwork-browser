@@ -1,0 +1,13 @@
+﻿[package]
+name = "sdkwork-browser-engine-servo-service"
+description = "Servo Rust-native browser engine (future V4 roadmap)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
+
+[dev-dependencies]
+tokio.workspace = true

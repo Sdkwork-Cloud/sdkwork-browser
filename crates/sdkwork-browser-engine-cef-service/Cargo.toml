@@ -1,0 +1,24 @@
+﻿[package]
+name = "sdkwork-browser-engine-cef-service"
+description = "CEF + Chromium enterprise browser engine."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+serde.workspace = true
+sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
+thiserror.workspace = true
+
+[dependencies.cef]
+version = "149.0.0"
+default-features = false
+optional = true
+
+[features]
+default = []
+cef = ["dep:cef"]
+
+[dev-dependencies]
+tokio.workspace = true

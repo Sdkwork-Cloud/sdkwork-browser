@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "generator": "@sdkwork/sdk-generator",
+  "sdk": {
+    "name": "sdkwork-browser-app-sdk",
+    "version": "0.1.0",
+    "language": "java",
+    "sdkType": "app",
+    "protocol": "http",
+    "packageName": "com.sdkwork:sdkwork-browser-app-sdk"
+  },
+  "generatedFiles": [
+    {
+      "path": "bin/publish-core.mjs",
+      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+    },
+    {
+      "path": "bin/publish.ps1",
+      "sha256": "33394b9189a458f6b36bf7fd74815ea4b71a435083e0c428a9d3ca4673e28c3e"
+    },
+    {
+      "path": "bin/publish.sh",
+      "sha256": "da4bd76701864b29d52b6b260c20f65305bcd4b9eea8696f7751b991f6aba345"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "fb941a0806986a54fc192f98a98f6d9c282b8d350b2b19a3e71dda404e92d545"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "7840cc7d2b36ff364ac16c2fc5ec15b861bfe96854eecf81fb59b00edb8b1447"
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "7f7ce024b6d1a95ef327e57b4fc3e23b1f98a6c0553e920400ddbade02f989e0"
+    },
+    {
+      "path": "README.md",
+      "sha256": "ca9b5edbaa81b7744da03458d1370955e87ad1c65515495559117eeb6d5a3e67"
+    },
+    {
+      "path": "sdkwork-sdk.json",
+      "sha256": "fade5874ba06caaae6eae6a68090dc65a687f90f766b7e48a5f234f479e6d7f5"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/api/ApiPaths.java",
+      "sha256": "4ddd73d02afd2d71fe32dc895a5063bf2bb0d1ff6725dcfcc56fc42abec83069"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/api/BrowserApi.java",
+      "sha256": "5c07a079ddeafa1727f264814cb3edbbc52cd1f248d55cdfc5b07100b2a4b517"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/api/package-info.java",
+      "sha256": "c64474f9cf44c24e707690a72d8ea8bc1412df2b2f382892a4a3d11a85c7f4c7"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/http/HttpClient.java",
+      "sha256": "1bbd9ecfd87f5d51f6ae57c175b88702036660a43da5a7c7282fb8449e025f27"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/BrowserApiResult.java",
+      "sha256": "7cf8f15f38ef4df0ed7c77a9318c65dffc8da2c9b35e82b6b56a8bee8d1ef7f6"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/SdkworkAppClient.java",
+      "sha256": "6816ec25d9e439ba2aa6b9f4045cc0fa20ce22da9ebd7219faa4621d42d28f13"
+    }
+  ],
+  "scaffoldFiles": [
+    "custom/README.md"
+  ],
+  "customRoots": [
+    "custom/"
+  ]
+}

@@ -1,0 +1,15 @@
+﻿[package]
+name = "sdkwork-browser-native-host"
+description = "Native browser host adapter backed by Chromium Embedded Framework."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
+sdkwork-browser-engine-cef-service = { path = "../sdkwork-browser-engine-cef-service" }
+sdkwork-browser-network-service = { path = "../sdkwork-browser-network-service" }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt"] }

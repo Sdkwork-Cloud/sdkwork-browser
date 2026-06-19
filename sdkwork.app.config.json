@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 3,
+  "kind": "sdkwork.app",
+  "app": {
+    "key": "sdkwork-browser",
+    "name": "SDKWork Browser",
+    "displayName": "SDKWork Browser Runtime Platform",
+    "description": "Browser runtime platform with pluggable engines, Agent/MCP native integration, and SDK-first architecture.",
+    "vendor": "SDKWork",
+    "officialWebsiteUrl": "https://sdkwork.com/apps/sdkwork-browser",
+    "supportUrl": "https://sdkwork.com/support",
+    "privacyPolicyUrl": "https://sdkwork.com/privacy",
+    "termsOfServiceUrl": "https://sdkwork.com/terms",
+    "iconUrl": "https://cdn.sdkwork.com/apps/sdkwork-browser/assets/icon-1024.png",
+    "appType": "APP_HTML",
+    "versionSource": "package.json",
+    "identifiers": {
+      "packageName": null,
+      "bundleId": null,
+      "desktopAppId": "com.sdkwork.browser",
+      "containerImage": "registry.sdkwork.com/apps/sdkwork-browser"
+    }
+  },
+  "backend": {
+    "profileKey": "backend-root-admin",
+    "ownerMode": "tenant",
+    "grantMode": "current",
+    "platform": "WEB",
+    "appId": null,
+    "organizationId": null
+  },
+  "runtime": {
+    "family": "multi-surface",
+    "framework": "rust-runtime",
+    "runtimes": ["WEB", "DESKTOP", "MOBILE"],
+    "deliveryModes": ["WEB_URL", "DIRECT_DOWNLOAD"],
+    "defaultPlatform": "DESKTOP",
+    "defaultArchitecture": "x64",
+    "supportedDeploymentProfiles": ["standalone", "cloud"],
+    "defaultDeploymentProfile": "standalone"
+  },
+  "media": {
+    "icons": {
+      "primary": {
+        "id": "sdkwork-browser-primary-icon",
+        "type": "ICON",
+        "purpose": "PRIMARY",
+        "url": "https://cdn.sdkwork.com/apps/sdkwork-browser/assets/icon-1024.png",
+        "platform": "APP",
+        "locale": "en-US",
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "enabled": true
+      },
+      "platform": [],
+      "metadata": {}
+    },
+    "screenshots": [],
+    "previews": [],
+    "metadata": {
+      "assetVersion": "0.1.0",
+      "defaultLocale": "en-US"
+    }
+  },
+  "publish": {
+    "status": "ACTIVE",
+    "platforms": ["WEB", "DESKTOP", "MOBILE"],
+    "installPlatforms": ["WEB", "DESKTOP", "MOBILE"],
+    "defaultPackageId": "desktop-windows-x64-standalone-zip",
+    "storeUrl": "https://sdkwork.com/apps/sdkwork-browser",
+    "stores": [],
+    "config": {
+      "workspaceRoot": ".",
+      "framework": "rust-runtime"
+    }
+  },
+  "environments": {
+    "development": {
+      "accessUrl": "https://api-dev.sdkwork.com/apps/sdkwork-browser",
+      "deployUrl": "https://api-dev.sdkwork.com/apps/sdkwork-browser",
+      "deployEnv": "dev"
+    },
+    "production": {
+      "accessUrl": "https://api.sdkwork.com/apps/sdkwork-browser",
+      "deployUrl": "https://api.sdkwork.com/apps/sdkwork-browser",
+      "deployEnv": "production"
+    }
+  },
+  "artifacts": {
+    "installConfig": {
+      "defaultPackageId": "desktop-windows-x64-standalone-zip",
+      "packages": [
+        {
+          "id": "desktop-windows-x64-standalone-zip",
+          "name": "SDKWork Browser Windows Desktop",
+          "sourceType": "BINARY_URL",
+          "packageFormat": "ZIP",
+          "platform": "DESKTOP_WINDOWS",
+          "architecture": "x64",
+          "deploymentProfile": "standalone",
+          "runtimeTarget": "desktop",
+          "enabled": true
+        }
+      ],
+      "metadata": {
+        "workspaceRoot": ".",
+        "packageManager": "pnpm"
+      }
+    }
+  },
+  "release": {
+    "currentVersion": "0.1.0",
+    "defaultChannel": "STABLE",
+    "latest": { "STABLE": "0.1.0" },
+    "notes": []
+  },
+  "security": {
+    "checksumRequired": false,
+    "signatureRequired": false,
+    "sbomRequired": false
+  },
+  "devApp": {
+    "build": { "targets": [] },
+    "sourceRoot": "."
+  },
+  "metadata": {
+    "standardOwner": "sdkwork-platform",
+    "initializedAt": "2026-06-19T00:00:00Z"
+  }
+}

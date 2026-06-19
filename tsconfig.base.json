@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@sdkwork/browser-contracts": ["./packages/common/browser/sdkwork-browser-contracts/src/index.ts"],
+      "@sdkwork/browser-pc-react": ["./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-react/src/index.ts"],
+      "@sdkwork/browser-h5-react": ["./apps/sdkwork-browser-h5/packages/sdkwork-browser-h5-react/src/index.ts"]
+    }
+  }
+}

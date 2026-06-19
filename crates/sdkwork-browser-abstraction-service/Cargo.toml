@@ -1,0 +1,15 @@
+﻿[package]
+name = "sdkwork-browser-abstraction-service"
+description = "Unified BrowserRuntime, BrowserNetwork, and BrowserPlugin abstractions."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

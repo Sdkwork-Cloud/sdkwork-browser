@@ -1,0 +1,396 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "SDKWork Browser Backend API",
+    "version": "1.0.0",
+    "description": "Backend/admin contract for SDKWork browser sessions and engine registry.",
+    "x-sdkwork-api-authority": "sdkwork-browser-backend-api",
+    "x-sdkwork-sdk-family": "sdkwork-browser-backend-sdk",
+    "x-sdkwork-audience": "Backend consoles, operators, and browser control-plane integrations"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local sdkwork-browser runtime"
+    }
+  ],
+  "tags": [
+    {
+      "name": "browser",
+      "description": "Browser runtime platform resources."
+    }
+  ],
+  "security": [
+    {
+      "AuthToken": [],
+      "AccessToken": []
+    }
+  ],
+  "paths": {
+    "/backend/v3/api/browser/engines": {
+      "get": {
+        "tags": [
+          "browser"
+        ],
+        "summary": "browser.engines.list",
+        "operationId": "browser.engines.list",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrowserApiResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-browser",
+        "x-sdkwork-api-authority": "sdkwork-browser-backend-api"
+      }
+    },
+    "/backend/v3/api/browser/sessions": {
+      "get": {
+        "tags": [
+          "browser"
+        ],
+        "summary": "browser.sessions.list",
+        "operationId": "browser.sessions.list",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrowserSessionsListResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-browser",
+        "x-sdkwork-api-authority": "sdkwork-browser-backend-api"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AuthToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Access-Token"
+      }
+    },
+    "schemas": {
+      "BrowserApiResult": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "BrowserOperationCommand": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "BrowserOperatorSession": {
+        "type": "object",
+        "required": [
+          "sessionId",
+          "kind",
+          "tabCount",
+          "agentRuntimeId",
+          "runtimeMode",
+          "mcpConnectorCount",
+          "observedAtUnix"
+        ],
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "activeEngineId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "activeTabId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tabCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "agentRuntimeId": {
+            "type": "string"
+          },
+          "runtimeMode": {
+            "type": "string"
+          },
+          "mcpConnectorCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "observedAtUnix": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "AgentProviderDiagnostic": {
+        "type": "object",
+        "required": [
+          "providerId",
+          "providerFamily",
+          "providerVersion",
+          "typedRegistered",
+          "capabilities"
+        ],
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "providerFamily": {
+            "type": "string"
+          },
+          "providerVersion": {
+            "type": "string"
+          },
+          "typedRegistered": {
+            "type": "boolean"
+          },
+          "health": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AgentRuntimeDiagnostics": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "runtimeId",
+          "agentId",
+          "state",
+          "providerCount",
+          "capabilityCount",
+          "typedProviderCount",
+          "manifestOnlyProviderCount",
+          "missingRequiredCapabilities",
+          "degradedCapabilities",
+          "providerDiagnostics",
+          "runtimeMode"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "agent_runtime_diagnostics.v1"
+          },
+          "runtimeId": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "degraded",
+              "failed"
+            ]
+          },
+          "providerCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "capabilityCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "typedProviderCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "manifestOnlyProviderCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "missingRequiredCapabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "degradedCapabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "providerDiagnostics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentProviderDiagnostic"
+            }
+          },
+          "runtimeMode": {
+            "type": "string"
+          }
+        }
+      },
+      "BrowserSessionsListData": {
+        "type": "object",
+        "required": [
+          "sessions",
+          "agentDiagnostics"
+        ],
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrowserOperatorSession"
+            }
+          },
+          "agentDiagnostics": {
+            "$ref": "#/components/schemas/AgentRuntimeDiagnostics"
+          }
+        }
+      },
+      "BrowserSessionsListResult": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BrowserApiResult"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/BrowserSessionsListData"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

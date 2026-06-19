@@ -1,0 +1,56 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/sdkwork-browser-engine-api-service",
+    "crates/sdkwork-browser-engine-registry-service",
+    "crates/sdkwork-browser-engine-webview-service",
+    "crates/sdkwork-browser-engine-cef-service",
+    "crates/sdkwork-browser-engine-servo-service",
+    "crates/sdkwork-browser-platform-service",
+    "crates/sdkwork-browser-service-host",
+    "crates/sdkwork-browser-app-server",
+    "crates/sdkwork-router-browser-app-api",
+    "crates/sdkwork-router-browser-backend-api",
+    "crates/sdkwork-browser-abstraction-service",
+    "crates/sdkwork-browser-tauri-host",
+    "crates/sdkwork-browser-native-host",
+    "crates/sdkwork-browser-network-service",
+    "crates/sdkwork-browser-tab-service",
+    "crates/sdkwork-browser-session-service",
+    "crates/sdkwork-browser-history-service",
+    "crates/sdkwork-browser-bookmark-service",
+    "crates/sdkwork-browser-download-service",
+    "crates/sdkwork-browser-cookie-service",
+    "crates/sdkwork-browser-security-service",
+    "crates/sdkwork-browser-agent-service",
+    "crates/sdkwork-browser-mcp-service",
+    "crates/sdkwork-browser-plugin-service",
+    "crates/sdkwork-browser-storage-sqlx-rust",
+    "crates/sdkwork-browser-shared-service",
+    "crates/sdkwork-routes-browser-app-api",
+    "crates/sdkwork-routes-browser-backend-api",
+    "apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-desktop/src-tauri",
+]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+async-trait = "0.1"
+uuid = { version = "1", features = ["v4", "serde"] }
+tokio = { version = "1", features = ["macros", "rt"] }
+sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config" }
+sdkwork-database-sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx" }
+sdkwork-web-core = { path = "../sdkwork-web-framework/crates/sdkwork-web-core" }
+sdkwork-web-axum = { path = "../sdkwork-web-framework/crates/sdkwork-web-axum" }
+sdkwork-iam-web-adapter = { path = "../sdkwork-appbase/crates/sdkwork-iam-web-adapter" }
+sdkwork-utils-rust = { path = "../sdkwork-utils/packages/sdkwork-utils-rust" }
+axum = { version = "0.8", default-features = false, features = ["json"] }
+bytes = "1"
+futures = "0.3"
+sdkwork-browser-shared-service = { path = "crates/sdkwork-browser-shared-service" }
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"

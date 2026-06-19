@@ -1,0 +1,15 @@
+[package]
+name = "sdkwork-browser-service-host"
+description = "Browser Runtime composition host and platform factory."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
+sdkwork-browser-engine-registry-service = { path = "../sdkwork-browser-engine-registry-service" }
+sdkwork-browser-platform-service = { path = "../sdkwork-browser-platform-service" }
+thiserror.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true

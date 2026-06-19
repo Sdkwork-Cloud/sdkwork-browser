@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "generator": "@sdkwork/sdk-generator",
+  "sdk": {
+    "name": "sdkwork-browser-app-sdk",
+    "version": "0.1.0",
+    "language": "java",
+    "sdkType": "app",
+    "protocol": "http",
+    "packageName": "com.sdkwork:sdkwork-browser-app-sdk"
+  },
+  "changeFingerprint": "e3410ea50cb252eb220f3bc8bacd83a48107a504b237eee7a599bcd94b34bb16",
+  "changes": {
+    "createdGeneratedFiles": [],
+    "updatedGeneratedFiles": [],
+    "unchangedGeneratedFiles": [
+      "bin/publish-core.mjs",
+      "bin/publish.ps1",
+      "bin/publish.sh",
+      "CHANGELOG.md",
+      "LICENSE",
+      "pom.xml",
+      "README.md",
+      "sdkwork-sdk.json",
+      "src/main/java/com/sdkwork/browser/app/sdk/api/ApiPaths.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/api/BrowserApi.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/api/package-info.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/http/HttpClient.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/BrowserApiResult.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/SdkworkAppClient.java"
+    ],
+    "deletedGeneratedFiles": [],
+    "scaffoldedFiles": [],
+    "preservedScaffoldFiles": [
+      "custom/README.md"
+    ],
+    "backedUpFiles": []
+  },
+  "impact": {
+    "schemaVersion": 1,
+    "areas": [],
+    "details": [],
+    "requiresVerification": false,
+    "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped."
+  },
+  "verificationPlan": {
+    "shouldRun": false,
+    "runPhase": "skip",
+    "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped.",
+    "steps": []
+  },
+  "executionDecision": {
+    "schemaVersion": 1,
+    "riskLevel": "low",
+    "nextAction": "skip",
+    "requiresManualReview": false,
+    "applyRequiresExpectedFingerprint": false,
+    "summary": "No actionable changes were detected. No apply or verification step is required.",
+    "reasons": [
+      "no-actionable-changes"
+    ]
+  },
+  "preservedLegacyFiles": false
+}

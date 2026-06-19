@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SDKWork Browser",
+  "version": "0.1.0",
+  "identifier": "com.sdkwork.browser",
+  "build": {
+    "beforeDevCommand": "pnpm --filter sdkwork-browser-pc dev",
+    "beforeBuildCommand": "pnpm --filter sdkwork-browser-pc build",
+    "devUrl": "http://127.0.0.1:1620",
+    "frontendDist": "../../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "SDKWork Browser",
+        "width": 1440,
+        "height": 900
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' http://127.0.0.1:*; script-src 'self' http://127.0.0.1:*; style-src 'self' 'unsafe-inline' http://127.0.0.1:*; connect-src ipc: http://ipc.localhost http://127.0.0.1:*"
+    }
+  },
+  "bundle": {
+    "active": false
+  }
+}

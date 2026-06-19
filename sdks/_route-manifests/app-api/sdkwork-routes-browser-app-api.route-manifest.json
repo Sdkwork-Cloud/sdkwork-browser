@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.route.manifest",
+  "packageName": "sdkwork-routes-browser-app-api",
+  "surface": "app-api",
+  "owner": "sdkwork-browser",
+  "domain": "platform",
+  "capability": "browser",
+  "apiAuthority": "sdkwork-browser-app-api",
+  "sdkFamily": "sdkwork-browser-app-sdk",
+  "prefix": "/app/v3/api",
+  "source": {
+    "crateRoot": "crates/sdkwork-routes-browser-app-api",
+    "crateImport": "sdkwork_routes_browser_app_api"
+  },
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/app/v3/api/browser/ai/actions",
+      "operationId": "browser.aiActions.create",
+      "tags": [
+        "browser"
+      ],
+      "auth": {
+        "mode": "dual-token",
+        "required": true
+      },
+      "ownership": {
+        "owner": "sdkwork-browser",
+        "apiAuthority": "sdkwork-browser-app-api",
+        "sdkFamily": "sdkwork-browser-app-sdk",
+        "sourceRouteCrate": "sdkwork-routes-browser-app-api"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/app/v3/api/browser/sessions",
+      "operationId": "browser.sessions.create",
+      "tags": [
+        "browser"
+      ],
+      "auth": {
+        "mode": "dual-token",
+        "required": true
+      },
+      "ownership": {
+        "owner": "sdkwork-browser",
+        "apiAuthority": "sdkwork-browser-app-api",
+        "sdkFamily": "sdkwork-browser-app-sdk",
+        "sourceRouteCrate": "sdkwork-routes-browser-app-api"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/app/v3/api/browser/tabs",
+      "operationId": "browser.tabs.create",
+      "tags": [
+        "browser"
+      ],
+      "auth": {
+        "mode": "dual-token",
+        "required": true
+      },
+      "ownership": {
+        "owner": "sdkwork-browser",
+        "apiAuthority": "sdkwork-browser-app-api",
+        "sdkFamily": "sdkwork-browser-app-sdk",
+        "sourceRouteCrate": "sdkwork-routes-browser-app-api"
+      }
+    }
+  ]
+}

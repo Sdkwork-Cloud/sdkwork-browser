@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "generator": "@sdkwork/sdk-generator",
+  "sdk": {
+    "name": "sdkwork-browser-backend-sdk",
+    "version": "0.1.0",
+    "language": "rust",
+    "sdkType": "backend",
+    "protocol": "http",
+    "packageName": "sdkwork-browser-backend-sdk"
+  },
+  "generatedFiles": [
+    {
+      "path": "bin/publish-core.mjs",
+      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+    },
+    {
+      "path": "bin/publish.ps1",
+      "sha256": "eb779f44a5ba8879a9d79c708d0ba4bd412221f102e4430b953f0449327827bf"
+    },
+    {
+      "path": "bin/publish.sh",
+      "sha256": "ae8a89ddb314afce79fe910de28017951c3c31f24a67d72915c4153711173b23"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "1e0719ed19a87d6f2aa5469ffe1fb355cb6d3efeed4637c2383bdbada5e42756"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "fb941a0806986a54fc192f98a98f6d9c282b8d350b2b19a3e71dda404e92d545"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "7840cc7d2b36ff364ac16c2fc5ec15b861bfe96854eecf81fb59b00edb8b1447"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b332e4040d077ebb20bcd9d30744d73919e01bfe4e45a6aeeb4365c73056424d"
+    },
+    {
+      "path": "sdkwork-sdk.json",
+      "sha256": "052b7b59f651255c2ca013585c09653cd786319adb7118fdbe55e8670e1265be"
+    },
+    {
+      "path": "src/api/base.rs",
+      "sha256": "44dc800725f41deb73cf3aae21029e3edf47ad65f9663688e73aafffeebe1ec2"
+    },
+    {
+      "path": "src/api/browser.rs",
+      "sha256": "201162f3b4f623000a1313edc18f1db7055fa7b9c02216c59c23aaafb5da8321"
+    },
+    {
+      "path": "src/api/mod.rs",
+      "sha256": "81638cbb603d13f264e24590652793f05ac7000100f1695979297aeca38a27e0"
+    },
+    {
+      "path": "src/api/paths.rs",
+      "sha256": "571bc21d9e8c1458979a5bb00adb6ba50a7645837196a4b82a2bcfb87f1ef046"
+    },
+    {
+      "path": "src/client.rs",
+      "sha256": "3e4659f2a1f0e865443301b7f3e0ede0ab9452b9b196cc853a5a4f5382e7b39f"
+    },
+    {
+      "path": "src/http/client.rs",
+      "sha256": "ffd88587750661cd174b1d0bae02a876d24f8537acdccaa67e297a549d0a927e"
+    },
+    {
+      "path": "src/http/mod.rs",
+      "sha256": "fdf16d487ebd9180fb423d5630d4401ff18180721b86636dec085ad83940bb3d"
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "c67abc7a6cddaf423548f19a294220412e073b3595fcdb4052f57afc1bc12e8f"
+    },
+    {
+      "path": "src/models/agent_provider_diagnostic.rs",
+      "sha256": "32cabe1359e09a7ae301b2722062a52bae53aa051a9fc4b63afa3fcee75dd616"
+    },
+    {
+      "path": "src/models/agent_runtime_diagnostics.rs",
+      "sha256": "e28cfc0cac0c4856d662ba1c2c4c515a7d033491e3d9e9eeb28766097de981fb"
+    },
+    {
+      "path": "src/models/browser_api_result.rs",
+      "sha256": "ec5cd8180b5c279e0163a4ae48ba5e0a0f1a2f84925c03309c14f1a37d7fc5e1"
+    },
+    {
+      "path": "src/models/browser_operator_session.rs",
+      "sha256": "ebca6ed3ad5386e712d2e068e6b5d49981b528c29c3fec8b3b35fdec400b849d"
+    },
+    {
+      "path": "src/models/browser_sessions_list_data.rs",
+      "sha256": "179f2bb50b21a43edee7a17f911d432f5468455248867f11cd1b70a1c07ae5f7"
+    },
+    {
+      "path": "src/models/browser_sessions_list_result.rs",
+      "sha256": "f7fa9e3459a93cb8792abba07f35b36167b85792bf6832f5108b59ccbb1758c8"
+    },
+    {
+      "path": "src/models/common.rs",
+      "sha256": "fce0239d85066b1c42435ab8c96676ea2d5300e5dcb87c52fd3e33d29a603a5e"
+    },
+    {
+      "path": "src/models/mod.rs",
+      "sha256": "40c8767c29bbbb51fc0a2f66d2ff755d996521315b2b2e3a33b9c0456e855a35"
+    }
+  ],
+  "scaffoldFiles": [
+    "custom/README.md"
+  ],
+  "customRoots": [
+    "custom/"
+  ]
+}

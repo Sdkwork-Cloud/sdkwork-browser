@@ -1,0 +1,30 @@
+[package]
+name = "sdkwork-router-browser-app-api"
+description = "Axum handlers for SDKWork Browser app-api (browser.aiActions.create and related)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+axum.workspace = true
+bytes.workspace = true
+futures.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio = { workspace = true, features = ["sync", "time"] }
+uuid.workspace = true
+sdkwork-browser-agent-service = { path = "../sdkwork-browser-agent-service" }
+sdkwork-browser-platform-service = { path = "../sdkwork-browser-platform-service" }
+sdkwork-browser-shared-service = { path = "../sdkwork-browser-shared-service" }
+sdkwork-routes-browser-app-api = { path = "../sdkwork-routes-browser-app-api" }
+
+[dev-dependencies]
+axum.workspace = true
+http = "1"
+http-body-util = "0.1"
+serde_json.workspace = true
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tower = { version = "0.5", features = ["util"] }
+sdkwork-browser-service-host = { path = "../sdkwork-browser-service-host" }
+sdkwork-iam-web-adapter = { path = "../../../sdkwork-appbase/crates/sdkwork-iam-web-adapter" }
+sdkwork-routes-browser-app-api = { path = "../sdkwork-routes-browser-app-api" }

@@ -1,0 +1,16 @@
+[package]
+name = "sdkwork-browser-engine-registry-service"
+description = "Browser Engine Registry — dynamic engine registration and lookup (PRD §7)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
+sdkwork-browser-engine-cef-service = { path = "../sdkwork-browser-engine-cef-service" }
+sdkwork-browser-engine-servo-service = { path = "../sdkwork-browser-engine-servo-service" }
+sdkwork-browser-engine-webview-service = { path = "../sdkwork-browser-engine-webview-service" }
+thiserror.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true

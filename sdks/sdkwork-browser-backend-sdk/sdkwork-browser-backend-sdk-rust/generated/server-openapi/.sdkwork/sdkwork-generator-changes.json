@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "generator": "@sdkwork/sdk-generator",
+  "sdk": {
+    "name": "sdkwork-browser-backend-sdk",
+    "version": "0.1.0",
+    "language": "rust",
+    "sdkType": "backend",
+    "protocol": "http",
+    "packageName": "sdkwork-browser-backend-sdk"
+  },
+  "changeFingerprint": "68300aabac6a2f914b0d9b3f41c553627958bbb56b7ea28f6622a6a81f267a3b",
+  "changes": {
+    "createdGeneratedFiles": [
+      "src/models/agent_provider_diagnostic.rs",
+      "src/models/agent_runtime_diagnostics.rs",
+      "src/models/browser_operator_session.rs",
+      "src/models/browser_sessions_list_data.rs",
+      "src/models/browser_sessions_list_result.rs"
+    ],
+    "updatedGeneratedFiles": [
+      "src/api/browser.rs",
+      "src/models/mod.rs"
+    ],
+    "unchangedGeneratedFiles": [
+      "bin/publish-core.mjs",
+      "bin/publish.ps1",
+      "bin/publish.sh",
+      "Cargo.toml",
+      "CHANGELOG.md",
+      "LICENSE",
+      "README.md",
+      "sdkwork-sdk.json",
+      "src/api/base.rs",
+      "src/api/mod.rs",
+      "src/api/paths.rs",
+      "src/client.rs",
+      "src/http/client.rs",
+      "src/http/mod.rs",
+      "src/lib.rs",
+      "src/models/browser_api_result.rs",
+      "src/models/common.rs"
+    ],
+    "deletedGeneratedFiles": [],
+    "scaffoldedFiles": [],
+    "preservedScaffoldFiles": [
+      "custom/README.md"
+    ],
+    "backedUpFiles": []
+  },
+  "impact": {
+    "schemaVersion": 1,
+    "areas": [
+      "api-surface",
+      "models"
+    ],
+    "details": [
+      {
+        "area": "api-surface",
+        "paths": [
+          "src/api/browser.rs"
+        ]
+      },
+      {
+        "area": "models",
+        "paths": [
+          "src/models/agent_provider_diagnostic.rs",
+          "src/models/agent_runtime_diagnostics.rs",
+          "src/models/browser_operator_session.rs",
+          "src/models/browser_sessions_list_data.rs",
+          "src/models/browser_sessions_list_result.rs",
+          "src/models/mod.rs"
+        ]
+      }
+    ],
+    "requiresVerification": true,
+    "summary": "Detected impact areas: api-surface, models. Verification is required."
+  },
+  "verificationPlan": {
+    "shouldRun": true,
+    "runPhase": "now",
+    "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
+    "steps": [
+      {
+        "id": "check",
+        "title": "Unified package check",
+        "required": true,
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
+        "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-rust\\generated\\server-openapi",
+        "command": "node",
+        "args": [
+          "./bin/publish-core.mjs",
+          "--language",
+          "rust",
+          "--project-dir",
+          ".",
+          "--action",
+          "check"
+        ],
+        "displayCommand": "node ./bin/publish-core.mjs --language rust --project-dir . --action check"
+      },
+      {
+        "id": "build",
+        "title": "Unified package build",
+        "required": true,
+        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: api-surface, models.",
+        "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-rust\\generated\\server-openapi",
+        "command": "node",
+        "args": [
+          "./bin/publish-core.mjs",
+          "--language",
+          "rust",
+          "--project-dir",
+          ".",
+          "--action",
+          "build"
+        ],
+        "displayCommand": "node ./bin/publish-core.mjs --language rust --project-dir . --action build"
+      }
+    ]
+  },
+  "executionDecision": {
+    "schemaVersion": 1,
+    "riskLevel": "medium",
+    "nextAction": "verify",
+    "requiresManualReview": false,
+    "applyRequiresExpectedFingerprint": false,
+    "summary": "Changes have been applied. Run the required verification plan now.",
+    "reasons": [
+      "verification-required"
+    ]
+  },
+  "preservedLegacyFiles": false
+}

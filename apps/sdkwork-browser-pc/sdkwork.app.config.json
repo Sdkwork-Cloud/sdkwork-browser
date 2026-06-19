@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 3,
+  "kind": "sdkwork.app",
+  "app": {
+    "key": "sdkwork-browser-pc",
+    "name": "SDKWork Browser PC",
+    "displayName": "SDKWork Browser PC",
+    "description": "AI-native PC browser, desktop, and tablet application for SDKWork.",
+    "vendor": "SDKWork",
+    "officialWebsiteUrl": "https://sdkwork.com/apps/sdkwork-browser-pc",
+    "appType": "APP_DESKTOP",
+    "versionSource": "package.json",
+    "identifiers": {
+      "packageName": null,
+      "bundleId": "com.sdkwork.browser.pc",
+      "desktopAppId": "com.sdkwork.browser.pc",
+      "containerImage": null
+    }
+  },
+  "backend": {
+    "profileKey": "backend-root-admin",
+    "ownerMode": "tenant",
+    "grantMode": "current",
+    "platform": "DESKTOP",
+    "appId": null,
+    "organizationId": null
+  },
+  "runtime": {
+    "family": "pc",
+    "framework": "react",
+    "runtimes": ["BROWSER", "DESKTOP", "TABLET"],
+    "deliveryModes": ["DIRECT_DOWNLOAD"],
+    "defaultPlatform": "DESKTOP",
+    "defaultArchitecture": "x64",
+    "supportedDeploymentProfiles": ["standalone", "cloud"],
+    "defaultDeploymentProfile": "standalone"
+  },
+  "media": {
+    "icons": {
+      "primary": {
+        "id": "sdkwork-browser-pc-primary-icon",
+        "type": "ICON",
+        "purpose": "PRIMARY",
+        "url": "https://cdn.sdkwork.com/apps/sdkwork-browser/assets/icon-1024.png",
+        "platform": "DESKTOP",
+        "locale": "en-US",
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "enabled": true
+      },
+      "platform": [],
+      "metadata": {}
+    },
+    "screenshots": [],
+    "previews": [],
+    "metadata": { "assetVersion": "0.1.0", "defaultLocale": "en-US" }
+  },
+  "publish": {
+    "status": "ACTIVE",
+    "platforms": ["DESKTOP"],
+    "installPlatforms": ["DESKTOP"],
+    "defaultPackageId": "desktop-windows-x64-standalone-zip",
+    "storeUrl": "https://sdkwork.com/apps/sdkwork-browser-pc",
+    "stores": [],
+    "config": { "workspaceRoot": ".", "framework": "react" }
+  },
+  "environments": {
+    "development": {
+      "accessUrl": "http://localhost:5173",
+      "deployUrl": "http://localhost:5173",
+      "deployEnv": "dev"
+    },
+    "production": {
+      "accessUrl": "https://browser.sdkwork.com",
+      "deployUrl": "https://browser.sdkwork.com",
+      "deployEnv": "production"
+    }
+  },
+  "artifacts": {
+    "installConfig": {
+      "defaultPackageId": "desktop-windows-x64-standalone-zip",
+      "packages": [
+        {
+          "id": "desktop-windows-x64-standalone-zip",
+          "name": "SDKWork Browser PC Windows",
+          "sourceType": "BINARY_URL",
+          "packageFormat": "ZIP",
+          "platform": "DESKTOP_WINDOWS",
+          "architecture": "x64",
+          "deploymentProfile": "standalone",
+          "runtimeTarget": "desktop",
+          "enabled": true
+        }
+      ],
+      "metadata": { "workspaceRoot": ".", "packageManager": "pnpm" }
+    }
+  },
+  "release": {
+    "currentVersion": "0.1.0",
+    "defaultChannel": "STABLE",
+    "latest": { "STABLE": "0.1.0" },
+    "notes": []
+  },
+  "security": {
+    "checksumRequired": false,
+    "signatureRequired": false,
+    "sbomRequired": false
+  },
+  "devApp": {
+    "build": { "targets": ["desktop"] },
+    "sourceRoot": "."
+  },
+  "specs": {
+    "root": "../../../sdkwork-specs",
+    "architecture": "APP_PC_ARCHITECTURE_SPEC.md",
+    "ui": "APP_PC_REACT_UI_SPEC.md",
+    "desktop": "DESKTOP_APP_ARCHITECTURE_SPEC.md"
+  },
+  "metadata": {
+    "domain": "platform",
+    "capability": "browser",
+    "owner": "sdkwork-browser"
+  }
+}
