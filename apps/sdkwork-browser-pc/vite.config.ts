@@ -1,7 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import type { Connect, PluginOption } from "vite";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from 'vite';
 
 const devHost = "127.0.0.1";
 const devPort = Number(process.env.SDKWORK_BROWSER_PC_DEV_PORT ?? 1620);
@@ -159,9 +159,16 @@ function browserProxyPlugin(): PluginOption {
               // link clicks and form submissions through the proxy so the
               // iframe can embed the result. Same-origin navigations (e.g.,
               // hash changes, JavaScript routes) are left alone.
+              //
+              // Also notifies the parent window before navigation so the
+              // browser shell can show a loading indicator (matching
+              // Chrome/Edge behavior where link clicks show a spinner).
               const navScript = `<script>(function(){
 var PROXY='/__browser_proxy__';
 function proxy(u){return PROXY+'?url='+encodeURIComponent(u);}
+function notifyParent(u){
+  try{window.parent.postMessage({__browserNavigate:true,url:u},'*');}catch(e){}
+}
 document.addEventListener('click',function(e){
   var a=e.target.closest&&e.target.closest('a');if(!a)return;
   var href=a.getAttribute('href');if(!href)return;
@@ -169,6 +176,7 @@ document.addEventListener('click',function(e){
   try{var r=new URL(href,document.baseURI);
     if(r.origin!==location.origin){
       e.preventDefault();e.stopPropagation();
+      notifyParent(r.href);
       if(a.target==='_blank'||a.target==='_top'){window.open(proxy(r.href),a.target);}
       else{location.href=proxy(r.href);}
     }
@@ -178,7 +186,7 @@ document.addEventListener('submit',function(e){
   var f=e.target;if(!f||f.tagName!=='FORM')return;
   var action=f.getAttribute('action')||'';
   try{var r=new URL(action,document.baseURI);
-    if(r.origin!==location.origin){f.action=proxy(r.href);}
+    if(r.origin!==location.origin){f.action=proxy(r.href);notifyParent(r.href);}
   }catch(err){}
 },true);
 })();</script>`;
@@ -211,15 +219,21 @@ document.addEventListener('submit',function(e){
   };
 }
 
-export default defineConfig({
-  plugins: [react(), tailwindcss(), browserProxyPlugin()],
-  server: {
-    host: devHost,
-    port: devPort,
-    strictPort: true,
-  },
-  build: {
-    outDir: "dist",
-    emptyOutDir: true,
-  },
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, '.', '');
+  return {
+    define: {
+      'process.env.SDKWORK_ACCESS_TOKEN': JSON.stringify(env.SDKWORK_ACCESS_TOKEN ?? ''),
+    },
+    plugins: [react(), tailwindcss(), browserProxyPlugin()],
+    server: {
+      host: devHost,
+      port: devPort,
+      strictPort: true,
+    },
+    build: {
+      outDir: "dist",
+      emptyOutDir: true,
+    },
+  };
 });

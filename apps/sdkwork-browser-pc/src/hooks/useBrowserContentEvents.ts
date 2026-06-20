@@ -30,6 +30,9 @@ export function useBrowserContentEvents() {
         await listen<string>("browser-content-navigated", (event) => {
           const nextUrl = event.payload.trim();
           if (nextUrl && nextUrl !== "about:blank") {
+            // Set loading:true so the tab spinner shows during navigation.
+            // The page-loaded event will clear it when the webview finishes.
+            useBrowserShellStore.setState({ loading: true });
             updateActiveTabFromContent({ url: nextUrl });
           }
         }),
@@ -41,6 +44,13 @@ export function useBrowserContentEvents() {
           if (title) {
             updateActiveTabFromContent({ title });
           }
+        }),
+      );
+
+      unlisteners.push(
+        await listen("browser-content-page-loaded", () => {
+          // Page finished loading — clear the loading indicator.
+          useBrowserShellStore.setState({ loading: false });
         }),
       );
 

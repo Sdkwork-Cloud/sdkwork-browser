@@ -73,6 +73,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
   const canGoForward = useBrowserShellStore(selectCanGoForward);
   const loading = useBrowserShellStore((s) => s.loading);
   const reopenClosedTab = useBrowserShellStore((s) => s.reopenClosedTab);
+  const reloadTab = useBrowserShellStore((s) => s.reloadTab);
   const theme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const setAgentOpen = useAgentStore((s) => s.setOpen);
@@ -108,6 +109,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
     createTab,
     closeTab,
     loadUrl,
+    reloadTab,
     reopenClosedTab,
     goBack,
     goForward,
@@ -120,6 +122,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
     createTab,
     closeTab,
     loadUrl,
+    reloadTab,
     reopenClosedTab,
     goBack,
     goForward,
@@ -156,11 +159,11 @@ export function ShellLayout({ children }: { children: ReactNode }) {
         omniboxInputRef.current?.select();
         return;
       }
-      // Ctrl+R / F5 — reload (pass explicit tabId to avoid race if user switches tabs)
+      // Ctrl+R / F5 — reload (use reloadTab to avoid pushing duplicate history)
       if ((ctrl && event.key === "r") || event.key === "F5") {
         event.preventDefault();
-        if (s.activeTab?.url && s.activeTabId) {
-          void s.loadUrl(s.activeTab.url, s.activeTabId);
+        if (s.activeTabId) {
+          void s.reloadTab(s.activeTabId);
         }
         return;
       }
@@ -389,11 +392,11 @@ export function ShellLayout({ children }: { children: ReactNode }) {
             <path d="m9 18 6-6-6-6" />
           </svg>
         </button>
-        {/* Reload — pass explicit tabId to avoid race if user switches tabs */}
+        {/* Reload — use reloadTab to avoid pushing duplicate history entry */}
         <button
           type="button"
           className="toolbar-btn"
-          onClick={() => { if (activeTab?.url && activeTabId) void loadUrl(activeTab.url, activeTabId); }}
+          onClick={() => { if (activeTabId) void reloadTab(activeTabId); }}
           disabled={!activeTab?.url}
           title="Reload (Ctrl+R)"
         >
@@ -409,6 +412,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
           onClick={() => {
             // Navigate current tab to blank (shows NTP) instead of creating a new tab
             useBrowserShellStore.getState().updateActiveTabFromContent({ url: "", title: "New Tab" });
+            useBrowserShellStore.setState({ loading: false, error: null });
             setOmniboxValue("");
           }}
           title="Home"

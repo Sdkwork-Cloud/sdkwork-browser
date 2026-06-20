@@ -82,6 +82,7 @@ fn build_content_webview(app: &AppHandle, initial_url: WebviewUrl) -> WebviewBui
     let app_nav = app.clone();
     let app_title = app.clone();
     let app_popup = app.clone();
+    let app_load = app.clone();
 
     let mut builder = WebviewBuilder::new(CONTENT_WEBVIEW_LABEL, initial_url)
         .user_agent(CONTENT_USER_AGENT)
@@ -101,8 +102,13 @@ fn build_content_webview(app: &AppHandle, initial_url: WebviewUrl) -> WebviewBui
         .on_document_title_changed(move |_webview, title| {
             let _ = app_title.emit("browser-content-title", title);
         })
-        .on_page_load(|webview, payload| {
+        .on_page_load(move |webview, payload| {
             if payload.event() == PageLoadEvent::Finished {
+                // Emit page-loaded event so the frontend can clear the loading
+                // indicator. This is the reliable signal that the webview has
+                // finished loading the page (more reliable than title-changed,
+                // which may fire early or not at all for same-title pages).
+                let _ = app_load.emit("browser-content-page-loaded", ());
                 schedule_dom_capture(webview.clone());
             }
         });

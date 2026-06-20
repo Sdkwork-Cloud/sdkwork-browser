@@ -66,6 +66,11 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
   const [syncState, setSyncState] = useState<ContentSyncState>("idle");
   const [loadError, setLoadError] = useState<string | null>(null);
   const [dismissedBlocked, setDismissedBlocked] = useState(false);
+  // In Tauri mode, the store's loading state is the authoritative source for
+  // whether a page is loading (set by loadUrl/goBack/goForward/link-click,
+  // cleared by browser-content-page-loaded event). We use it to drive
+  // syncState so the progress bar stays visible until the page actually loads.
+  const storeLoading = useBrowserShellStore((s) => s.loading);
 
   const clearBlockedTimer = useCallback(() => {
     if (blockedTimerRef.current) {
@@ -73,6 +78,13 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
       blockedTimerRef.current = null;
     }
   }, []);
+
+  // Track reloadNonce, url, and activeTabId to detect navigation source.
+  // Shared between web preview and Tauri host effects — only one runs
+  // depending on hostMode, so sharing refs is safe.
+  const lastReloadNonceRef = useRef(reloadNonce);
+  const lastUrlRef = useRef(url);
+  const lastActiveTabIdRef = useRef<string | null>(activeTabId);
 
   const openPage = useCallback(async (targetUrl: string, force = false) => {
     const anchor = anchorRef.current;
@@ -99,7 +111,9 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
     try {
       await openContentWebview(targetUrl, bounds);
       loadedUrlRef.current = targetUrl;
-      setSyncState("synced");
+      // Don't set "synced" here — the page is still loading. The store's
+      // loading state (cleared by browser-content-page-loaded event) drives
+      // effectiveSyncState via the derived state below.
     } catch (error) {
       setSyncState("error");
       setLoadError(error instanceof Error ? error.message : "Failed to open page");
@@ -118,25 +132,35 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
     if (!url) {
       setSyncState("idle");
       setPreviewUrl("");
+      lastReloadNonceRef.current = reloadNonce;
+      lastUrlRef.current = url;
       return;
     }
 
-    // If the iframe is already showing this URL (e.g., after a link click
-    // triggered updateActiveTabFromContent), don't reload — just sync state.
-    // This prevents a flash/double-load when the iframe navigates internally.
-    try {
-      const currentProxyUrl = iframeRef.current?.contentWindow?.location?.href;
-      if (currentProxyUrl) {
-        const urlObj = new URL(currentProxyUrl);
-        const currentOriginalUrl = urlObj.searchParams.get("url");
-        if (currentOriginalUrl && urlsEquivalent(currentOriginalUrl, url)) {
-          loadedUrlRef.current = url;
-          setSyncState("synced");
-          return;
+    const reloadChanged = lastReloadNonceRef.current !== reloadNonce;
+    lastReloadNonceRef.current = reloadNonce;
+    lastUrlRef.current = url;
+
+    // If the iframe is already showing this URL AND this is not a reload
+    // (reloadNonce unchanged), don't reload — just sync state. This prevents
+    // a flash/double-load when the iframe navigates internally (link click
+    // triggered updateActiveTabFromContent, which changed url but not
+    // reloadNonce). On refresh (reloadNonce changed), always reload.
+    if (!reloadChanged) {
+      try {
+        const currentProxyUrl = iframeRef.current?.contentWindow?.location?.href;
+        if (currentProxyUrl) {
+          const urlObj = new URL(currentProxyUrl);
+          const currentOriginalUrl = urlObj.searchParams.get("url");
+          if (currentOriginalUrl && urlsEquivalent(currentOriginalUrl, url)) {
+            loadedUrlRef.current = url;
+            setSyncState("synced");
+            return;
+          }
         }
+      } catch {
+        // Cross-origin or iframe not yet loaded — proceed with normal load
       }
-    } catch {
-      // Cross-origin or iframe not yet loaded — proceed with normal load
     }
 
     setSyncState("loading");
@@ -149,6 +173,9 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
     // pages ample time to load — 12s covers slow sites and proxy overhead.
     blockedTimerRef.current = setTimeout(() => {
       setSyncState((prev) => (prev === "loading" ? "blocked" : prev));
+      // Also clear the global loading state so the tab spinner stops
+      // immediately — don't wait for the 15s safety timeout.
+      useBrowserShellStore.setState({ loading: false });
     }, 12000);
 
     return () => {
@@ -163,6 +190,11 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
     }
 
     clearBlockedTimer();
+
+    // Iframe finished loading — clear the global loading state (set by
+    // loadUrl/goBack/goForward). This is the web-preview counterpart to
+    // the Tauri `browser-content-page-loaded` event.
+    useBrowserShellStore.setState({ loading: false });
 
     // Detect internal navigation (link click within the iframe). The proxy
     // serves content same-origin, so we can read contentWindow.location to
@@ -225,11 +257,6 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
       void hideContentWebview();
     };
   }, [hostMode]);
-
-  // Track reloadNonce, url, and activeTabId to detect navigation source
-  const lastReloadNonceRef = useRef(reloadNonce);
-  const lastUrlRef = useRef(url);
-  const lastActiveTabIdRef = useRef<string | null>(activeTabId);
 
   useEffect(() => {
     if (!hostMode) {
@@ -300,6 +327,44 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
     };
   }, [hostMode, url, reloadNonce, activeTabId, openPage]);
 
+  // In Tauri mode, derive the effective sync state from the store's loading
+  // state on each render. This avoids the race condition where an effect would
+  // prematurely clear "loading" to "synced" before openPage had a chance to
+  // run. The store's loading state is the authoritative source in Tauri mode
+  // (set by loadUrl/goBack/goForward/link-click, cleared by
+  // browser-content-page-loaded event).
+  // - error: sticky — only cleared by explicit retry/navigation
+  // - loading: storeLoading true (or syncState loading from openPage)
+  // - idle: no URL
+  // - synced: storeLoading false and URL present
+  const effectiveSyncState: ContentSyncState = hostMode
+    ? syncState === "error"
+      ? "error"
+      : storeLoading
+        ? "loading"
+        : url
+          ? "synced"
+          : "idle"
+    : syncState;
+
+  // Web preview mode: listen for postMessage from the iframe's navigation
+  // interception script. When the user clicks a link inside the iframe, the
+  // script sends a message before navigating. We set loading:true so the
+  // progress bar shows during internal navigation (matching Chrome/Edge).
+  useEffect(() => {
+    if (hostMode) {
+      return;
+    }
+    function handleMessage(event: MessageEvent) {
+      const data = event.data;
+      if (data && typeof data === "object" && data.__browserNavigate && typeof data.url === "string") {
+        useBrowserShellStore.setState({ loading: true });
+      }
+    }
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [hostMode]);
+
   useEffect(() => {
     if (!hostMode) {
       return;
@@ -336,7 +401,7 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
   return (
     <div className="relative h-full w-full bg-white animate-fade-in">
       {/* Loading progress bar — Chrome style */}
-      {syncState === "loading" ? (
+      {effectiveSyncState === "loading" ? (
         <div className="pointer-events-none absolute top-0 left-0 right-0 z-20 h-0.5 overflow-hidden bg-accent/10">
           <div className="h-full w-1/3 bg-accent animate-[shimmer_1s_ease-in-out_infinite]" />
         </div>
@@ -364,7 +429,7 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
       </div>
 
       {/* Blocked-site fallback — professional, like Chrome's error page */}
-      {!hostMode && syncState === "blocked" && !dismissedBlocked ? (
+      {!hostMode && effectiveSyncState === "blocked" && !dismissedBlocked ? (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-canvas px-6 animate-fade-in">
           <div className="flex max-w-md flex-col items-center text-center">
             <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-[1.5rem] font-semibold text-white shadow-md" style={{ background: "#4285f4" }}>
@@ -415,7 +480,7 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
       ) : null}
 
       {/* Tauri error state */}
-      {hostMode && syncState === "error" ? (
+      {hostMode && effectiveSyncState === "error" ? (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-surface-0 px-6 text-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-err/10">
             <svg viewBox="0 0 24 24" className="h-7 w-7 text-err" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -442,7 +507,7 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
       ) : null}
 
       {/* Floating "Open in new tab" — always available for pages */}
-      {!hostMode && url && (syncState === "synced" || syncState === "blocked") ? (
+      {!hostMode && url && (effectiveSyncState === "synced" || effectiveSyncState === "blocked") ? (
         <a
           href={url}
           target="_blank"
@@ -458,7 +523,7 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
       ) : null}
 
       {/* Tauri DOM capture refresh */}
-      {hostMode && syncState === "synced" ? (
+      {hostMode && effectiveSyncState === "synced" ? (
         <button
           type="button"
           className="absolute bottom-3 right-3 z-10 btn btn-ghost !h-7 !text-[0.75rem] opacity-70 hover:opacity-100"

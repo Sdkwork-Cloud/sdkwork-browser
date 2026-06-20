@@ -14,9 +14,37 @@ import {
   type BrowserTabSnapshot,
   type CefSurfaceSnapshot,
 } from "../bridge/browserPlatformBridge.ts";
-import { normalizeNavigationUrl, tabTitleFromUrl } from "../utils/navigationUrl.ts";
+import { normalizeNavigationUrl, tabTitleFromUrl, urlsEquivalent } from "../utils/navigationUrl.ts";
 
 const MAX_CLOSED_TABS = 12;
+
+/**
+ * Module-level safety timeout for clearing the loading state.
+ * Each new navigation clears the previous timeout and sets a new one,
+ * preventing an old timeout from prematurely clearing the loading state
+ * of a newer navigation (race condition fix).
+ */
+let loadingSafetyTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleLoadingSafetyTimeout(get: () => BrowserShellState, set: (partial: Partial<BrowserShellState>) => void): void {
+  if (loadingSafetyTimeoutId) {
+    clearTimeout(loadingSafetyTimeoutId);
+    loadingSafetyTimeoutId = null;
+  }
+  loadingSafetyTimeoutId = setTimeout(() => {
+    loadingSafetyTimeoutId = null;
+    if (get().loading) {
+      set({ loading: false });
+    }
+  }, 15000);
+}
+
+function clearLoadingSafetyTimeout(): void {
+  if (loadingSafetyTimeoutId) {
+    clearTimeout(loadingSafetyTimeoutId);
+    loadingSafetyTimeoutId = null;
+  }
+}
 
 /** Per-tab navigation history for back/forward support. */
 interface HistoryEntry {
@@ -124,8 +152,9 @@ function pushHistory(history: TabHistory, url: string, title?: string): TabHisto
   // Truncate forward entries when navigating to a new URL
   const entries = history.entries.slice(0, history.index + 1);
   const last = entries[entries.length - 1];
-  // Don't push duplicate consecutive entries
-  if (last && last.url === url) {
+  // Don't push duplicate consecutive entries (use urlsEquivalent to catch
+  // URLs that differ only in normalization — trailing slash, default port, etc.)
+  if (last && urlsEquivalent(last.url, url)) {
     // Update title of existing entry if we now have one
     if (title && !last.title) {
       entries[entries.length - 1] = { ...last, title };
@@ -211,6 +240,10 @@ function removeTabs(
         closing.reduce((stack, tab) => pushClosedTab(stack, tab), state.closedTabs),
       ),
       tabHistory: cleanedHistory,
+      // New tab is NTP — clear loading and bump reloadNonce so the panel
+      // hides the webview and shows the NTP.
+      loading: false,
+      reloadNonce: state.reloadNonce + 1,
     };
   }
 
@@ -219,9 +252,27 @@ function removeTabs(
     state.closedTabs,
   );
 
+  const resolvedNextActiveId = nextActiveId ?? activeId;
+  const activeTabChanged = resolvedNextActiveId !== activeId;
+
+  // If the active tab changed (e.g., closing the active tab), update loading
+  // state based on the new active tab's URL and bump reloadNonce so
+  // BrowserContentPanel's useEffect treats it as an external navigation
+  // (driving the webview to the new tab's URL). Without this, the loading
+  // indicator could get stuck on if the closed tab was loading.
+  let navUpdate: Partial<Pick<BrowserShellState, "loading" | "reloadNonce">> = {};
+  if (activeTabChanged) {
+    const newActiveTab = remaining.find((tab) => tab.id === resolvedNextActiveId);
+    navUpdate = {
+      loading: Boolean(newActiveTab?.url),
+      reloadNonce: state.reloadNonce + 1,
+    };
+  }
+
   return {
-    ...applyTabListUpdate(state, remaining, nextActiveId ?? activeId, closedTabs),
+    ...applyTabListUpdate(state, remaining, resolvedNextActiveId, closedTabs),
     tabHistory: cleanedHistory,
+    ...navUpdate,
   };
 }
 
@@ -404,27 +455,32 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     // loadBrowserUrl only updates platform metadata (agent/snapshot state) —
     // the actual webview/iframe navigation is owned by BrowserContentPanel's
     // useEffect, which fires independently when reloadNonce changes.
-    // Blocking here would keep loading:true and freeze the omnibox/tab UI.
+    // We do NOT set loading:false here — it's cleared by:
+    //   - Web preview: handleIframeLoad (when iframe finishes)
+    //   - Tauri: browser-content-page-loaded event (when webview finishes)
+    //   - Fallback: 15s safety timeout in case events never fire
+    //
+    // IMPORTANT: Do NOT call applyActiveTabUrl here. In Tauri mode, the
+    // webview may redirect (e.g. example.com → www.example.com), and
+    // browser-content-navigated fires updateActiveTabFromContent with the
+    // redirected URL. If we overwrite the tab URL with the original URL
+    // here, it would revert the redirect and cause omnibox/history bugs.
+    // Only update the platform snapshot — the tab URL is owned by the
+    // initial set() above and by updateActiveTabFromContent (for redirects).
     void loadBrowserUrl(normalized)
       .then((snapshot) => {
         if (snapshot) {
-          set((state) => ({
-            snapshot,
-            ...applyActiveTabUrl(
-              { ...state, snapshot },
-              normalized,
-              undefined,
-              activeId ?? undefined,
-            ),
-          }));
+          set({ snapshot });
         }
       })
       .catch(() => {
         // Best-effort: ignore network/IPC errors — the webview owns navigation.
-      })
-      .finally(() => {
-        set({ loading: false });
       });
+
+    // Safety timeout — if no load event fires within 15s, clear loading state
+    // to prevent the spinner from being stuck forever. Each new navigation
+    // clears the previous timeout to avoid race conditions.
+    scheduleLoadingSafetyTimeout(get, set);
   },
   autoGroupTabs: async () => {
     set({ loading: true, error: null });
@@ -452,13 +508,26 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     // URL change as an external navigation (driving the webview) rather than
     // an internal navigation (link click). Without this, switching tabs in
     // Tauri mode wouldn't navigate the child webview to the new tab's URL.
+    const nextState = get();
+    const targetTab = getTabList(nextState).find((tab) => tab.id === tabId);
     set((state) => ({
       localActiveTabId: tabId,
       reloadNonce: state.reloadNonce + 1,
+      // Set loading:true if the target tab has a URL — the webview/iframe
+      // needs to navigate. Cleared by handleIframeLoad (web preview) or
+      // browser-content-page-loaded (Tauri). Safety timeout in loadUrl.
+      loading: Boolean(targetTab?.url),
+      error: null,
     }));
 
     const state = get();
     if (usesLocalTabChrome() || !state.snapshot?.tabs?.length) {
+      // Safety timeout — if no load event fires within 15s, clear loading.
+      if (targetTab?.url) {
+        scheduleLoadingSafetyTimeout(get, set);
+      } else {
+        clearLoadingSafetyTimeout();
+      }
       return;
     }
 
@@ -483,6 +552,9 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     };
     set((state) => ({
       ...applyTabListUpdate(state, [...getTabList(state), newTab], id),
+      // New tab shows NTP — no loading state.
+      loading: false,
+      error: null,
     }));
     return id;
   },
@@ -501,14 +573,16 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         nextActiveId = remainingPreview[Math.min(idx, remainingPreview.length - 1)]?.id ?? null;
       }
 
-      // Clean up history for closed tab
-      const { [tabId]: _removed, ...restHistory } = state.tabHistory;
-
-      return {
-        ...removeTabs(state, tabId, (tab) => tab.id === tabId, nextActiveId),
-        tabHistory: restHistory,
-      };
+      // removeTabs already cleans up tabHistory for closed tabs — no need
+      // to compute restHistory separately.
+      return removeTabs(state, tabId, (tab) => tab.id === tabId, nextActiveId);
     });
+    // If closing the active tab triggered navigation to another tab with a
+    // URL, schedule the safety timeout — removeTabs sets loading:true but
+    // doesn't schedule the timeout (it's a pure state function).
+    if (get().loading) {
+      scheduleLoadingSafetyTimeout(get, set);
+    }
   },
   closeOtherTabs: (tabId) => {
     set((state) =>
@@ -519,6 +593,9 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         tabId,
       ),
     );
+    if (get().loading) {
+      scheduleLoadingSafetyTimeout(get, set);
+    }
   },
   closeTabsToRight: (tabId) => {
     set((state) => {
@@ -534,6 +611,9 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         tabId,
       );
     });
+    if (get().loading) {
+      scheduleLoadingSafetyTimeout(get, set);
+    }
   },
   closeTabsToLeft: (tabId) => {
     set((state) => {
@@ -549,6 +629,9 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         tabId,
       );
     });
+    if (get().loading) {
+      scheduleLoadingSafetyTimeout(get, set);
+    }
   },
   duplicateTab: (tabId) => {
     const state = get();
@@ -566,15 +649,32 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       ...sourceTabs.slice(index + 1),
     ];
 
-    set(applyTabListUpdate(state, nextTabs, duplicate.id));
-    // Await setActiveTab before loadUrl to avoid race condition.
-    // Pass explicit tabId so loadUrl targets the duplicate, not whatever tab
-    // happens to be active after the async gap.
-    void get().setActiveTab(duplicate.id).then(() => {
-      if (duplicate.url) {
-        void get().loadUrl(duplicate.url, duplicate.id);
-      }
-    });
+    const normalizedUrl = duplicate.url ? normalizeNavigationUrl(duplicate.url) : "";
+
+    // Combine tab activation and navigation into a single state update to
+    // avoid double navigation (applyTabListUpdate + loadUrl would each
+    // trigger BrowserContentPanel's useEffect separately).
+    set((s) => ({
+      ...applyTabListUpdate(s, nextTabs, duplicate.id),
+      loading: Boolean(normalizedUrl),
+      error: null,
+      reloadNonce: normalizedUrl ? s.reloadNonce + 1 : s.reloadNonce,
+      ...(normalizedUrl
+        ? { tabHistory: { ...s.tabHistory, [duplicate.id]: pushHistory(getHistory(s, duplicate.id), normalizedUrl) } }
+        : {}),
+    }));
+
+    // Trigger platform-level navigation (skip for NTP).
+    if (normalizedUrl) {
+      void loadBrowserUrl(normalizedUrl)
+        .then((snapshot) => {
+          if (snapshot) {
+            set((s) => ({ snapshot }));
+          }
+        })
+        .catch(() => {});
+      scheduleLoadingSafetyTimeout(get, set);
+    }
   },
   togglePinTab: (tabId) => {
     set((state) => {
@@ -600,9 +700,22 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     if (!tab?.url) {
       return;
     }
-    await get().setActiveTab(tabId);
-    // Pass explicit tabId to avoid race if user switches tabs during await
-    await get().loadUrl(tab.url, tabId);
+
+    if (get().localActiveTabId !== tabId) {
+      // Switching to a different tab loads it fresh — that's effectively a
+      // reload. setActiveTab increments reloadNonce, sets loading, and
+      // schedules the safety timeout. No extra work needed here.
+      await get().setActiveTab(tabId);
+      return;
+    }
+
+    // Already active — increment reloadNonce to force reload.
+    // Do NOT call loadUrl: reload should not push a new history entry
+    // (matches Chrome/Edge behavior where Ctrl+R doesn't add history).
+    set((s) => ({ loading: true, error: null, reloadNonce: s.reloadNonce + 1 }));
+
+    // Safety timeout — if no load event fires, clear loading state.
+    scheduleLoadingSafetyTimeout(get, set);
   },
   reopenClosedTab: () => {
     const state = get();
@@ -614,18 +727,33 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     const reopened = cloneTab(restored);
     const nextTabs = [...getTabList(state), reopened];
 
-    set({
-      ...applyTabListUpdate(state, nextTabs, reopened.id),
-      closedTabs: remainingClosed,
-    });
+    const normalizedUrl = reopened.url ? normalizeNavigationUrl(reopened.url) : "";
 
-    // Await setActiveTab before loadUrl to avoid race condition.
-    // Pass explicit tabId so loadUrl targets the reopened tab.
-    void get().setActiveTab(reopened.id).then(() => {
-      if (reopened.url) {
-        void get().loadUrl(reopened.url, reopened.id);
-      }
-    });
+    // Combine tab activation and navigation into a single state update to
+    // avoid double navigation (applyTabListUpdate + loadUrl would each
+    // trigger BrowserContentPanel's useEffect separately).
+    set((s) => ({
+      ...applyTabListUpdate(s, nextTabs, reopened.id),
+      closedTabs: remainingClosed,
+      loading: Boolean(normalizedUrl),
+      error: null,
+      reloadNonce: normalizedUrl ? s.reloadNonce + 1 : s.reloadNonce,
+      ...(normalizedUrl
+        ? { tabHistory: { ...s.tabHistory, [reopened.id]: pushHistory(getHistory(s, reopened.id), normalizedUrl) } }
+        : {}),
+    }));
+
+    // Trigger platform-level navigation (skip for NTP).
+    if (normalizedUrl) {
+      void loadBrowserUrl(normalizedUrl)
+        .then((snapshot) => {
+          if (snapshot) {
+            set((s) => ({ snapshot }));
+          }
+        })
+        .catch(() => {});
+      scheduleLoadingSafetyTimeout(get, set);
+    }
   },
   copyTabUrl: async (tabId) => {
     const tab = getTabList(get()).find((entry) => entry.id === tabId);
@@ -650,7 +778,12 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       }
 
       const currentTab = getTabList(state).find((tab) => tab.id === activeId);
-      const urlChanged = patch.url !== undefined && patch.url !== currentTab?.url;
+      // Use urlsEquivalent to avoid pushing duplicate history entries for
+      // URLs that differ only in normalization (trailing slash, default port,
+      // etc.). The tab URL is still updated to the new (normalized) form.
+      const urlChanged = patch.url !== undefined &&
+        !!currentTab &&
+        !urlsEquivalent(patch.url, currentTab.url);
 
       const sourceTabs = getTabList(state).map((tab) => {
         if (tab.id !== activeId) {
@@ -706,18 +839,24 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       reloadNonce: s.reloadNonce + 1,
     }));
 
-    // Trigger platform-level navigation (skip for NTP / empty URL)
+    // Trigger platform-level navigation (skip for NTP / empty URL).
+    // loading:false is NOT set here for non-empty URLs — it's cleared by
+    // handleIframeLoad (web preview) or browser-content-page-loaded (Tauri).
+    // Only update snapshot here — tab URL is owned by the set() above and
+    // updateActiveTabFromContent (for redirects). See loadUrl for details.
     if (url) {
       void loadBrowserUrl(url)
         .then((snapshot) => {
-          set((s) => ({
-            ...(snapshot ? { snapshot } : {}),
-            loading: false,
-            ...applyActiveTabUrl(s, url, title),
-          }));
+          if (snapshot) {
+            set({ snapshot });
+          }
         })
-        .catch(() => set({ loading: false }));
+        .catch(() => {});
+
+      // Safety timeout
+      scheduleLoadingSafetyTimeout(get, set);
     } else {
+      clearLoadingSafetyTimeout();
       set({ loading: false });
     }
   },
@@ -738,18 +877,22 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       reloadNonce: s.reloadNonce + 1,
     }));
 
-    // Trigger platform-level navigation (skip for NTP / empty URL)
+    // Trigger platform-level navigation (skip for NTP / empty URL).
+    // Only update snapshot here — tab URL is owned by the set() above and
+    // updateActiveTabFromContent (for redirects). See loadUrl for details.
     if (url) {
       void loadBrowserUrl(url)
         .then((snapshot) => {
-          set((s) => ({
-            ...(snapshot ? { snapshot } : {}),
-            loading: false,
-            ...applyActiveTabUrl(s, url, title),
-          }));
+          if (snapshot) {
+            set({ snapshot });
+          }
         })
-        .catch(() => set({ loading: false }));
+        .catch(() => {});
+
+      // Safety timeout
+      scheduleLoadingSafetyTimeout(get, set);
     } else {
+      clearLoadingSafetyTimeout();
       set({ loading: false });
     }
   },
