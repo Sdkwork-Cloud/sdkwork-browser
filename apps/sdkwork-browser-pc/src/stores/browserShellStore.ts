@@ -19,8 +19,13 @@ import { normalizeNavigationUrl, tabTitleFromUrl } from "../utils/navigationUrl.
 const MAX_CLOSED_TABS = 12;
 
 /** Per-tab navigation history for back/forward support. */
+interface HistoryEntry {
+  url: string;
+  title?: string;
+}
+
 interface TabHistory {
-  entries: string[];
+  entries: HistoryEntry[];
   index: number;
 }
 
@@ -34,13 +39,15 @@ interface BrowserShellState {
   cefSurface: CefSurfaceSnapshot | null;
   loading: boolean;
   error: string | null;
+  /** Increments on every loadUrl call — forces iframe reload even for same URL. */
+  reloadNonce: number;
   /** Navigation history per tab ID. */
   tabHistory: Record<string, TabHistory>;
   setEngineId: (engineId: BrowserEngineId) => void;
   refreshSnapshot: () => Promise<void>;
   refreshCefSurface: () => Promise<void>;
   switchEngine: (engineId: BrowserEngineId) => Promise<void>;
-  loadUrl: (url: string) => Promise<void>;
+  loadUrl: (url: string, tabId?: string) => Promise<void>;
   autoGroupTabs: () => Promise<void>;
   setActiveTab: (tabId: string) => Promise<void>;
   createTab: () => string;
@@ -57,8 +64,6 @@ interface BrowserShellState {
   updateActiveTabFromContent: (patch: { url?: string; title?: string }) => void;
   goBack: () => void;
   goForward: () => void;
-  canGoBack: () => boolean;
-  canGoForward: () => boolean;
 }
 
 let tabCounter = 0;
@@ -102,7 +107,10 @@ function ensureActiveTabId(
 }
 
 function usesLocalTabChrome(): boolean {
-  return isBrowserDesktopHost();
+  // Always use local tabs for tab management — both in web preview and desktop
+  // mode. The snapshot is only for engine metadata, not tab state. This avoids
+  // confusion when the Gateway is intermittently available in web preview.
+  return true;
 }
 
 // === History stack helpers ===
@@ -112,23 +120,38 @@ function getHistory(state: BrowserShellState, tabId: string | null): TabHistory 
   return state.tabHistory[tabId] ?? { entries: [], index: -1 };
 }
 
-function pushHistory(history: TabHistory, url: string): TabHistory {
+function pushHistory(history: TabHistory, url: string, title?: string): TabHistory {
   // Truncate forward entries when navigating to a new URL
   const entries = history.entries.slice(0, history.index + 1);
+  const last = entries[entries.length - 1];
   // Don't push duplicate consecutive entries
-  if (entries[entries.length - 1] === url) {
+  if (last && last.url === url) {
+    // Update title of existing entry if we now have one
+    if (title && !last.title) {
+      entries[entries.length - 1] = { ...last, title };
+    }
     return { entries, index: entries.length - 1 };
   }
-  entries.push(url);
+  entries.push({ url, title });
   return { entries, index: entries.length - 1 };
 }
 
-function navigateHistory(history: TabHistory, delta: number): { history: TabHistory; url: string | null } {
+function updateHistoryTitle(history: TabHistory, title: string): TabHistory {
+  if (history.index < 0 || !history.entries[history.index]) {
+    return history;
+  }
+  const entries = history.entries.slice();
+  entries[history.index] = { ...entries[history.index], title };
+  return { ...history, entries };
+}
+
+function navigateHistory(history: TabHistory, delta: number): { history: TabHistory; url: string | null; title?: string } {
   const newIndex = history.index + delta;
   if (newIndex < 0 || newIndex >= history.entries.length) {
     return { history, url: null };
   }
-  return { history: { ...history, index: newIndex }, url: history.entries[newIndex] };
+  const entry = history.entries[newIndex];
+  return { history: { ...history, index: newIndex }, url: entry.url, title: entry.title };
 }
 
 function applyTabListUpdate(
@@ -170,16 +193,25 @@ function removeTabs(
   const closing = sourceTabs.filter((tab, index, tabs) => predicate(tab, index, tabs));
   let remaining = sourceTabs.filter((tab, index, tabs) => !predicate(tab, index, tabs));
 
+  // Clean up history for all closed tabs
+  const closedIds = new Set(closing.map((tab) => tab.id));
+  const cleanedHistory = Object.fromEntries(
+    Object.entries(state.tabHistory).filter(([id]) => !closedIds.has(id)),
+  );
+
   // When all tabs are closed, create a fresh empty tab — like Chrome/Edge.
   if (remaining.length === 0) {
     const newId = makeTabId();
     remaining = [{ id: newId, title: "New Tab", url: "", pin_state: "unpinned" }];
-    return applyTabListUpdate(
-      state,
-      remaining,
-      newId,
-      closing.reduce((stack, tab) => pushClosedTab(stack, tab), state.closedTabs),
-    );
+    return {
+      ...applyTabListUpdate(
+        state,
+        remaining,
+        newId,
+        closing.reduce((stack, tab) => pushClosedTab(stack, tab), state.closedTabs),
+      ),
+      tabHistory: cleanedHistory,
+    };
   }
 
   const closedTabs = closing.reduce(
@@ -187,24 +219,32 @@ function removeTabs(
     state.closedTabs,
   );
 
-  return applyTabListUpdate(state, remaining, nextActiveId ?? activeId, closedTabs);
+  return {
+    ...applyTabListUpdate(state, remaining, nextActiveId ?? activeId, closedTabs),
+    tabHistory: cleanedHistory,
+  };
 }
 
 function applyActiveTabUrl(
   state: BrowserShellState,
   url: string,
+  title?: string,
+  tabId?: string,
 ): Partial<BrowserShellState> {
-  const title = tabTitleFromUrl(url);
+  const resolvedTitle = title ?? tabTitleFromUrl(url);
 
   if (!usesLocalTabChrome() && state.snapshot?.tabs?.length) {
     const activeId =
-      state.snapshot.active_tab_id ?? state.snapshot.tabs[0]?.id ?? null;
+      tabId ??
+      state.snapshot.active_tab_id ??
+      state.snapshot.tabs[0]?.id ??
+      null;
     if (!activeId) {
       return {};
     }
 
     const tabs = state.snapshot.tabs.map((tab) =>
-      tab.id === activeId ? { ...tab, url, title } : tab,
+      tab.id === activeId ? { ...tab, url, title: resolvedTitle } : tab,
     );
 
     return {
@@ -216,13 +256,13 @@ function applyActiveTabUrl(
     };
   }
 
-  const activeId = state.localActiveTabId ?? state.localTabs[0]?.id ?? null;
+  const activeId = tabId ?? state.localActiveTabId ?? state.localTabs[0]?.id ?? null;
   if (!activeId) {
     return {};
   }
 
   const localTabs = state.localTabs.map((tab) =>
-    tab.id === activeId ? { ...tab, url, title } : tab,
+    tab.id === activeId ? { ...tab, url, title: resolvedTitle } : tab,
   );
 
   return {
@@ -254,6 +294,20 @@ export function selectActiveTabUrl(state: BrowserShellState): string {
   return selectActiveTab(state)?.url ?? "";
 }
 
+export function selectCanGoBack(state: BrowserShellState): boolean {
+  const activeId = getActiveTabId(state);
+  if (!activeId) return false;
+  const history = getHistory(state, activeId);
+  return history.index > 0;
+}
+
+export function selectCanGoForward(state: BrowserShellState): boolean {
+  const activeId = getActiveTabId(state);
+  if (!activeId) return false;
+  const history = getHistory(state, activeId);
+  return history.index < history.entries.length - 1;
+}
+
 const initialLocalTabId = makeTabId();
 
 export const useBrowserShellStore = create<BrowserShellState>()(
@@ -274,6 +328,7 @@ export const useBrowserShellStore = create<BrowserShellState>()(
   cefSurface: null,
   loading: false,
   error: null,
+  reloadNonce: 0,
   tabHistory: {},
   setEngineId: (engineId) => set({ engineId }),
   refreshSnapshot: async () => {
@@ -288,10 +343,16 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         await get().refreshCefSurface();
       }
     } catch (error) {
-      set({
-        loading: false,
-        error: error instanceof Error ? error.message : "Failed to read browser platform",
-      });
+      // In web preview mode, Gateway errors are expected — don't show them.
+      // Only show errors in desktop mode where they indicate real problems.
+      if (isBrowserDesktopHost()) {
+        set({
+          loading: false,
+          error: error instanceof Error ? error.message : "Failed to read browser platform",
+        });
+      } else {
+        set({ loading: false });
+      }
     }
   },
   refreshCefSurface: async () => {
@@ -319,61 +380,51 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       });
     }
   },
-  loadUrl: async (url) => {
+  loadUrl: async (url, tabId) => {
     const normalized = normalizeNavigationUrl(url);
     if (!normalized) {
       return;
     }
 
-    const activeId = getActiveTabId(get());
+    const activeId = tabId ?? getActiveTabId(get());
     set((state) => {
       const history = activeId ? pushHistory(getHistory(state, activeId), normalized) : null;
       return {
-        ...applyActiveTabUrl(state, normalized),
+        ...applyActiveTabUrl(state, normalized, undefined, activeId ?? undefined),
         loading: true,
         error: null,
+        reloadNonce: state.reloadNonce + 1,
         ...(history && activeId
           ? { tabHistory: { ...state.tabHistory, [activeId]: history } }
           : {}),
       };
     });
 
-    if (isBrowserDesktopHost()) {
-      try {
-        const snapshot = await loadBrowserUrl(normalized);
+    // Both Tauri and web preview modes use the same non-blocking pattern.
+    // loadBrowserUrl only updates platform metadata (agent/snapshot state) —
+    // the actual webview/iframe navigation is owned by BrowserContentPanel's
+    // useEffect, which fires independently when reloadNonce changes.
+    // Blocking here would keep loading:true and freeze the omnibox/tab UI.
+    void loadBrowserUrl(normalized)
+      .then((snapshot) => {
         if (snapshot) {
           set((state) => ({
             snapshot,
-            loading: false,
-            ...applyActiveTabUrl({ ...state, snapshot }, normalized),
+            ...applyActiveTabUrl(
+              { ...state, snapshot },
+              normalized,
+              undefined,
+              activeId ?? undefined,
+            ),
           }));
-        } else {
-          set({ loading: false });
         }
-      } catch {
-        // Agent/platform metadata is best-effort; the child webview owns real navigation.
+      })
+      .catch(() => {
+        // Best-effort: ignore network/IPC errors — the webview owns navigation.
+      })
+      .finally(() => {
         set({ loading: false });
-      }
-      return;
-    }
-
-    try {
-      const snapshot = await loadBrowserUrl(normalized);
-      if (snapshot) {
-        set((state) => ({
-          snapshot,
-          loading: false,
-          ...applyActiveTabUrl({ ...state, snapshot }, normalized),
-        }));
-      } else {
-        set({ loading: false });
-      }
-    } catch (error) {
-      set({
-        loading: false,
-        error: error instanceof Error ? error.message : "Failed to load URL",
       });
-    }
   },
   autoGroupTabs: async () => {
     set({ loading: true, error: null });
@@ -392,7 +443,19 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     }
   },
   setActiveTab: async (tabId) => {
-    set({ localActiveTabId: tabId });
+    // Skip if already active — avoids spurious reloadNonce increment
+    if (get().localActiveTabId === tabId) {
+      return;
+    }
+
+    // Increment reloadNonce so BrowserContentPanel's useEffect treats the
+    // URL change as an external navigation (driving the webview) rather than
+    // an internal navigation (link click). Without this, switching tabs in
+    // Tauri mode wouldn't navigate the child webview to the new tab's URL.
+    set((state) => ({
+      localActiveTabId: tabId,
+      reloadNonce: state.reloadNonce + 1,
+    }));
 
     const state = get();
     if (usesLocalTabChrome() || !state.snapshot?.tabs?.length) {
@@ -504,10 +567,12 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     ];
 
     set(applyTabListUpdate(state, nextTabs, duplicate.id));
-    // Await setActiveTab before loadUrl to avoid race condition
+    // Await setActiveTab before loadUrl to avoid race condition.
+    // Pass explicit tabId so loadUrl targets the duplicate, not whatever tab
+    // happens to be active after the async gap.
     void get().setActiveTab(duplicate.id).then(() => {
       if (duplicate.url) {
-        void get().loadUrl(duplicate.url);
+        void get().loadUrl(duplicate.url, duplicate.id);
       }
     });
   },
@@ -536,7 +601,8 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       return;
     }
     await get().setActiveTab(tabId);
-    await get().loadUrl(tab.url);
+    // Pass explicit tabId to avoid race if user switches tabs during await
+    await get().loadUrl(tab.url, tabId);
   },
   reopenClosedTab: () => {
     const state = get();
@@ -553,10 +619,11 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       closedTabs: remainingClosed,
     });
 
-    // Await setActiveTab before loadUrl to avoid race condition
+    // Await setActiveTab before loadUrl to avoid race condition.
+    // Pass explicit tabId so loadUrl targets the reopened tab.
     void get().setActiveTab(reopened.id).then(() => {
       if (reopened.url) {
-        void get().loadUrl(reopened.url);
+        void get().loadUrl(reopened.url, reopened.id);
       }
     });
   },
@@ -582,6 +649,9 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         return {};
       }
 
+      const currentTab = getTabList(state).find((tab) => tab.id === activeId);
+      const urlChanged = patch.url !== undefined && patch.url !== currentTab?.url;
+
       const sourceTabs = getTabList(state).map((tab) => {
         if (tab.id !== activeId) {
           return tab;
@@ -593,7 +663,30 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         };
       });
 
-      return applyTabListUpdate(state, sourceTabs, activeId);
+      // Push to history when URL changes from in-page navigation.
+      // When only title changes (page loaded), update the current entry's title.
+      // Note: empty URL ("") is NTP — still push to history so Back can return to it.
+      let historyUpdate: Partial<Pick<BrowserShellState, "tabHistory">> = {};
+      if (urlChanged && patch.url !== undefined) {
+        historyUpdate = {
+          tabHistory: {
+            ...state.tabHistory,
+            [activeId]: pushHistory(getHistory(state, activeId), patch.url, patch.title),
+          },
+        };
+      } else if (patch.title && !urlChanged) {
+        historyUpdate = {
+          tabHistory: {
+            ...state.tabHistory,
+            [activeId]: updateHistoryTitle(getHistory(state, activeId), patch.title),
+          },
+        };
+      }
+
+      return {
+        ...applyTabListUpdate(state, sourceTabs, activeId),
+        ...historyUpdate,
+      };
     });
   },
   goBack: () => {
@@ -602,13 +695,31 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     if (!activeId) return;
 
     const history = getHistory(state, activeId);
-    const { history: newHistory, url } = navigateHistory(history, -1);
-    if (!url) return;
+    const { history: newHistory, url, title } = navigateHistory(history, -1);
+    if (url === null) return;
 
     set((s) => ({
       tabHistory: { ...s.tabHistory, [activeId]: newHistory },
-      ...applyActiveTabUrl(s, url),
+      ...applyActiveTabUrl(s, url, title),
+      loading: url !== "",
+      error: null,
+      reloadNonce: s.reloadNonce + 1,
     }));
+
+    // Trigger platform-level navigation (skip for NTP / empty URL)
+    if (url) {
+      void loadBrowserUrl(url)
+        .then((snapshot) => {
+          set((s) => ({
+            ...(snapshot ? { snapshot } : {}),
+            loading: false,
+            ...applyActiveTabUrl(s, url, title),
+          }));
+        })
+        .catch(() => set({ loading: false }));
+    } else {
+      set({ loading: false });
+    }
   },
   goForward: () => {
     const state = get();
@@ -616,27 +727,31 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     if (!activeId) return;
 
     const history = getHistory(state, activeId);
-    const { history: newHistory, url } = navigateHistory(history, 1);
-    if (!url) return;
+    const { history: newHistory, url, title } = navigateHistory(history, 1);
+    if (url === null) return;
 
     set((s) => ({
       tabHistory: { ...s.tabHistory, [activeId]: newHistory },
-      ...applyActiveTabUrl(s, url),
+      ...applyActiveTabUrl(s, url, title),
+      loading: url !== "",
+      error: null,
+      reloadNonce: s.reloadNonce + 1,
     }));
-  },
-  canGoBack: () => {
-    const state = get();
-    const activeId = getActiveTabId(state);
-    if (!activeId) return false;
-    const history = getHistory(state, activeId);
-    return history.index > 0;
-  },
-  canGoForward: () => {
-    const state = get();
-    const activeId = getActiveTabId(state);
-    if (!activeId) return false;
-    const history = getHistory(state, activeId);
-    return history.index < history.entries.length - 1;
+
+    // Trigger platform-level navigation (skip for NTP / empty URL)
+    if (url) {
+      void loadBrowserUrl(url)
+        .then((snapshot) => {
+          set((s) => ({
+            ...(snapshot ? { snapshot } : {}),
+            loading: false,
+            ...applyActiveTabUrl(s, url, title),
+          }));
+        })
+        .catch(() => set({ loading: false }));
+    } else {
+      set({ loading: false });
+    }
   },
 }),
     {
@@ -647,6 +762,19 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         localActiveTabId: state.localActiveTabId,
         tabHistory: state.tabHistory,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        // Validate localActiveTabId — ensure it points to an existing tab
+        if (state.localActiveTabId && !state.localTabs.some((t) => t.id === state.localActiveTabId)) {
+          state.localActiveTabId = state.localTabs[0]?.id ?? null;
+        }
+        // Clean up orphaned tabHistory entries (tabs that no longer exist)
+        const tabIds = new Set(state.localTabs.map((t) => t.id));
+        const cleanedHistory = Object.fromEntries(
+          Object.entries(state.tabHistory).filter(([id]) => tabIds.has(id)),
+        );
+        state.tabHistory = cleanedHistory;
+      },
     },
   ),
 );

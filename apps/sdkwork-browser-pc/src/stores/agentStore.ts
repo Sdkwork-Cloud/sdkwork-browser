@@ -52,27 +52,27 @@ async function applyAgentAction(action?: string): Promise<void> {
 async function streamViaGateway(
   trimmed: string,
   assistantId: string,
-  baseMessages: AgentChatEntry[],
   set: (partial: Partial<AgentState> | ((state: AgentState) => Partial<AgentState>)) => void,
 ): Promise<string | undefined> {
   let resolvedAction: string | undefined;
   const outcome = await consumeGatewayAgentChatStream(trimmed, (_chunk, rendered) => {
-    set({
-      messages: baseMessages.map((entry) =>
+    // Use functional update to avoid stale baseMessages snapshot
+    set((state) => ({
+      messages: state.messages.map((entry) =>
         entry.id === assistantId
           ? { ...entry, content: rendered, action: resolvedAction ?? entry.action }
           : entry,
       ),
-    });
+    }));
   });
   resolvedAction = outcome.action;
-  set({
-    messages: baseMessages.map((entry) =>
+  set((state) => ({
+    messages: state.messages.map((entry) =>
       entry.id === assistantId
         ? { ...entry, content: outcome.content, action: outcome.action ?? entry.action }
         : entry,
     ),
-  });
+  }));
   await applyAgentAction(outcome.action);
   return outcome.action;
 }
@@ -80,7 +80,6 @@ async function streamViaGateway(
 async function streamViaTauri(
   trimmed: string,
   assistantId: string,
-  baseMessages: AgentChatEntry[],
   set: (partial: Partial<AgentState> | ((state: AgentState) => Partial<AgentState>)) => void,
 ): Promise<boolean> {
   const response = await sendBrowserAgentChatStream({ message: trimmed });
@@ -88,26 +87,25 @@ async function streamViaTauri(
     return false;
   }
 
-  const messagesWithAssistant = [
-    ...baseMessages.slice(0, -1),
-    {
-      id: assistantId,
-      role: "assistant" as const,
-      content: "",
-      action: response.reply.action,
-    },
-  ];
-  set({ messages: messagesWithAssistant });
+  // Use functional update to avoid stale snapshot
+  set((state) => ({
+    messages: state.messages.map((entry) =>
+      entry.id === assistantId
+        ? { ...entry, action: response.reply.action }
+        : entry,
+    ),
+  }));
 
   let rendered = "";
   for (const chunk of response.chunks) {
     rendered = rendered ? `${rendered} ${chunk}` : chunk;
-    set({
-      messages: messagesWithAssistant.map((entry) =>
-        entry.id === assistantId ? { ...entry, content: rendered } : entry,
+    const current = rendered;
+    set((state) => ({
+      messages: state.messages.map((entry) =>
+        entry.id === assistantId ? { ...entry, content: current } : entry,
       ),
-    });
-    await new Promise((resolve) => setTimeout(resolve, 35));
+    }));
+    // No artificial delay — stream at natural speed
   }
 
   await applyAgentAction(response.reply.action);
@@ -144,30 +142,27 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       role: "user",
       content: trimmed,
     };
+    const assistantId = nextMessageId();
+    const assistantEntry: AgentChatEntry = {
+      id: assistantId,
+      role: "assistant",
+      content: "",
+    };
 
-    set({
+    // Use functional update to append both entries atomically — avoids
+    // stale snapshot if another message is sent concurrently.
+    set((state) => ({
       busy: true,
       error: null,
-      messages: [...get().messages, userEntry],
-    });
-
-    const assistantId = nextMessageId();
-    const baseMessages = [
-      ...get().messages,
-      {
-        id: assistantId,
-        role: "assistant" as const,
-        content: "",
-      },
-    ];
-    set({ messages: baseMessages });
+      messages: [...state.messages, userEntry, assistantEntry],
+    }));
 
     const transport = resolveAgentChatTransport();
 
     try {
       if (transport === "gateway") {
         try {
-          await streamViaGateway(trimmed, assistantId, baseMessages, set);
+          await streamViaGateway(trimmed, assistantId, set);
           set({ busy: false });
           return;
         } catch (gatewayError) {
@@ -177,9 +172,9 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         }
       }
 
-      const streamed = await streamViaTauri(trimmed, assistantId, baseMessages, set);
+      const streamed = await streamViaTauri(trimmed, assistantId, set);
       if (!streamed) {
-        await streamViaGateway(trimmed, assistantId, baseMessages, set);
+        await streamViaGateway(trimmed, assistantId, set);
       }
       set({ busy: false });
     } catch (error) {

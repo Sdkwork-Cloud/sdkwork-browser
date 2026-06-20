@@ -1,5 +1,11 @@
+mod bootstrap;
 mod storage;
 
+pub use bootstrap::{
+    bootstrap_browser_database, bootstrap_browser_database_from_env,
+    connect_and_bootstrap_browser_database_from_env, connect_browser_database_pool_from_env,
+    BrowserDatabaseHost, BrowserDatabasePool,
+};
 pub use storage::{storage_kind_label, BrowserStorageKind, BROWSER_STORAGE_KINDS};
 
 pub const BROWSER_STORAGE_MIGRATION: &str = "0001_browser_storage.sql";

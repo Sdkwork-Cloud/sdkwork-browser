@@ -50,8 +50,9 @@ export function useBrowserContentEvents() {
           if (!normalized) {
             return;
           }
-          createTab();
-          void loadUrl(normalized);
+          // Pass explicit tabId to avoid race if user switches tabs
+          const newTabId = createTab();
+          void loadUrl(normalized, newTabId);
         }),
       );
     })();

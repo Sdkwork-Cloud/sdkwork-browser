@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
 import { isolateFromDragRegion } from "../utils/tauriDragRegion.ts";
-import { useBrowserShellStore, selectActiveTabUrl, selectShellTabs, selectShellActiveTabId } from "../stores/browserShellStore.ts";
+import { useBrowserShellStore, selectActiveTabUrl, selectShellTabs, selectShellActiveTabId, selectCanGoBack, selectCanGoForward } from "../stores/browserShellStore.ts";
 import { useThemeStore } from "../stores/themeStore.ts";
 import { useAgentStore } from "../stores/agentStore.ts";
 import { normalizeNavigationUrl } from "../utils/navigationUrl.ts";
@@ -69,8 +69,8 @@ export function ShellLayout({ children }: { children: ReactNode }) {
   const setActiveTab = useBrowserShellStore((s) => s.setActiveTab);
   const goBack = useBrowserShellStore((s) => s.goBack);
   const goForward = useBrowserShellStore((s) => s.goForward);
-  const canGoBack = useBrowserShellStore((s) => s.canGoBack());
-  const canGoForward = useBrowserShellStore((s) => s.canGoForward());
+  const canGoBack = useBrowserShellStore(selectCanGoBack);
+  const canGoForward = useBrowserShellStore(selectCanGoForward);
   const loading = useBrowserShellStore((s) => s.loading);
   const reopenClosedTab = useBrowserShellStore((s) => s.reopenClosedTab);
   const theme = useThemeStore((s) => s.theme);
@@ -99,17 +99,46 @@ export function ShellLayout({ children }: { children: ReactNode }) {
     }
   }, [activeTabUrl, omniboxFocused]);
 
-  // Global keyboard shortcuts — Chrome/Edge standard bindings
+  // Ref holding latest values for keyboard handler — avoids re-binding the
+  // global keydown listener on every tab/state change.
+  const shortcutRef = useRef({
+    activeTabId,
+    activeTab,
+    tabs,
+    createTab,
+    closeTab,
+    loadUrl,
+    reopenClosedTab,
+    goBack,
+    goForward,
+    setActiveTab,
+  });
+  shortcutRef.current = {
+    activeTabId,
+    activeTab,
+    tabs,
+    createTab,
+    closeTab,
+    loadUrl,
+    reopenClosedTab,
+    goBack,
+    goForward,
+    setActiveTab,
+  };
+
+  // Global keyboard shortcuts — Chrome/Edge standard bindings.
+  // Binds once; reads latest state from shortcutRef.
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       const ctrl = event.ctrlKey || event.metaKey;
       const target = event.target as HTMLElement;
       const isInputFocused = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA";
+      const s = shortcutRef.current;
 
       // Ctrl+T — new tab
       if (ctrl && event.key === "t" && !event.shiftKey) {
         event.preventDefault();
-        const id = createTab();
+        s.createTab();
         setOmniboxValue("");
         requestAnimationFrame(() => omniboxInputRef.current?.focus());
         return;
@@ -117,7 +146,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
       // Ctrl+W — close tab
       if (ctrl && event.key === "w" && !event.shiftKey) {
         event.preventDefault();
-        if (activeTabId) closeTab(activeTabId);
+        if (s.activeTabId) s.closeTab(s.activeTabId);
         return;
       }
       // Ctrl+L — focus omnibox
@@ -127,48 +156,52 @@ export function ShellLayout({ children }: { children: ReactNode }) {
         omniboxInputRef.current?.select();
         return;
       }
-      // Ctrl+R / F5 — reload
+      // Ctrl+R / F5 — reload (pass explicit tabId to avoid race if user switches tabs)
       if ((ctrl && event.key === "r") || event.key === "F5") {
         event.preventDefault();
-        if (activeTab?.url) void loadUrl(activeTab.url);
+        if (s.activeTab?.url && s.activeTabId) {
+          void s.loadUrl(s.activeTab.url, s.activeTabId);
+        }
         return;
       }
       // Ctrl+Shift+T — reopen closed tab
       if (ctrl && event.shiftKey && event.key === "T") {
         event.preventDefault();
-        reopenClosedTab();
+        s.reopenClosedTab();
         return;
       }
-      // Alt+Left — back
+      // Alt+Left — back (blur omnibox so it syncs to new URL)
       if (event.altKey && event.key === "ArrowLeft") {
         event.preventDefault();
-        goBack();
+        (document.activeElement as HTMLElement)?.blur();
+        s.goBack();
         return;
       }
-      // Alt+Right — forward
+      // Alt+Right — forward (blur omnibox so it syncs to new URL)
       if (event.altKey && event.key === "ArrowRight") {
         event.preventDefault();
-        goForward();
+        (document.activeElement as HTMLElement)?.blur();
+        s.goForward();
         return;
       }
       // Ctrl+1..8 — switch to tab N
       if (ctrl && event.key >= "1" && event.key <= "8" && !isInputFocused) {
         event.preventDefault();
         const idx = parseInt(event.key, 10) - 1;
-        if (tabs[idx]) void setActiveTab(tabs[idx].id);
+        if (s.tabs[idx]) void s.setActiveTab(s.tabs[idx].id);
         return;
       }
       // Ctrl+9 — switch to last tab
       if (ctrl && event.key === "9" && !isInputFocused) {
         event.preventDefault();
-        if (tabs.length > 0) void setActiveTab(tabs[tabs.length - 1].id);
+        if (s.tabs.length > 0) void s.setActiveTab(s.tabs[s.tabs.length - 1].id);
         return;
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeTabId, activeTab, createTab, closeTab, loadUrl, reopenClosedTab, goBack, goForward, tabs, setActiveTab]);
+  }, []);
 
   useLayoutEffect(() => {
     if (!menuOpen) return;
@@ -202,7 +235,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
     if (!target) return;
     setOmniboxValue(target);
     setOmniboxFocused(false);
-    void loadUrl(target);
+    void loadUrl(target, activeTabId ?? undefined);
     (document.activeElement as HTMLElement)?.blur();
   }
 
@@ -258,6 +291,13 @@ export function ShellLayout({ children }: { children: ReactNode }) {
                 onPointerDown={isolateFromDragRegion}
                 onClick={() => handleTabClick(tab.id)}
                 onContextMenu={(event) => handleTabContextMenu(event, tab.id)}
+                onMouseDown={(event) => {
+                  // Middle-click closes tab — Chrome/Edge standard behavior
+                  if (event.button === 1) {
+                    event.preventDefault();
+                    closeTab(tab.id);
+                  }
+                }}
               >
                 {isActive ? (
                   <>
@@ -267,9 +307,15 @@ export function ShellLayout({ children }: { children: ReactNode }) {
                 ) : null}
                 <span
                   className="tab-favicon"
-                  style={tab.url ? { background: color, color: "#fff" } : undefined}
+                  style={tab.url && !(isActive && loading) ? { background: color, color: "#fff" } : undefined}
                 >
-                  {tab.url ? letter : (
+                  {isActive && loading && tab.url ? (
+                    <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 animate-spin" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                    </svg>
+                  ) : tab.url ? (
+                    letter
+                  ) : (
                     <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10" />
                       <path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20" />
@@ -343,11 +389,11 @@ export function ShellLayout({ children }: { children: ReactNode }) {
             <path d="m9 18 6-6-6-6" />
           </svg>
         </button>
-        {/* Reload */}
+        {/* Reload — pass explicit tabId to avoid race if user switches tabs */}
         <button
           type="button"
           className="toolbar-btn"
-          onClick={() => { if (activeTab?.url) void loadUrl(activeTab.url); }}
+          onClick={() => { if (activeTab?.url && activeTabId) void loadUrl(activeTab.url, activeTabId); }}
           disabled={!activeTab?.url}
           title="Reload (Ctrl+R)"
         >
@@ -488,7 +534,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
             key={bm.url}
             type="button"
             className="bookmark-item"
-            onClick={() => void loadUrl(bm.url)}
+            onClick={() => activeTabId && void loadUrl(bm.url, activeTabId)}
             title={bm.url}
           >
             <span className="bookmark-favicon" style={{ background: bm.color }}>

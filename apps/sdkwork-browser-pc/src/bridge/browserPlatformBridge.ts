@@ -206,8 +206,10 @@ export async function fetchBrowserPlatformSnapshot(): Promise<BrowserPlatformSna
       const snapshot = await fetchGatewayPlatformSnapshot();
       return snapshot ? fromGatewaySnapshot(snapshot) : null;
     } catch (error) {
+      // In web preview mode, the Gateway may not be running. Don't throw —
+      // return null so the app can proceed with local tab management.
       if (!isTauriRuntime()) {
-        throw error;
+        return null;
       }
     }
   }
@@ -245,8 +247,11 @@ export async function loadBrowserUrl(url: string): Promise<BrowserPlatformSnapsh
       const snapshot = await navigateGatewayUrl(url);
       return snapshot ? fromGatewaySnapshot(snapshot) : null;
     } catch (error) {
+      // In web preview mode, the Gateway may not be running. Don't throw —
+      // return null so the caller (loadUrl) can proceed without a snapshot.
+      // The iframe in BrowserContentPanel handles the actual page navigation.
       if (!isTauriRuntime()) {
-        throw error;
+        return null;
       }
     }
   }

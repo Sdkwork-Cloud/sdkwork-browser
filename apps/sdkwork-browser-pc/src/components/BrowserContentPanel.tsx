@@ -8,10 +8,15 @@ import {
   syncLiveHtml,
   type ContentWebviewBounds,
 } from "../bridge/browserPlatformBridge.ts";
+import { useBrowserShellStore } from "../stores/browserShellStore.ts";
 import { urlsEquivalent } from "../utils/navigationUrl.ts";
 
 interface BrowserContentPanelProps {
   url: string;
+  /** Increments on every navigation — forces iframe reload even for same URL. */
+  reloadNonce?: number;
+  /** Active tab ID — detects tab switches to drive webview navigation. */
+  activeTabId?: string | null;
 }
 
 function readAnchorBounds(anchor: HTMLDivElement): ContentWebviewBounds {
@@ -37,41 +42,21 @@ function faviconLetter(host: string): string {
   return match ? match[0].toUpperCase() : "•";
 }
 
-// Sites known to block iframe embedding (X-Frame-Options / CSP frame-ancestors).
-// We show the fallback immediately for these instead of waiting for timeout.
-const KNOWN_BLOCKED_HOSTS = [
-  "google.com",
-  "www.google.com",
-  "youtube.com",
-  "www.youtube.com",
-  "github.com",
-  "mail.google.com",
-  "accounts.google.com",
-  "facebook.com",
-  "www.facebook.com",
-  "twitter.com",
-  "x.com",
-  "instagram.com",
-  "linkedin.com",
-  "amazon.com",
-  "reddit.com",
-  "netflix.com",
-  "bing.com",
-  "www.bing.com",
-];
-
-function isLikelyBlocked(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.toLowerCase();
-    return KNOWN_BLOCKED_HOSTS.some((b) => host === b || host.endsWith(`.${b}`));
-  } catch {
-    return false;
-  }
+/**
+ * Wrap a target URL with the dev proxy endpoint. The proxy strips
+ * X-Frame-Options and CSP frame-ancestors headers so the iframe can embed
+ * any website — mimicking what a real browser engine does natively.
+ *
+ * In production (Tauri desktop), the native WebView is used instead and
+ * this function is never called.
+ */
+function toProxyUrl(targetUrl: string): string {
+  return `/__browser_proxy__?url=${encodeURIComponent(targetUrl)}`;
 }
 
 type ContentSyncState = "idle" | "loading" | "synced" | "blocked" | "error";
 
-export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
+export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }: BrowserContentPanelProps) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const loadedUrlRef = useRef<string | null>(null);
@@ -89,7 +74,7 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
     }
   }, []);
 
-  const openPage = useCallback(async (targetUrl: string) => {
+  const openPage = useCallback(async (targetUrl: string, force = false) => {
     const anchor = anchorRef.current;
     if (!hostMode || !targetUrl || !anchor) {
       return;
@@ -100,7 +85,10 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
       return;
     }
 
-    if (loadedUrlRef.current && urlsEquivalent(loadedUrlRef.current, targetUrl)) {
+    // Skip re-loading if the same URL is already loaded — unless forced
+    // (e.g. reload button, Ctrl+R). This prevents redundant webview
+    // navigation when the URL hasn't changed.
+    if (!force && loadedUrlRef.current && urlsEquivalent(loadedUrlRef.current, targetUrl)) {
       setSyncState("synced");
       return;
     }
@@ -118,7 +106,7 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
     }
   }, [hostMode]);
 
-  // === Web preview (iframe) logic ===
+  // === Web preview (iframe via dev proxy) logic ===
   useEffect(() => {
     if (hostMode) {
       return;
@@ -133,23 +121,40 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
       return;
     }
 
+    // If the iframe is already showing this URL (e.g., after a link click
+    // triggered updateActiveTabFromContent), don't reload — just sync state.
+    // This prevents a flash/double-load when the iframe navigates internally.
+    try {
+      const currentProxyUrl = iframeRef.current?.contentWindow?.location?.href;
+      if (currentProxyUrl) {
+        const urlObj = new URL(currentProxyUrl);
+        const currentOriginalUrl = urlObj.searchParams.get("url");
+        if (currentOriginalUrl && urlsEquivalent(currentOriginalUrl, url)) {
+          loadedUrlRef.current = url;
+          setSyncState("synced");
+          return;
+        }
+      }
+    } catch {
+      // Cross-origin or iframe not yet loaded — proceed with normal load
+    }
+
     setSyncState("loading");
-    setPreviewUrl(url);
+    // Use the dev proxy URL so X-Frame-Options / CSP frame-ancestors are
+    // stripped server-side — the iframe can then embed any website.
+    setPreviewUrl(toProxyUrl(url));
     loadedUrlRef.current = url;
 
-    // For known-blocked sites, show fallback quickly (1.2s) instead of waiting
-    // the full timeout. For unknown sites, give them more time to load.
-    const knownBlocked = isLikelyBlocked(url);
-    const timeout = knownBlocked ? 1200 : 2500;
-
+    // The proxy adds latency (server-side fetch + header stripping). Give
+    // pages ample time to load — 12s covers slow sites and proxy overhead.
     blockedTimerRef.current = setTimeout(() => {
       setSyncState((prev) => (prev === "loading" ? "blocked" : prev));
-    }, timeout);
+    }, 12000);
 
     return () => {
       clearBlockedTimer();
     };
-  }, [hostMode, url, clearBlockedTimer]);
+  }, [hostMode, url, reloadNonce, clearBlockedTimer]);
 
   function handleIframeLoad() {
     const frame = iframeRef.current;
@@ -157,36 +162,56 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
       return;
     }
 
-    // For known-blocked sites, ignore onLoad and let the timeout show the
-    // fallback page. The browser renders a blank/error page inside the iframe
-    // when X-Frame-Options blocks embedding, and onLoad fires for that.
-    if (isLikelyBlocked(url)) {
-      return;
-    }
-
     clearBlockedTimer();
 
-    // Try to access content document (only works for same-origin)
+    // Detect internal navigation (link click within the iframe). The proxy
+    // serves content same-origin, so we can read contentWindow.location to
+    // extract the original URL from the proxy's query parameter. If it
+    // differs from the current tab URL, the user clicked a link — sync the
+    // tab state so the omnibox and history stay correct.
     try {
-      const doc = frame.contentDocument;
-      if (doc) {
-        // Same-origin — we can read the DOM
-        const html = doc.documentElement?.outerHTML;
-        if (html && html.length > 50) {
-          void syncLiveHtml(html);
-          setSyncState("synced");
-          return;
+      const currentProxyUrl = frame.contentWindow?.location?.href;
+      if (currentProxyUrl) {
+        const urlObj = new URL(currentProxyUrl);
+        const originalUrl = urlObj.searchParams.get("url");
+        if (originalUrl && !urlsEquivalent(originalUrl, url)) {
+          // Internal navigation — update tab URL and history
+          useBrowserShellStore.getState().updateActiveTabFromContent({ url: originalUrl });
         }
       }
     } catch {
-      // Cross-origin — can't access, but the page may have loaded successfully
+      // Cross-origin or access denied — ignore
     }
 
-    // Cross-origin: if onLoad fired, the browser rendered something (either the
-    // actual page or a blocked-content error page). Be optimistic and mark as
-    // synced — the "Open externally" button is always available if the user
-    // sees a blank page. This allows sites like Wikipedia that allow embedding
-    // to display correctly instead of being falsely flagged as blocked.
+    // The dev proxy serves content same-origin, so we can access the
+    // contentDocument to verify the page actually loaded (not a blank
+    // error page). This gives us reliable load detection.
+    try {
+      const doc = frame.contentDocument;
+      if (doc) {
+        const html = doc.documentElement?.outerHTML ?? "";
+        // A real page has substantial content. Blank pages (<50 chars) are
+        // usually error responses or blocked content.
+        if (html.length > 50) {
+          void syncLiveHtml(html);
+          // Extract page title and sync to tab state — matches Chrome/Edge
+          // behavior where the tab title updates after the page loads.
+          const pageTitle = doc.title?.trim();
+          if (pageTitle) {
+            useBrowserShellStore.getState().updateActiveTabFromContent({ title: pageTitle });
+          }
+          setSyncState("synced");
+          return;
+        }
+        // Blank same-origin page — likely a proxy error or empty response
+        setSyncState("blocked");
+        return;
+      }
+    } catch {
+      // Cross-origin (shouldn't happen with proxy, but handle gracefully)
+    }
+
+    // Fallback: if onLoad fired, be optimistic
     setSyncState("synced");
   }
 
@@ -201,6 +226,11 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
     };
   }, [hostMode]);
 
+  // Track reloadNonce, url, and activeTabId to detect navigation source
+  const lastReloadNonceRef = useRef(reloadNonce);
+  const lastUrlRef = useRef(url);
+  const lastActiveTabIdRef = useRef<string | null>(activeTabId);
+
   useEffect(() => {
     if (!hostMode) {
       return;
@@ -208,35 +238,67 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
 
     if (!url) {
       loadedUrlRef.current = null;
+      lastUrlRef.current = url;
+      lastActiveTabIdRef.current = activeTabId;
       setSyncState("idle");
       void hideContentWebview();
       return;
     }
 
-    let cancelled = false;
+    // Detect navigation source:
+    // - reloadNonce changed → loadUrl/goBack/goForward triggered this
+    // - activeTabId changed → user switched tabs (or closed active tab)
+    // - neither changed but url changed → internal navigation
+    //   (webview navigated itself via link click/redirect). In this case
+    //   the webview already shows the new page — just sync our ref and
+    //   skip calling openPage to avoid double navigation.
+    const reloadChanged = lastReloadNonceRef.current !== reloadNonce;
+    const tabChanged = lastActiveTabIdRef.current !== activeTabId;
+    const urlChanged = lastUrlRef.current !== url;
+    lastReloadNonceRef.current = reloadNonce;
+    lastUrlRef.current = url;
+    lastActiveTabIdRef.current = activeTabId;
 
-    function tryOpen() {
-      if (cancelled) {
+    if (urlChanged && !reloadChanged && !tabChanged) {
+      // Internal navigation — webview already navigated. Sync ref only.
+      loadedUrlRef.current = url;
+      setSyncState("synced");
+      return;
+    }
+
+    // External navigation, reload, or tab switch — drive the webview.
+    // For tab switches, reset loadedUrlRef so openPage doesn't skip
+    // navigation even if the new tab has the same URL as the old tab.
+    if (tabChanged) {
+      loadedUrlRef.current = null;
+    }
+
+    const isReload = (reloadChanged || tabChanged) && !urlChanged;
+    let cancelled = false;
+    const MAX_OPEN_RETRIES = 60; // ~1s at 60fps
+
+    function tryOpen(retries = 0) {
+      if (cancelled || retries >= MAX_OPEN_RETRIES) {
         return;
       }
       const anchor = anchorRef.current;
       if (!anchor) {
-        requestAnimationFrame(tryOpen);
+        requestAnimationFrame(() => tryOpen(retries + 1));
         return;
       }
       const bounds = readAnchorBounds(anchor);
       if (bounds.width < 1 || bounds.height < 1) {
-        requestAnimationFrame(tryOpen);
+        requestAnimationFrame(() => tryOpen(retries + 1));
         return;
       }
-      void openPage(url);
+      void openPage(url, isReload);
     }
 
     tryOpen();
     return () => {
       cancelled = true;
     };
-  }, [hostMode, url, openPage]);
+  }, [hostMode, url, reloadNonce, activeTabId, openPage]);
 
   useEffect(() => {
     if (!hostMode) {
@@ -268,7 +330,8 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
     };
   }, [hostMode, url]);
 
-  const displayHost = hostFromUrl(previewUrl || url);
+  // Display host is derived from the original URL, not the proxy URL.
+  const displayHost = hostFromUrl(url);
 
   return (
     <div className="relative h-full w-full bg-white animate-fade-in">
@@ -287,30 +350,18 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
       >
         {!hostMode && previewUrl ? (
           <iframe
+            key={`${previewUrl}-${reloadNonce}`}
             ref={iframeRef}
             title={displayHost || "Browser content"}
             className="absolute inset-0 h-full w-full border-0 bg-white"
             src={previewUrl}
             referrerPolicy="no-referrer-when-downgrade"
-            sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation allow-downloads"
             allow="fullscreen"
             onLoad={handleIframeLoad}
           />
         ) : null}
       </div>
-
-      {/* Loading spinner overlay — shown while loading (before blocked detection) */}
-      {!hostMode && syncState === "loading" ? (
-        <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center bg-white/60">
-          <div className="flex flex-col items-center gap-3">
-            <svg className="h-8 w-8 animate-spin text-accent" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-              <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            <span className="text-[0.75rem] text-ink-tertiary">Loading {displayHost}…</span>
-          </div>
-        </div>
-      ) : null}
 
       {/* Blocked-site fallback — professional, like Chrome's error page */}
       {!hostMode && syncState === "blocked" && !dismissedBlocked ? (
@@ -326,13 +377,13 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
               This site can't be displayed in the preview pane.
             </p>
             <p className="mb-6 text-[0.75rem] text-ink-faint">
-              Many websites (Google, YouTube, GitHub) block embedding for
-              security. Open it in a new browser tab, or run the Tauri desktop
-              host for full in-app browsing.
+              The page took too long to load or returned an error. Open it
+              in a new browser tab, or run the Tauri desktop host for full
+              in-app browsing.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2.5">
               <a
-                href={previewUrl}
+                href={url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary"
@@ -390,10 +441,10 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
         </div>
       ) : null}
 
-      {/* Floating "Open in new tab" — always available for cross-origin pages */}
-      {!hostMode && previewUrl && (syncState === "synced" || syncState === "blocked") ? (
+      {/* Floating "Open in new tab" — always available for pages */}
+      {!hostMode && url && (syncState === "synced" || syncState === "blocked") ? (
         <a
-          href={previewUrl}
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
           className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 rounded-full border border-hairline bg-surface-1/90 px-3 py-1.5 text-[0.75rem] font-medium text-ink-secondary shadow-md backdrop-blur transition-colors hover:bg-surface-2 hover:text-ink-primary"

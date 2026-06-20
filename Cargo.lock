@@ -3646,6 +3646,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sdkwork-browser-database-host"
+version = "0.1.0"
+dependencies = [
+ "dotenvy",
+ "sdkwork-database-config",
+ "sdkwork-database-lifecycle",
+ "sdkwork-database-spi",
+ "sdkwork-database-sqlx",
+]
+
+[[package]]
 name = "sdkwork-browser-download-service"
 version = "0.1.0"
 dependencies = [
@@ -3827,6 +3838,7 @@ dependencies = [
 name = "sdkwork-browser-storage-sqlx-rust"
 version = "0.1.0"
 dependencies = [
+ "sdkwork-browser-database-host",
  "sdkwork-database-config",
  "sdkwork-database-sqlx",
  "serde",
@@ -3865,6 +3877,47 @@ dependencies = [
  "thiserror 2.0.18",
  "toml 0.8.2",
  "tracing",
+]
+
+[[package]]
+name = "sdkwork-database-history"
+version = "0.1.0"
+dependencies = [
+ "hex",
+ "sdkwork-database-config",
+ "sdkwork-database-sqlx",
+ "sha2",
+ "sqlx",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "sdkwork-database-lifecycle"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "sdkwork-database-config",
+ "sdkwork-database-history",
+ "sdkwork-database-spi",
+ "sdkwork-database-sqlx",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "sdkwork-database-spi"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "regex",
+ "sdkwork-database-config",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "thiserror 2.0.18",
 ]
 
 [[package]]
@@ -3967,7 +4020,7 @@ dependencies = [
 
 [[package]]
 name = "sdkwork-utils-rust"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "base64 0.22.1",
  "chrono",

@@ -50,10 +50,12 @@ export function HomePage() {
   const shell = useMemo(() => createBrowserShell(), []);
   const loading = useBrowserShellStore((s) => s.loading);
   const error = useBrowserShellStore((s) => s.error);
+  const reloadNonce = useBrowserShellStore((s) => s.reloadNonce);
   const refreshSnapshot = useBrowserShellStore((s) => s.refreshSnapshot);
   const loadUrl = useBrowserShellStore((s) => s.loadUrl);
   const setAgentOpen = useAgentStore((s) => s.setOpen);
   const activeTabUrl = useBrowserShellStore(selectActiveTabUrl);
+  const activeTabId = useBrowserShellStore((s) => s.localActiveTabId);
 
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
@@ -80,19 +82,19 @@ export function HomePage() {
     e.preventDefault();
     const target = normalizeNavigationUrl(query);
     if (!target) return;
-    void loadUrl(target);
+    void loadUrl(target, activeTabId ?? undefined);
   }
 
   function handleQuickLink(link: QuickLink) {
     setQuery(link.url);
-    void loadUrl(link.url);
+    void loadUrl(link.url, activeTabId ?? undefined);
   }
 
   // Show browser content when the active tab has a URL
   if (hasUrl) {
     return (
       <div className="relative h-full">
-        <BrowserContentPanel url={activeTabUrl} />
+        <BrowserContentPanel url={activeTabUrl} reloadNonce={reloadNonce} activeTabId={activeTabId} />
         {error ? (
           <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 flex items-center gap-2.5 rounded-lg border border-err/30 bg-surface-1 px-4 py-2.5 text-[0.8125rem] text-err shadow-lg animate-slide-up">
             <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

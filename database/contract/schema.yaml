@@ -1,11 +1,25 @@
 schema_version: 1
 kind: sdkwork.database.schema
 module_id: browser
-contract_version: 0.1.0
+contract_version: 1.0.0
 owner_team: browser-platform
 compliance_level: L2
 engines:
-  - postgres
   - sqlite
 table_prefix: browser_
-tables: []
+tables:
+  - name: browser_bookmark
+    lifecycle_status: active
+    owner: browser-platform
+  - name: browser_history
+    lifecycle_status: active
+    owner: browser-platform
+  - name: browser_session
+    lifecycle_status: active
+    owner: browser-platform
+  - name: browser_tab
+    lifecycle_status: active
+    owner: browser-platform
+  - name: browser_download
+    lifecycle_status: active
+    owner: browser-platform
