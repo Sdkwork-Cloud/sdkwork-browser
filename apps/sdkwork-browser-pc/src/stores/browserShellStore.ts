@@ -459,18 +459,18 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     //   - Web preview: handleIframeLoad (when iframe finishes)
     //   - Tauri: browser-content-page-loaded event (when webview finishes)
     //   - Fallback: 15s safety timeout in case events never fire
-    //
-    // IMPORTANT: Do NOT call applyActiveTabUrl here. In Tauri mode, the
-    // webview may redirect (e.g. example.com → www.example.com), and
-    // browser-content-navigated fires updateActiveTabFromContent with the
-    // redirected URL. If we overwrite the tab URL with the original URL
-    // here, it would revert the redirect and cause omnibox/history bugs.
-    // Only update the platform snapshot — the tab URL is owned by the
-    // initial set() above and by updateActiveTabFromContent (for redirects).
     void loadBrowserUrl(normalized)
       .then((snapshot) => {
         if (snapshot) {
-          set({ snapshot });
+          set((state) => ({
+            snapshot,
+            ...applyActiveTabUrl(
+              { ...state, snapshot },
+              normalized,
+              undefined,
+              activeId ?? undefined,
+            ),
+          }));
         }
       })
       .catch(() => {
@@ -577,12 +577,6 @@ export const useBrowserShellStore = create<BrowserShellState>()(
       // to compute restHistory separately.
       return removeTabs(state, tabId, (tab) => tab.id === tabId, nextActiveId);
     });
-    // If closing the active tab triggered navigation to another tab with a
-    // URL, schedule the safety timeout — removeTabs sets loading:true but
-    // doesn't schedule the timeout (it's a pure state function).
-    if (get().loading) {
-      scheduleLoadingSafetyTimeout(get, set);
-    }
   },
   closeOtherTabs: (tabId) => {
     set((state) =>
@@ -593,9 +587,6 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         tabId,
       ),
     );
-    if (get().loading) {
-      scheduleLoadingSafetyTimeout(get, set);
-    }
   },
   closeTabsToRight: (tabId) => {
     set((state) => {
@@ -611,9 +602,6 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         tabId,
       );
     });
-    if (get().loading) {
-      scheduleLoadingSafetyTimeout(get, set);
-    }
   },
   closeTabsToLeft: (tabId) => {
     set((state) => {
@@ -629,9 +617,6 @@ export const useBrowserShellStore = create<BrowserShellState>()(
         tabId,
       );
     });
-    if (get().loading) {
-      scheduleLoadingSafetyTimeout(get, set);
-    }
   },
   duplicateTab: (tabId) => {
     const state = get();
@@ -842,13 +827,14 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     // Trigger platform-level navigation (skip for NTP / empty URL).
     // loading:false is NOT set here for non-empty URLs — it's cleared by
     // handleIframeLoad (web preview) or browser-content-page-loaded (Tauri).
-    // Only update snapshot here — tab URL is owned by the set() above and
-    // updateActiveTabFromContent (for redirects). See loadUrl for details.
     if (url) {
       void loadBrowserUrl(url)
         .then((snapshot) => {
           if (snapshot) {
-            set({ snapshot });
+            set((s) => ({
+              snapshot,
+              ...applyActiveTabUrl(s, url, title),
+            }));
           }
         })
         .catch(() => {});
@@ -878,13 +864,14 @@ export const useBrowserShellStore = create<BrowserShellState>()(
     }));
 
     // Trigger platform-level navigation (skip for NTP / empty URL).
-    // Only update snapshot here — tab URL is owned by the set() above and
-    // updateActiveTabFromContent (for redirects). See loadUrl for details.
     if (url) {
       void loadBrowserUrl(url)
         .then((snapshot) => {
           if (snapshot) {
-            set({ snapshot });
+            set((s) => ({
+              snapshot,
+              ...applyActiveTabUrl(s, url, title),
+            }));
           }
         })
         .catch(() => {});
