@@ -1,0 +1,20 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "browser-content",
+  "description": "Embedded browser-content child webview: unrestricted HTTPS/HTTP browsing, cookies, and DOM capture for the agent.",
+  "webviews": ["browser-content"],
+  "remote": {
+    "urls": [
+      "https://**",
+      "http://**",
+      "blob:**",
+      "data:**",
+      "file:**"
+    ]
+  },
+  "local": true,
+  "permissions": [
+    "core:default",
+    "allow-browser-sync-live-html"
+  ]
+}

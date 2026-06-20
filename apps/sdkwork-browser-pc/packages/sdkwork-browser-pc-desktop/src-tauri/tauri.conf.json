@@ -15,11 +15,13 @@
         "label": "main",
         "title": "SDKWork Browser",
         "width": 1440,
-        "height": 900
+        "height": 900,
+        "decorations": false,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
       }
     ],
     "security": {
-      "csp": "default-src 'self' http://127.0.0.1:*; script-src 'self' http://127.0.0.1:*; style-src 'self' 'unsafe-inline' http://127.0.0.1:*; connect-src ipc: http://ipc.localhost http://127.0.0.1:*"
+      "csp": "default-src 'self' http://127.0.0.1:* https: http: data: blob:; script-src 'self' 'unsafe-inline' http://127.0.0.1:* https: http:; style-src 'self' 'unsafe-inline' http://127.0.0.1:* https: http:; connect-src ipc: http://ipc.localhost http://127.0.0.1:* https: http:; frame-src https: http: data: blob:; img-src 'self' https: http: data: blob:"
     }
   },
   "bundle": {

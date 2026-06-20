@@ -177,6 +177,156 @@
       "description": "Permission identifier",
       "oneOf": [
         {
+          "description": "SDKWork Browser platform host bridge commands invoked from the renderer.\n#### This permission set includes:\n\n- `allow-browser-host-status`\n- `allow-browser-platform-snapshot`\n- `allow-browser-start-engine`\n- `allow-browser-load-url`\n- `allow-browser-switch-engine`\n- `allow-browser-cef-surface`\n- `allow-browser-sync-live-html`\n- `allow-browser-page-context`\n- `allow-browser-agent-execute`\n- `allow-browser-agent-chat`\n- `allow-browser-agent-chat-stream`\n- `allow-browser-mcp-list-tools`\n- `allow-browser-mcp-invoke`\n- `allow-browser-group-tabs`\n- `allow-browser-set-active-tab`\n- `allow-browser-content-mount`\n- `allow-browser-content-navigate`\n- `allow-browser-content-open`\n- `allow-browser-content-hide`\n- `allow-browser-content-capture`\n- `allow-desktop-window-minimize`\n- `allow-desktop-window-toggle-maximize`\n- `allow-desktop-window-close`\n- `allow-desktop-window-is-maximized`",
+          "type": "string",
+          "const": "browser-host-commands",
+          "markdownDescription": "SDKWork Browser platform host bridge commands invoked from the renderer.\n#### This permission set includes:\n\n- `allow-browser-host-status`\n- `allow-browser-platform-snapshot`\n- `allow-browser-start-engine`\n- `allow-browser-load-url`\n- `allow-browser-switch-engine`\n- `allow-browser-cef-surface`\n- `allow-browser-sync-live-html`\n- `allow-browser-page-context`\n- `allow-browser-agent-execute`\n- `allow-browser-agent-chat`\n- `allow-browser-agent-chat-stream`\n- `allow-browser-mcp-list-tools`\n- `allow-browser-mcp-invoke`\n- `allow-browser-group-tabs`\n- `allow-browser-set-active-tab`\n- `allow-browser-content-mount`\n- `allow-browser-content-navigate`\n- `allow-browser-content-open`\n- `allow-browser-content-hide`\n- `allow-browser-content-capture`\n- `allow-desktop-window-minimize`\n- `allow-desktop-window-toggle-maximize`\n- `allow-desktop-window-close`\n- `allow-desktop-window-is-maximized`"
+        },
+        {
+          "description": "Enables the browser_agent_chat command.",
+          "type": "string",
+          "const": "allow-browser-agent-chat",
+          "markdownDescription": "Enables the browser_agent_chat command."
+        },
+        {
+          "description": "Enables the browser_agent_chat_stream command.",
+          "type": "string",
+          "const": "allow-browser-agent-chat-stream",
+          "markdownDescription": "Enables the browser_agent_chat_stream command."
+        },
+        {
+          "description": "Enables the browser_agent_execute command.",
+          "type": "string",
+          "const": "allow-browser-agent-execute",
+          "markdownDescription": "Enables the browser_agent_execute command."
+        },
+        {
+          "description": "Enables the browser_cef_surface command.",
+          "type": "string",
+          "const": "allow-browser-cef-surface",
+          "markdownDescription": "Enables the browser_cef_surface command."
+        },
+        {
+          "description": "Enables the browser_content_capture command.",
+          "type": "string",
+          "const": "allow-browser-content-capture",
+          "markdownDescription": "Enables the browser_content_capture command."
+        },
+        {
+          "description": "Enables the browser_content_hide command.",
+          "type": "string",
+          "const": "allow-browser-content-hide",
+          "markdownDescription": "Enables the browser_content_hide command."
+        },
+        {
+          "description": "Enables the browser_content_mount command.",
+          "type": "string",
+          "const": "allow-browser-content-mount",
+          "markdownDescription": "Enables the browser_content_mount command."
+        },
+        {
+          "description": "Enables the browser_content_navigate command.",
+          "type": "string",
+          "const": "allow-browser-content-navigate",
+          "markdownDescription": "Enables the browser_content_navigate command."
+        },
+        {
+          "description": "Enables the browser_content_open command.",
+          "type": "string",
+          "const": "allow-browser-content-open",
+          "markdownDescription": "Enables the browser_content_open command."
+        },
+        {
+          "description": "Enables the browser_group_tabs command.",
+          "type": "string",
+          "const": "allow-browser-group-tabs",
+          "markdownDescription": "Enables the browser_group_tabs command."
+        },
+        {
+          "description": "Enables the host_status command.",
+          "type": "string",
+          "const": "allow-browser-host-status",
+          "markdownDescription": "Enables the host_status command."
+        },
+        {
+          "description": "Enables the browser_load_url command.",
+          "type": "string",
+          "const": "allow-browser-load-url",
+          "markdownDescription": "Enables the browser_load_url command."
+        },
+        {
+          "description": "Enables the browser_mcp_invoke command.",
+          "type": "string",
+          "const": "allow-browser-mcp-invoke",
+          "markdownDescription": "Enables the browser_mcp_invoke command."
+        },
+        {
+          "description": "Enables the browser_mcp_list_tools command.",
+          "type": "string",
+          "const": "allow-browser-mcp-list-tools",
+          "markdownDescription": "Enables the browser_mcp_list_tools command."
+        },
+        {
+          "description": "Enables the browser_page_context command.",
+          "type": "string",
+          "const": "allow-browser-page-context",
+          "markdownDescription": "Enables the browser_page_context command."
+        },
+        {
+          "description": "Enables the browser_platform_snapshot command.",
+          "type": "string",
+          "const": "allow-browser-platform-snapshot",
+          "markdownDescription": "Enables the browser_platform_snapshot command."
+        },
+        {
+          "description": "Enables the browser_set_active_tab command.",
+          "type": "string",
+          "const": "allow-browser-set-active-tab",
+          "markdownDescription": "Enables the browser_set_active_tab command."
+        },
+        {
+          "description": "Enables the browser_start_engine command.",
+          "type": "string",
+          "const": "allow-browser-start-engine",
+          "markdownDescription": "Enables the browser_start_engine command."
+        },
+        {
+          "description": "Enables the browser_switch_engine command.",
+          "type": "string",
+          "const": "allow-browser-switch-engine",
+          "markdownDescription": "Enables the browser_switch_engine command."
+        },
+        {
+          "description": "Enables the browser_sync_live_html command.",
+          "type": "string",
+          "const": "allow-browser-sync-live-html",
+          "markdownDescription": "Enables the browser_sync_live_html command."
+        },
+        {
+          "description": "Enables the desktop_window_close command.",
+          "type": "string",
+          "const": "allow-desktop-window-close",
+          "markdownDescription": "Enables the desktop_window_close command."
+        },
+        {
+          "description": "Enables the desktop_window_is_maximized command.",
+          "type": "string",
+          "const": "allow-desktop-window-is-maximized",
+          "markdownDescription": "Enables the desktop_window_is_maximized command."
+        },
+        {
+          "description": "Enables the desktop_window_minimize command.",
+          "type": "string",
+          "const": "allow-desktop-window-minimize",
+          "markdownDescription": "Enables the desktop_window_minimize command."
+        },
+        {
+          "description": "Enables the desktop_window_toggle_maximize command.",
+          "type": "string",
+          "const": "allow-desktop-window-toggle-maximize",
+          "markdownDescription": "Enables the desktop_window_toggle_maximize command."
+        },
+        {
           "description": "Default core plugins set.\n#### This default permission set includes:\n\n- `core:path:default`\n- `core:event:default`\n- `core:window:default`\n- `core:webview:default`\n- `core:app:default`\n- `core:image:default`\n- `core:resources:default`\n- `core:menu:default`\n- `core:tray:default`",
           "type": "string",
           "const": "core:default",

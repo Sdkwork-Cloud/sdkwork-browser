@@ -98,7 +98,26 @@ impl BrowserPlatform {
             .as_mut()
             .ok_or(PlatformError::EngineNotStarted)?;
         engine.load_url(url).await.map_err(PlatformError::Engine)?;
-        let tab = self.tabs_mut().open("Page", url);
+
+        let title = tab_title_from_url(url);
+        if let Some(tab_id) = self.active_tab_id {
+            if self.tabs_mut().set_url(tab_id, title.clone(), url) {
+                return Ok(());
+            }
+        }
+
+        let tab = self.tabs_mut().open(title, url);
+        self.active_tab_id = Some(tab.id);
+        Ok(())
+    }
+
+    pub async fn open_url_in_new_tab(&mut self, url: &str) -> Result<(), PlatformError> {
+        let engine = self
+            .active_engine
+            .as_mut()
+            .ok_or(PlatformError::EngineNotStarted)?;
+        engine.load_url(url).await.map_err(PlatformError::Engine)?;
+        let tab = self.tabs_mut().open(tab_title_from_url(url), url);
         self.active_tab_id = Some(tab.id);
         Ok(())
     }
@@ -386,6 +405,15 @@ impl BrowserTabSnapshot {
     }
 }
 
+fn tab_title_from_url(url: &str) -> String {
+    url.strip_prefix("https://")
+        .or_else(|| url.strip_prefix("http://"))
+        .and_then(|rest| rest.split('/').next())
+        .filter(|host| !host.is_empty())
+        .map(str::to_owned)
+        .unwrap_or_else(|| "New Tab".to_string())
+}
+
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum PlatformError {
     #[error("invalid engine config: {0}")]
@@ -402,6 +430,16 @@ pub enum PlatformError {
 mod tests {
     use super::*;
     use sdkwork_browser_engine_api_service::{BROWSER_ENGINE_CEF, BROWSER_ENGINE_WEBVIEW};
+
+    #[tokio::test]
+    async fn load_url_reuses_active_tab() {
+        let mut platform = BrowserPlatform::bootstrap(BrowserConfig::webview()).unwrap();
+        platform.start_engine().await.unwrap();
+        platform.load_url("https://sdkwork.local/").await.unwrap();
+        platform.load_url("https://example.com/").await.unwrap();
+        assert_eq!(platform.tabs().list().len(), 1);
+        assert_eq!(platform.tabs().list()[0].url, "https://example.com/");
+    }
 
     #[tokio::test]
     async fn platform_starts_webview_engine_from_config() {
@@ -448,7 +486,10 @@ mod tests {
         let mut platform = BrowserPlatform::bootstrap(BrowserConfig::webview()).unwrap();
         platform.start_engine().await.unwrap();
         platform.load_url("https://github.com/org/repo").await.unwrap();
-        platform.load_url("http://localhost:8080").await.unwrap();
+        platform
+            .open_url_in_new_tab("http://localhost:8080")
+            .await
+            .unwrap();
         platform.auto_group_tabs();
         let groups: Vec<_> = platform
             .tabs()

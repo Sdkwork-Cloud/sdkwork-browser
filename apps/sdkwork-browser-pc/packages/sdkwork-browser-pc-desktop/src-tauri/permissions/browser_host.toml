@@ -1,0 +1,151 @@
+"$schema" = "schemas/schema.json"
+
+[[set]]
+identifier = "browser-host-commands"
+description = "SDKWork Browser platform host bridge commands invoked from the renderer."
+permissions = [
+  "allow-browser-host-status",
+  "allow-browser-platform-snapshot",
+  "allow-browser-start-engine",
+  "allow-browser-load-url",
+  "allow-browser-switch-engine",
+  "allow-browser-cef-surface",
+  "allow-browser-sync-live-html",
+  "allow-browser-page-context",
+  "allow-browser-agent-execute",
+  "allow-browser-agent-chat",
+  "allow-browser-agent-chat-stream",
+  "allow-browser-mcp-list-tools",
+  "allow-browser-mcp-invoke",
+  "allow-browser-group-tabs",
+  "allow-browser-set-active-tab",
+  "allow-browser-content-mount",
+  "allow-browser-content-navigate",
+  "allow-browser-content-open",
+  "allow-browser-content-hide",
+  "allow-browser-content-capture",
+  "allow-desktop-window-minimize",
+  "allow-desktop-window-toggle-maximize",
+  "allow-desktop-window-close",
+  "allow-desktop-window-is-maximized",
+]
+
+[[permission]]
+identifier = "allow-browser-host-status"
+description = "Enables the host_status command."
+commands.allow = ["host_status"]
+
+[[permission]]
+identifier = "allow-browser-platform-snapshot"
+description = "Enables the browser_platform_snapshot command."
+commands.allow = ["browser_platform_snapshot"]
+
+[[permission]]
+identifier = "allow-browser-start-engine"
+description = "Enables the browser_start_engine command."
+commands.allow = ["browser_start_engine"]
+
+[[permission]]
+identifier = "allow-browser-load-url"
+description = "Enables the browser_load_url command."
+commands.allow = ["browser_load_url"]
+
+[[permission]]
+identifier = "allow-browser-switch-engine"
+description = "Enables the browser_switch_engine command."
+commands.allow = ["browser_switch_engine"]
+
+[[permission]]
+identifier = "allow-browser-cef-surface"
+description = "Enables the browser_cef_surface command."
+commands.allow = ["browser_cef_surface"]
+
+[[permission]]
+identifier = "allow-browser-sync-live-html"
+description = "Enables the browser_sync_live_html command."
+commands.allow = ["browser_sync_live_html"]
+
+[[permission]]
+identifier = "allow-browser-page-context"
+description = "Enables the browser_page_context command."
+commands.allow = ["browser_page_context"]
+
+[[permission]]
+identifier = "allow-browser-agent-execute"
+description = "Enables the browser_agent_execute command."
+commands.allow = ["browser_agent_execute"]
+
+[[permission]]
+identifier = "allow-browser-agent-chat"
+description = "Enables the browser_agent_chat command."
+commands.allow = ["browser_agent_chat"]
+
+[[permission]]
+identifier = "allow-browser-agent-chat-stream"
+description = "Enables the browser_agent_chat_stream command."
+commands.allow = ["browser_agent_chat_stream"]
+
+[[permission]]
+identifier = "allow-browser-mcp-list-tools"
+description = "Enables the browser_mcp_list_tools command."
+commands.allow = ["browser_mcp_list_tools"]
+
+[[permission]]
+identifier = "allow-browser-mcp-invoke"
+description = "Enables the browser_mcp_invoke command."
+commands.allow = ["browser_mcp_invoke"]
+
+[[permission]]
+identifier = "allow-browser-group-tabs"
+description = "Enables the browser_group_tabs command."
+commands.allow = ["browser_group_tabs"]
+
+[[permission]]
+identifier = "allow-browser-set-active-tab"
+description = "Enables the browser_set_active_tab command."
+commands.allow = ["browser_set_active_tab"]
+
+[[permission]]
+identifier = "allow-browser-content-mount"
+description = "Enables the browser_content_mount command."
+commands.allow = ["browser_content_mount"]
+
+[[permission]]
+identifier = "allow-browser-content-navigate"
+description = "Enables the browser_content_navigate command."
+commands.allow = ["browser_content_navigate"]
+
+[[permission]]
+identifier = "allow-browser-content-open"
+description = "Enables the browser_content_open command."
+commands.allow = ["browser_content_open"]
+
+[[permission]]
+identifier = "allow-browser-content-hide"
+description = "Enables the browser_content_hide command."
+commands.allow = ["browser_content_hide"]
+
+[[permission]]
+identifier = "allow-browser-content-capture"
+description = "Enables the browser_content_capture command."
+commands.allow = ["browser_content_capture"]
+
+[[permission]]
+identifier = "allow-desktop-window-minimize"
+description = "Enables the desktop_window_minimize command."
+commands.allow = ["desktop_window_minimize"]
+
+[[permission]]
+identifier = "allow-desktop-window-toggle-maximize"
+description = "Enables the desktop_window_toggle_maximize command."
+commands.allow = ["desktop_window_toggle_maximize"]
+
+[[permission]]
+identifier = "allow-desktop-window-close"
+description = "Enables the desktop_window_close command."
+commands.allow = ["desktop_window_close"]
+
+[[permission]]
+identifier = "allow-desktop-window-is-maximized"
+description = "Enables the desktop_window_is_maximized command."
+commands.allow = ["desktop_window_is_maximized"]

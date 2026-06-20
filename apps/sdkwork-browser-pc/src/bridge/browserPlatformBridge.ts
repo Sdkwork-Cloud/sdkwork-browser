@@ -481,6 +481,23 @@ export async function navigateContentWebview(
   return invoke<BrowserPlatformSnapshot>("browser_content_navigate", { url });
 }
 
+export async function openContentWebview(
+  url: string,
+  bounds: ContentWebviewBounds,
+): Promise<BrowserPlatformSnapshot | null> {
+  if (!isTauriRuntime()) {
+    return null;
+  }
+  return invoke<BrowserPlatformSnapshot>("browser_content_open", { url, bounds });
+}
+
+export async function hideContentWebview(): Promise<void> {
+  if (!isTauriRuntime()) {
+    return;
+  }
+  await invoke("browser_content_hide");
+}
+
 export async function captureContentDom(): Promise<void> {
   if (!isTauriRuntime()) {
     return;

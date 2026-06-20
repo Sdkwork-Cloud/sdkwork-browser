@@ -35,7 +35,13 @@ pub fn run() {
             browser_set_active_tab,
             browser_content_mount,
             browser_content_navigate,
+            browser_content_open,
+            browser_content_hide,
             browser_content_capture,
+            desktop_window_minimize,
+            desktop_window_toggle_maximize,
+            desktop_window_close,
+            desktop_window_is_maximized,
         ])
         .run(tauri::generate_context!())
         .expect("failed to run SDKWork Browser desktop host");
@@ -175,6 +181,55 @@ fn browser_content_navigate(
 }
 
 #[tauri::command]
+fn browser_content_open(
+    window: WebviewWindow,
+    host: State<'_, BrowserPlatformHost>,
+    url: String,
+    bounds: ContentWebviewBounds,
+) -> Result<BrowserPlatformSnapshot, ContentWebviewError> {
+    content_webview::open_content_webview(&window, &host, url, bounds)?;
+    host.snapshot().map_err(ContentWebviewError::Host)
+}
+
+#[tauri::command]
+fn browser_content_hide(window: WebviewWindow) -> Result<(), ContentWebviewError> {
+    content_webview::hide_content_webview(&window)
+}
+
+#[tauri::command]
 fn browser_content_capture(window: WebviewWindow) -> Result<(), ContentWebviewError> {
     content_webview::capture_content_dom(&window)
+}
+
+#[tauri::command]
+fn desktop_window_minimize(window: WebviewWindow) -> Result<(), String> {
+    window
+        .minimize()
+        .map_err(|error| error.to_string())
+}
+
+#[tauri::command]
+fn desktop_window_toggle_maximize(window: WebviewWindow) -> Result<(), String> {
+    if window
+        .is_maximized()
+        .map_err(|error| error.to_string())?
+    {
+        window
+            .unmaximize()
+            .map_err(|error| error.to_string())
+    } else {
+        window.maximize().map_err(|error| error.to_string())
+    }
+}
+
+#[tauri::command]
+fn desktop_window_close(window: WebviewWindow) -> Result<(), String> {
+    window.close().map_err(|error| error.to_string())
+}
+
+#[tauri::command]
+fn desktop_window_is_maximized(window: WebviewWindow) -> Result<bool, String> {
+    window
+        .is_maximized()
+        .map_err(|error| error.to_string())
 }

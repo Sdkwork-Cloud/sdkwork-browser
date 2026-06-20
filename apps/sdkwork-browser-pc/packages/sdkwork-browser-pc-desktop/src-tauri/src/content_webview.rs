@@ -1,12 +1,15 @@
-//! Embedded child webview for real page rendering and DOM capture.
+//! Embedded child webview — real network browsing via the system WebView engine.
 
 use sdkwork_browser_tauri_host::{BrowserPlatformHost, PlatformHostError};
 use serde::Deserialize;
-use tauri::webview::{PageLoadEvent, WebviewBuilder};
-use tauri::{LogicalPosition, LogicalSize, Manager, WebviewUrl, WebviewWindow};
+use tauri::webview::{NewWindowResponse, PageLoadEvent, WebviewBuilder};
+use tauri::{AppHandle, Emitter, LogicalPosition, LogicalSize, Manager, WebviewUrl, WebviewWindow};
 use url::Url;
 
 pub const CONTENT_WEBVIEW_LABEL: &str = "browser-content";
+
+/// Chrome-compatible UA so sites serve standard documents (many block the Tauri default).
+const CONTENT_USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0";
 
 const DOM_CAPTURE_SCRIPT: &str = r#"
 (async () => {
@@ -68,6 +71,58 @@ fn schedule_dom_capture(webview: tauri::Webview) {
     let _ = webview.eval(DOM_CAPTURE_SCRIPT);
 }
 
+fn content_profile_dir(app: &AppHandle) -> Option<std::path::PathBuf> {
+    app.path()
+        .app_data_dir()
+        .ok()
+        .map(|dir| dir.join("browser-content-profile"))
+}
+
+fn build_content_webview(app: &AppHandle, initial_url: WebviewUrl) -> WebviewBuilder<tauri::Wry> {
+    let app_nav = app.clone();
+    let app_title = app.clone();
+    let app_popup = app.clone();
+
+    let mut builder = WebviewBuilder::new(CONTENT_WEBVIEW_LABEL, initial_url)
+        .user_agent(CONTENT_USER_AGENT)
+        .zoom_hotkeys_enabled(true)
+        .enable_clipboard_access()
+        .on_navigation(move |url| {
+            let scheme = url.scheme();
+            if matches!(scheme, "http" | "https") {
+                let _ = app_nav.emit("browser-content-navigated", url.to_string());
+            }
+            true
+        })
+        .on_new_window(move |url, _features| {
+            let _ = app_popup.emit("browser-content-new-window", url.to_string());
+            NewWindowResponse::Deny
+        })
+        .on_document_title_changed(move |_webview, title| {
+            let _ = app_title.emit("browser-content-title", title);
+        })
+        .on_page_load(|webview, payload| {
+            if payload.event() == PageLoadEvent::Finished {
+                schedule_dom_capture(webview.clone());
+            }
+        });
+
+    if let Some(profile_dir) = content_profile_dir(app) {
+        builder = builder.data_directory(profile_dir);
+    }
+
+    #[cfg(debug_assertions)]
+    {
+        builder = builder.devtools(true);
+    }
+
+    builder
+}
+
+fn sync_platform_tab(host: &BrowserPlatformHost, url: String) {
+    let _ = host.load_url(url);
+}
+
 pub fn mount_content_webview(
     window: &WebviewWindow,
     bounds: ContentWebviewBounds,
@@ -87,18 +142,12 @@ pub fn mount_content_webview(
         webview
             .set_size(size)
             .map_err(|error| ContentWebviewError::Webview(error.to_string()))?;
+        let _ = webview.show();
         return Ok(());
     }
 
-    let builder = WebviewBuilder::new(
-        CONTENT_WEBVIEW_LABEL,
-        WebviewUrl::External("about:blank".parse().unwrap()),
-    )
-    .on_page_load(|webview, payload| {
-        if payload.event() == PageLoadEvent::Finished {
-            schedule_dom_capture(webview.clone());
-        }
-    });
+    let app = window.app_handle();
+    let builder = build_content_webview(&app, WebviewUrl::External("about:blank".parse().unwrap()));
 
     host_window
         .add_child(builder, position, size)
@@ -116,30 +165,38 @@ pub fn navigate_content_webview(
         .map_err(|_| ContentWebviewError::InvalidUrl(url.clone()))?;
     let host_window = shell_window(window);
 
-    if let Some(webview) = host_window.get_webview(CONTENT_WEBVIEW_LABEL) {
-        webview
-            .navigate(parsed)
-            .map_err(|error| ContentWebviewError::Webview(error.to_string()))?;
-    } else {
-        let builder =
-            WebviewBuilder::new(CONTENT_WEBVIEW_LABEL, WebviewUrl::External(parsed)).on_page_load(
-                |webview, payload| {
-                    if payload.event() == PageLoadEvent::Finished {
-                        schedule_dom_capture(webview.clone());
-                    }
-                },
-            );
-        host_window
-            .add_child(
-                builder,
-                LogicalPosition::new(0.0, 200.0),
-                LogicalSize::new(800.0, 288.0),
-            )
-            .map_err(|error| ContentWebviewError::Webview(error.to_string()))?;
-    }
+    let Some(webview) = host_window.get_webview(CONTENT_WEBVIEW_LABEL) else {
+        return Err(ContentWebviewError::Webview(
+            "content webview is not mounted".into(),
+        ));
+    };
 
-    host.load_url(url).map(|_| ())?;
+    webview
+        .navigate(parsed)
+        .map_err(|error| ContentWebviewError::Webview(error.to_string()))?;
+
+    sync_platform_tab(host, url);
     Ok(())
+}
+
+pub fn open_content_webview(
+    window: &WebviewWindow,
+    host: &BrowserPlatformHost,
+    url: String,
+    bounds: ContentWebviewBounds,
+) -> Result<(), ContentWebviewError> {
+    mount_content_webview(window, bounds)?;
+    navigate_content_webview(window, host, url)
+}
+
+pub fn hide_content_webview(window: &WebviewWindow) -> Result<(), ContentWebviewError> {
+    let host_window = shell_window(window);
+    let Some(webview) = host_window.get_webview(CONTENT_WEBVIEW_LABEL) else {
+        return Ok(());
+    };
+    webview
+        .hide()
+        .map_err(|error| ContentWebviewError::Webview(error.to_string()))
 }
 
 pub fn capture_content_dom(window: &WebviewWindow) -> Result<(), ContentWebviewError> {

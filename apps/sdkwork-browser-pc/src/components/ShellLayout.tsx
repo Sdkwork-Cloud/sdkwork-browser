@@ -1,10 +1,23 @@
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
-import { useBrowserShellStore } from "../stores/browserShellStore.ts";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
+import { isolateFromDragRegion } from "../utils/tauriDragRegion.ts";
+import { useBrowserShellStore, selectActiveTabUrl, selectShellTabs, selectShellActiveTabId } from "../stores/browserShellStore.ts";
 import { useThemeStore } from "../stores/themeStore.ts";
 import { useAgentStore } from "../stores/agentStore.ts";
+import { normalizeNavigationUrl } from "../utils/navigationUrl.ts";
 import { AiChatSidebar } from "./AiChatSidebar.tsx";
 import { CommandPalette } from "./CommandPalette.tsx";
+import {
+  ContextMenuItem,
+  ContextMenuSeparator,
+} from "./ContextMenu.tsx";
+import { TabContextMenu, type TabContextMenuState } from "./TabContextMenu.tsx";
+import { WindowControls } from "./WindowControls.tsx";
+import { useBrowserContentEvents } from "../hooks/useBrowserContentEvents.ts";
+
+const VIEWPORT_PADDING = 8;
 
 interface BookmarkLink {
   name: string;
@@ -14,14 +27,14 @@ interface BookmarkLink {
 }
 
 const BOOKMARKS: BookmarkLink[] = [
+  { name: "Wikipedia", url: "https://www.wikipedia.org", letter: "W", color: "#636363" },
+  { name: "MDN Docs", url: "https://developer.mozilla.org", letter: "M", color: "#000000" },
+  { name: "OpenStreetMap", url: "https://www.openstreetmap.org", letter: "O", color: "#7ebc6f" },
+  { name: "Example", url: "https://example.com", letter: "E", color: "#4285f4" },
+  { name: "GitHub", url: "https://github.com", letter: "G", color: "#24292e" },
   { name: "Google", url: "https://www.google.com", letter: "G", color: "#4285f4" },
   { name: "YouTube", url: "https://www.youtube.com", letter: "Y", color: "#ff0000" },
-  { name: "GitHub", url: "https://github.com", letter: "G", color: "#24292e" },
-  { name: "Gmail", url: "https://mail.google.com", letter: "G", color: "#ea4335" },
-  { name: "Maps", url: "https://maps.google.com", letter: "M", color: "#34a853" },
-  { name: "Wikipedia", url: "https://www.wikipedia.org", letter: "W", color: "#636363" },
   { name: "Bing", url: "https://www.bing.com", letter: "B", color: "#0078d4" },
-  { name: "Baidu", url: "https://www.baidu.com", letter: "B", color: "#2932e1" },
 ];
 
 function faviconColor(url: string): string {
@@ -45,49 +58,70 @@ function faviconLetter(title: string): string {
 }
 
 export function ShellLayout({ children }: { children: ReactNode }) {
-  const snapshot = useBrowserShellStore((s) => s.snapshot);
-  const localTabs = useBrowserShellStore((s) => s.localTabs);
-  const localActiveTabId = useBrowserShellStore((s) => s.localActiveTabId);
+  useBrowserContentEvents();
+
+  const tabs = useBrowserShellStore(selectShellTabs);
+  const activeTabId = useBrowserShellStore(selectShellActiveTabId);
   const loadUrl = useBrowserShellStore((s) => s.loadUrl);
+  const activeTabUrl = useBrowserShellStore(selectActiveTabUrl);
   const createTab = useBrowserShellStore((s) => s.createTab);
   const closeTab = useBrowserShellStore((s) => s.closeTab);
   const setActiveTab = useBrowserShellStore((s) => s.setActiveTab);
   const theme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const setAgentOpen = useAgentStore((s) => s.setOpen);
+  const navigate = useNavigate();
 
   const [omniboxValue, setOmniboxValue] = useState("");
   const [omniboxFocused, setOmniboxFocused] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [tabContextMenu, setTabContextMenu] = useState<TabContextMenuState | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  // Use backend tabs if available, otherwise local tabs
-  const backendTabs = snapshot?.tabs ?? [];
-  const useLocalTabs = backendTabs.length === 0 || !snapshot;
-  const tabs = useLocalTabs ? localTabs : backendTabs;
-  const activeTabId = useLocalTabs
-    ? (localActiveTabId ?? localTabs[0]?.id ?? null)
-    : (snapshot?.active_tab_id ?? null);
   const activeTab = tabs.find((t) => t.id === activeTabId) ?? null;
 
-  // Sync omnibox with active tab URL (only when not focused)
+  // Sync omnibox with active tab URL (only when not focused).
   useEffect(() => {
     if (!omniboxFocused) {
-      setOmniboxValue(activeTab?.url ?? "");
+      setOmniboxValue(activeTabUrl);
     }
-  }, [activeTab?.url, omniboxFocused]);
+  }, [activeTabUrl, omniboxFocused]);
+
+  useLayoutEffect(() => {
+    if (!menuOpen) return;
+    const button = menuButtonRef.current;
+    if (!button) return;
+    const buttonRect = button.getBoundingClientRect();
+    const menuWidth = menuRef.current?.getBoundingClientRect().width ?? 224;
+    const left = Math.min(
+      Math.max(VIEWPORT_PADDING, buttonRect.right - menuWidth),
+      window.innerWidth - menuWidth - VIEWPORT_PADDING,
+    );
+    setMenuPosition({ top: buttonRect.bottom + 4, left });
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
 
   function handleOmniboxSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const trimmed = omniboxValue.trim();
-    if (!trimmed) return;
-    let target = trimmed;
-    if (!/^https?:\/\//i.test(target) && /^[\w-]+(\.[\w-]+)+/.test(target)) {
-      target = `https://${target}`;
-    } else if (!/^https?:\/\//i.test(target)) {
-      target = `https://www.google.com/search?q=${encodeURIComponent(target)}`;
-    }
-    void loadUrl(target);
+    const target = normalizeNavigationUrl(omniboxValue);
+    if (!target) return;
+    setOmniboxValue(target);
     setOmniboxFocused(false);
+    void loadUrl(target);
     (document.activeElement as HTMLElement)?.blur();
   }
 
@@ -105,21 +139,50 @@ export function ShellLayout({ children }: { children: ReactNode }) {
     void setActiveTab(tabId);
   }
 
+  function handleTabContextMenu(event: React.MouseEvent, tabId: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    setTabContextMenu({ tabId, x: event.clientX, y: event.clientY });
+  }
+
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-canvas">
-      {/* === Tab bar === */}
-      <div className="tabbar">
-        <div className="tabbar-inner">
+      <WindowControls />
+      {/* === Tab bar (Chrome/Edge: tabs + drag region) === */}
+      <div
+        className={`tabbar${isBrowserDesktopHost() ? " tabbar-desktop" : ""}`}
+        onContextMenu={(event) => event.preventDefault()}
+      >
+        <div
+          className="tabbar-inner"
+          role="tablist"
+          aria-label="Browser tabs"
+          data-tauri-drag-region="false"
+          onPointerDown={isolateFromDragRegion}
+        >
           {tabs.map((tab) => {
             const isActive = tab.id === activeTabId;
             const color = faviconColor(tab.url);
             const letter = faviconLetter(tab.title || tab.url);
+            const isPinned = tab.pin_state === "pinned";
             return (
               <div
                 key={tab.id}
-                className={`browser-tab ${isActive ? "browser-tab-active" : ""}`}
+                role="tab"
+                aria-selected={isActive}
+                tabIndex={isActive ? 0 : -1}
+                className={`browser-tab ${isActive ? "browser-tab-active" : ""}${isPinned ? " browser-tab-pinned" : ""}`}
+                data-tauri-drag-region="false"
+                onPointerDown={isolateFromDragRegion}
                 onClick={() => handleTabClick(tab.id)}
+                onContextMenu={(event) => handleTabContextMenu(event, tab.id)}
               >
+                {isActive ? (
+                  <>
+                    <span className="browser-tab-curve browser-tab-curve-left" aria-hidden="true" />
+                    <span className="browser-tab-curve browser-tab-curve-right" aria-hidden="true" />
+                  </>
+                ) : null}
                 <span
                   className="tab-favicon"
                   style={tab.url ? { background: color, color: "#fff" } : undefined}
@@ -136,6 +199,8 @@ export function ShellLayout({ children }: { children: ReactNode }) {
                   type="button"
                   className="tab-close"
                   title="Close tab"
+                  data-tauri-drag-region="false"
+                  onPointerDown={isolateFromDragRegion}
                   onClick={(e) => handleCloseTab(e, tab.id)}
                 >
                   <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -149,6 +214,8 @@ export function ShellLayout({ children }: { children: ReactNode }) {
           <button
             type="button"
             className="tab-new-btn"
+            data-tauri-drag-region="false"
+            onPointerDown={isolateFromDragRegion}
             onClick={handleNewTab}
             title="New tab (Ctrl+T)"
           >
@@ -157,7 +224,16 @@ export function ShellLayout({ children }: { children: ReactNode }) {
             </svg>
           </button>
         </div>
+        {isBrowserDesktopHost() ? (
+          <div className="tabbar-drag" data-tauri-drag-region aria-hidden="true" />
+        ) : null}
       </div>
+
+      <TabContextMenu
+        state={tabContextMenu}
+        tabs={tabs}
+        onClose={() => setTabContextMenu(null)}
+      />
 
       {/* === Navigation toolbar === */}
       <div className="nav-toolbar">
@@ -281,41 +357,21 @@ export function ShellLayout({ children }: { children: ReactNode }) {
         </button>
 
         {/* Menu (three dots) */}
-        <div className="relative">
-          <button
-            type="button"
-            className="toolbar-btn"
-            onClick={() => setMenuOpen((v) => !v)}
-            title="Menu"
-          >
-            <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor">
-              <circle cx="12" cy="5" r="1.6" />
-              <circle cx="12" cy="12" r="1.6" />
-              <circle cx="12" cy="19" r="1.6" />
-            </svg>
-          </button>
-          {menuOpen ? (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-              <div className="glass-strong absolute right-0 top-9 z-50 w-56 rounded-xl border border-hairline shadow-xl animate-scale-in py-1.5">
-                <MenuButtonItem label="New tab" shortcut="Ctrl+T" onClick={() => { handleNewTab(); setMenuOpen(false); }} />
-                <MenuButtonItem label="New window" shortcut="Ctrl+N" onClick={() => setMenuOpen(false)} />
-                <MenuButtonItem label="History" shortcut="Ctrl+H" onClick={() => setMenuOpen(false)} />
-                <MenuButtonItem label="Downloads" shortcut="Ctrl+J" onClick={() => setMenuOpen(false)} />
-                <MenuButtonItem label="Bookmarks" shortcut="Ctrl+Shift+O" onClick={() => setMenuOpen(false)} />
-                <div className="my-1.5 h-px bg-hairline" />
-                <MenuButtonItem label="Zoom" shortcut="100%" onClick={() => setMenuOpen(false)} />
-                <MenuButtonItem label="Print" shortcut="Ctrl+P" onClick={() => setMenuOpen(false)} />
-                <MenuButtonItem label="Find" shortcut="Ctrl+F" onClick={() => setMenuOpen(false)} />
-                <div className="my-1.5 h-px bg-hairline" />
-                <MenuButtonItem label="Settings" onClick={() => setMenuOpen(false)} />
-                <MenuButtonItem label="Help" onClick={() => setMenuOpen(false)} />
-                <div className="my-1.5 h-px bg-hairline" />
-                <MenuButtonItem label="Exit" onClick={() => setMenuOpen(false)} />
-              </div>
-            </>
-          ) : null}
-        </div>
+        <button
+          ref={menuButtonRef}
+          type="button"
+          className="toolbar-btn"
+          onClick={() => setMenuOpen((v) => !v)}
+          title="Menu"
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+        >
+          <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor">
+            <circle cx="12" cy="5" r="1.6" />
+            <circle cx="12" cy="12" r="1.6" />
+            <circle cx="12" cy="19" r="1.6" />
+          </svg>
+        </button>
 
         {/* Avatar */}
         <button type="button" className="toolbar-btn !rounded-full ml-0.5" title="Account">
@@ -348,29 +404,36 @@ export function ShellLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
+      {menuOpen ? (
+        <>
+          <div className="context-menu-backdrop" onClick={() => setMenuOpen(false)} />
+          <div
+            ref={menuRef}
+            className="context-menu glass-strong w-56"
+            style={{ top: menuPosition.top, left: menuPosition.left }}
+            role="menu"
+            aria-label="Browser menu"
+          >
+            <ContextMenuItem label="New tab" shortcut="Ctrl+T" onClick={() => { handleNewTab(); setMenuOpen(false); }} />
+            <ContextMenuItem label="New window" shortcut="Ctrl+N" onClick={() => setMenuOpen(false)} />
+            <ContextMenuItem label="History" shortcut="Ctrl+H" onClick={() => setMenuOpen(false)} />
+            <ContextMenuItem label="Downloads" shortcut="Ctrl+J" onClick={() => setMenuOpen(false)} />
+            <ContextMenuItem label="Bookmarks" shortcut="Ctrl+Shift+O" onClick={() => setMenuOpen(false)} />
+            <ContextMenuSeparator />
+            <ContextMenuItem label="Zoom" shortcut="100%" onClick={() => setMenuOpen(false)} />
+            <ContextMenuItem label="Print" shortcut="Ctrl+P" onClick={() => setMenuOpen(false)} />
+            <ContextMenuItem label="Find" shortcut="Ctrl+F" onClick={() => setMenuOpen(false)} />
+            <ContextMenuSeparator />
+            <ContextMenuItem label="Settings" onClick={() => { navigate({ to: "/settings" }); setMenuOpen(false); }} />
+            <ContextMenuItem label="Help" onClick={() => setMenuOpen(false)} />
+            <ContextMenuSeparator />
+            <ContextMenuItem label="Exit" onClick={() => setMenuOpen(false)} />
+          </div>
+        </>
+      ) : null}
+
       <AiChatSidebar />
       <CommandPalette />
     </div>
-  );
-}
-
-function MenuButtonItem({
-  label,
-  shortcut,
-  onClick,
-}: {
-  label: string;
-  shortcut?: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex w-full items-center justify-between gap-4 px-3.5 py-1.5 text-left text-[0.8125rem] text-ink-secondary transition-colors hover:bg-surface-2 hover:text-ink-primary"
-    >
-      <span>{label}</span>
-      {shortcut ? <span className="text-[0.6875rem] text-ink-faint">{shortcut}</span> : null}
-    </button>
   );
 }

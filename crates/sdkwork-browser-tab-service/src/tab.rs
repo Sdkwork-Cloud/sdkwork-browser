@@ -76,6 +76,20 @@ impl BrowserTabService {
         false
     }
 
+    pub fn set_url(
+        &mut self,
+        tab_id: Uuid,
+        title: impl Into<String>,
+        url: impl Into<String>,
+    ) -> bool {
+        if let Some(tab) = self.tabs.iter_mut().find(|t| t.id == tab_id) {
+            tab.title = title.into();
+            tab.url = url.into();
+            return true;
+        }
+        false
+    }
+
     pub fn list(&self) -> &[BrowserTab] {
         &self.tabs
     }
@@ -88,6 +102,15 @@ impl BrowserTabService {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn set_url_updates_existing_tab() {
+        let mut service = BrowserTabService::new();
+        let tab = service.open("A", "https://a.local").clone();
+        assert!(service.set_url(tab.id, "B", "https://b.local"));
+        assert_eq!(service.list()[0].url, "https://b.local");
+        assert_eq!(service.list()[0].title, "B");
+    }
 
     #[test]
     fn supports_pin_group_restore() {
