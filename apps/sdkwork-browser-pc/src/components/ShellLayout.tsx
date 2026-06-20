@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
 import { isolateFromDragRegion } from "../utils/tauriDragRegion.ts";
@@ -67,6 +67,12 @@ export function ShellLayout({ children }: { children: ReactNode }) {
   const createTab = useBrowserShellStore((s) => s.createTab);
   const closeTab = useBrowserShellStore((s) => s.closeTab);
   const setActiveTab = useBrowserShellStore((s) => s.setActiveTab);
+  const goBack = useBrowserShellStore((s) => s.goBack);
+  const goForward = useBrowserShellStore((s) => s.goForward);
+  const canGoBack = useBrowserShellStore((s) => s.canGoBack());
+  const canGoForward = useBrowserShellStore((s) => s.canGoForward());
+  const loading = useBrowserShellStore((s) => s.loading);
+  const reopenClosedTab = useBrowserShellStore((s) => s.reopenClosedTab);
   const theme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const setAgentOpen = useAgentStore((s) => s.setOpen);
@@ -79,8 +85,12 @@ export function ShellLayout({ children }: { children: ReactNode }) {
   const [tabContextMenu, setTabContextMenu] = useState<TabContextMenuState | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const omniboxInputRef = useRef<HTMLInputElement>(null);
 
-  const activeTab = tabs.find((t) => t.id === activeTabId) ?? null;
+  const activeTab = useMemo(
+    () => tabs.find((t) => t.id === activeTabId) ?? null,
+    [tabs, activeTabId],
+  );
 
   // Sync omnibox with active tab URL (only when not focused).
   useEffect(() => {
@@ -88,6 +98,77 @@ export function ShellLayout({ children }: { children: ReactNode }) {
       setOmniboxValue(activeTabUrl);
     }
   }, [activeTabUrl, omniboxFocused]);
+
+  // Global keyboard shortcuts — Chrome/Edge standard bindings
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      const ctrl = event.ctrlKey || event.metaKey;
+      const target = event.target as HTMLElement;
+      const isInputFocused = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA";
+
+      // Ctrl+T — new tab
+      if (ctrl && event.key === "t" && !event.shiftKey) {
+        event.preventDefault();
+        const id = createTab();
+        setOmniboxValue("");
+        requestAnimationFrame(() => omniboxInputRef.current?.focus());
+        return;
+      }
+      // Ctrl+W — close tab
+      if (ctrl && event.key === "w" && !event.shiftKey) {
+        event.preventDefault();
+        if (activeTabId) closeTab(activeTabId);
+        return;
+      }
+      // Ctrl+L — focus omnibox
+      if (ctrl && event.key === "l") {
+        event.preventDefault();
+        omniboxInputRef.current?.focus();
+        omniboxInputRef.current?.select();
+        return;
+      }
+      // Ctrl+R / F5 — reload
+      if ((ctrl && event.key === "r") || event.key === "F5") {
+        event.preventDefault();
+        if (activeTab?.url) void loadUrl(activeTab.url);
+        return;
+      }
+      // Ctrl+Shift+T — reopen closed tab
+      if (ctrl && event.shiftKey && event.key === "T") {
+        event.preventDefault();
+        reopenClosedTab();
+        return;
+      }
+      // Alt+Left — back
+      if (event.altKey && event.key === "ArrowLeft") {
+        event.preventDefault();
+        goBack();
+        return;
+      }
+      // Alt+Right — forward
+      if (event.altKey && event.key === "ArrowRight") {
+        event.preventDefault();
+        goForward();
+        return;
+      }
+      // Ctrl+1..8 — switch to tab N
+      if (ctrl && event.key >= "1" && event.key <= "8" && !isInputFocused) {
+        event.preventDefault();
+        const idx = parseInt(event.key, 10) - 1;
+        if (tabs[idx]) void setActiveTab(tabs[idx].id);
+        return;
+      }
+      // Ctrl+9 — switch to last tab
+      if (ctrl && event.key === "9" && !isInputFocused) {
+        event.preventDefault();
+        if (tabs.length > 0) void setActiveTab(tabs[tabs.length - 1].id);
+        return;
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeTabId, activeTab, createTab, closeTab, loadUrl, reopenClosedTab, goBack, goForward, tabs, setActiveTab]);
 
   useLayoutEffect(() => {
     if (!menuOpen) return;
@@ -128,6 +209,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
   function handleNewTab() {
     createTab();
     setOmniboxValue("");
+    requestAnimationFrame(() => omniboxInputRef.current?.focus());
   }
 
   function handleCloseTab(e: React.MouseEvent, tabId: string) {
@@ -238,13 +320,25 @@ export function ShellLayout({ children }: { children: ReactNode }) {
       {/* === Navigation toolbar === */}
       <div className="nav-toolbar">
         {/* Back */}
-        <button type="button" className="toolbar-btn" disabled title="Back (Alt+←)">
+        <button
+          type="button"
+          className="toolbar-btn"
+          disabled={!canGoBack}
+          onClick={() => goBack()}
+          title="Back (Alt+←)"
+        >
           <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m15 18-6-6 6-6" />
           </svg>
         </button>
         {/* Forward */}
-        <button type="button" className="toolbar-btn" disabled title="Forward (Alt+→)">
+        <button
+          type="button"
+          className="toolbar-btn"
+          disabled={!canGoForward}
+          onClick={() => goForward()}
+          title="Forward (Alt+→)"
+        >
           <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m9 18 6-6-6-6" />
           </svg>
@@ -253,20 +347,22 @@ export function ShellLayout({ children }: { children: ReactNode }) {
         <button
           type="button"
           className="toolbar-btn"
-          onClick={() => activeTab?.url ? void loadUrl(activeTab.url) : window.location.reload()}
+          onClick={() => { if (activeTab?.url) void loadUrl(activeTab.url); }}
+          disabled={!activeTab?.url}
           title="Reload (Ctrl+R)"
         >
-          <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 24 24" className={`h-[18px] w-[18px] ${loading ? "animate-spin" : ""}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
             <path d="M3 3v5h5" />
           </svg>
         </button>
-        {/* Home */}
+        {/* Home — navigate current tab to new tab page */}
         <button
           type="button"
           className="toolbar-btn"
           onClick={() => {
-            handleNewTab();
+            // Navigate current tab to blank (shows NTP) instead of creating a new tab
+            useBrowserShellStore.getState().updateActiveTabFromContent({ url: "", title: "New Tab" });
             setOmniboxValue("");
           }}
           title="Home"
@@ -278,11 +374,13 @@ export function ShellLayout({ children }: { children: ReactNode }) {
 
         {/* Omnibox — fills all remaining space like Chrome/Edge */}
         <form
-          className={`omnibox ${omniboxFocused ? "omnibox-focused" : ""}`}
+          className={`omnibox ${omniboxFocused ? "omnibox-focused" : ""} ${loading ? "omnibox-loading" : ""}`}
           onSubmit={handleOmniboxSubmit}
         >
           <span className="omnibox-security">
-            {activeTab?.url && activeTab.url.startsWith("https") ? (
+            {activeTab?.url && (() => {
+              try { return new URL(activeTab.url).protocol === "https:"; } catch { return false; }
+            })() ? (
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-ok" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -295,6 +393,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
             )}
           </span>
           <input
+            ref={omniboxInputRef}
             className="omnibox-input"
             value={omniboxValue}
             onChange={(e) => setOmniboxValue(e.target.value)}
@@ -305,6 +404,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
             onBlur={() => setOmniboxFocused(false)}
             placeholder="Search Google or type a URL"
             spellCheck={false}
+            aria-label="Address and search bar"
           />
           {omniboxValue ? (
             <button

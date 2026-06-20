@@ -288,12 +288,12 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
         {!hostMode && previewUrl ? (
           <iframe
             ref={iframeRef}
-            title="Browser content"
+            title={displayHost || "Browser content"}
             className="absolute inset-0 h-full w-full border-0 bg-white"
             src={previewUrl}
             referrerPolicy="no-referrer-when-downgrade"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation"
-            allow="fullscreen; clipboard-read; clipboard-write; geolocation; microphone; camera"
+            sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation"
+            allow="fullscreen"
             onLoad={handleIframeLoad}
           />
         ) : null}
@@ -345,7 +345,16 @@ export function BrowserContentPanel({ url }: BrowserContentPanelProps) {
               <button
                 type="button"
                 className="btn btn-ghost"
-                onClick={() => setDismissedBlocked(true)}
+                onClick={() => {
+                  // Force iframe reload by toggling src
+                  const frame = iframeRef.current;
+                  if (frame) {
+                    const currentSrc = frame.src;
+                    frame.src = "about:blank";
+                    requestAnimationFrame(() => { frame.src = currentSrc; });
+                  }
+                  setDismissedBlocked(true);
+                }}
               >
                 Show page anyway
               </button>

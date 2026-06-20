@@ -299,6 +299,13 @@ function readWebPageContext(): BrowserPageContext | null {
   if (typeof document === "undefined" || typeof window === "undefined") {
     return null;
   }
+  // In web preview mode, the browsed page is in a cross-origin iframe.
+  // Reading document.body/outerHTML here returns the host app's DOM, not the
+  // page content — which would give the AI completely wrong context.
+  // Return null; same-origin iframe content is synced via syncLiveHtml instead.
+  if (!isTauriRuntime()) {
+    return null;
+  }
   const visibleText = document.body?.innerText ?? "";
   const words = visibleText.trim().split(/\s+/).filter(Boolean);
   return {

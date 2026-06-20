@@ -16,6 +16,14 @@ const rootRoute = createRootRoute({
       <Outlet />
     </ShellLayout>
   ),
+  notFoundComponent: () => (
+    <div className="flex h-full items-center justify-center">
+      <div className="text-center">
+        <p className="text-[2rem] font-light text-ink-secondary">404</p>
+        <p className="text-sm text-ink-faint">Page not found</p>
+      </div>
+    </div>
+  ),
 });
 
 const indexRoute = createRoute({

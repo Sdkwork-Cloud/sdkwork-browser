@@ -1,6 +1,7 @@
 import type { BrowserEngineId } from "@sdkwork/browser-contracts";
 import { BROWSER_ENGINE_IDS } from "@sdkwork/browser-contracts";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import {
   autoGroupBrowserTabs,
   fetchBrowserPlatformSnapshot,
@@ -17,6 +18,12 @@ import { normalizeNavigationUrl, tabTitleFromUrl } from "../utils/navigationUrl.
 
 const MAX_CLOSED_TABS = 12;
 
+/** Per-tab navigation history for back/forward support. */
+interface TabHistory {
+  entries: string[];
+  index: number;
+}
+
 interface BrowserShellState {
   engineId: BrowserEngineId;
   snapshot: BrowserPlatformSnapshot | null;
@@ -27,6 +34,8 @@ interface BrowserShellState {
   cefSurface: CefSurfaceSnapshot | null;
   loading: boolean;
   error: string | null;
+  /** Navigation history per tab ID. */
+  tabHistory: Record<string, TabHistory>;
   setEngineId: (engineId: BrowserEngineId) => void;
   refreshSnapshot: () => Promise<void>;
   refreshCefSurface: () => Promise<void>;
@@ -46,6 +55,10 @@ interface BrowserShellState {
   copyTabUrl: (tabId: string) => Promise<void>;
   updateTab: (tabId: string, patch: Partial<BrowserTabSnapshot>) => void;
   updateActiveTabFromContent: (patch: { url?: string; title?: string }) => void;
+  goBack: () => void;
+  goForward: () => void;
+  canGoBack: () => boolean;
+  canGoForward: () => boolean;
 }
 
 let tabCounter = 0;
@@ -92,6 +105,32 @@ function usesLocalTabChrome(): boolean {
   return isBrowserDesktopHost();
 }
 
+// === History stack helpers ===
+
+function getHistory(state: BrowserShellState, tabId: string | null): TabHistory {
+  if (!tabId) return { entries: [], index: -1 };
+  return state.tabHistory[tabId] ?? { entries: [], index: -1 };
+}
+
+function pushHistory(history: TabHistory, url: string): TabHistory {
+  // Truncate forward entries when navigating to a new URL
+  const entries = history.entries.slice(0, history.index + 1);
+  // Don't push duplicate consecutive entries
+  if (entries[entries.length - 1] === url) {
+    return { entries, index: entries.length - 1 };
+  }
+  entries.push(url);
+  return { entries, index: entries.length - 1 };
+}
+
+function navigateHistory(history: TabHistory, delta: number): { history: TabHistory; url: string | null } {
+  const newIndex = history.index + delta;
+  if (newIndex < 0 || newIndex >= history.entries.length) {
+    return { history, url: null };
+  }
+  return { history: { ...history, index: newIndex }, url: history.entries[newIndex] };
+}
+
 function applyTabListUpdate(
   state: BrowserShellState,
   nextTabs: BrowserTabSnapshot[],
@@ -131,11 +170,16 @@ function removeTabs(
   const closing = sourceTabs.filter((tab, index, tabs) => predicate(tab, index, tabs));
   let remaining = sourceTabs.filter((tab, index, tabs) => !predicate(tab, index, tabs));
 
+  // When all tabs are closed, create a fresh empty tab — like Chrome/Edge.
   if (remaining.length === 0) {
-    const fallback = sourceTabs.find((tab) => tab.id === tabId) ?? sourceTabs[0];
-    if (fallback) {
-      remaining = [fallback];
-    }
+    const newId = makeTabId();
+    remaining = [{ id: newId, title: "New Tab", url: "", pin_state: "unpinned" }];
+    return applyTabListUpdate(
+      state,
+      remaining,
+      newId,
+      closing.reduce((stack, tab) => pushClosedTab(stack, tab), state.closedTabs),
+    );
   }
 
   const closedTabs = closing.reduce(
@@ -212,7 +256,9 @@ export function selectActiveTabUrl(state: BrowserShellState): string {
 
 const initialLocalTabId = makeTabId();
 
-export const useBrowserShellStore = create<BrowserShellState>((set, get) => ({
+export const useBrowserShellStore = create<BrowserShellState>()(
+  persist(
+    (set, get) => ({
   engineId: BROWSER_ENGINE_IDS.webview,
   snapshot: null,
   localTabs: [
@@ -228,6 +274,7 @@ export const useBrowserShellStore = create<BrowserShellState>((set, get) => ({
   cefSurface: null,
   loading: false,
   error: null,
+  tabHistory: {},
   setEngineId: (engineId) => set({ engineId }),
   refreshSnapshot: async () => {
     set({ loading: true, error: null });
@@ -278,17 +325,35 @@ export const useBrowserShellStore = create<BrowserShellState>((set, get) => ({
       return;
     }
 
-    set((state) => ({
-      ...applyActiveTabUrl(state, normalized),
-      loading: true,
-      error: null,
-    }));
+    const activeId = getActiveTabId(get());
+    set((state) => {
+      const history = activeId ? pushHistory(getHistory(state, activeId), normalized) : null;
+      return {
+        ...applyActiveTabUrl(state, normalized),
+        loading: true,
+        error: null,
+        ...(history && activeId
+          ? { tabHistory: { ...state.tabHistory, [activeId]: history } }
+          : {}),
+      };
+    });
 
     if (isBrowserDesktopHost()) {
-      void loadBrowserUrl(normalized).catch(() => {
+      try {
+        const snapshot = await loadBrowserUrl(normalized);
+        if (snapshot) {
+          set((state) => ({
+            snapshot,
+            loading: false,
+            ...applyActiveTabUrl({ ...state, snapshot }, normalized),
+          }));
+        } else {
+          set({ loading: false });
+        }
+      } catch {
         // Agent/platform metadata is best-effort; the child webview owns real navigation.
-      });
-      set({ loading: false });
+        set({ loading: false });
+      }
       return;
     }
 
@@ -373,7 +438,13 @@ export const useBrowserShellStore = create<BrowserShellState>((set, get) => ({
         nextActiveId = remainingPreview[Math.min(idx, remainingPreview.length - 1)]?.id ?? null;
       }
 
-      return removeTabs(state, tabId, (tab) => tab.id === tabId, nextActiveId);
+      // Clean up history for closed tab
+      const { [tabId]: _removed, ...restHistory } = state.tabHistory;
+
+      return {
+        ...removeTabs(state, tabId, (tab) => tab.id === tabId, nextActiveId),
+        tabHistory: restHistory,
+      };
     });
   },
   closeOtherTabs: (tabId) => {
@@ -433,10 +504,12 @@ export const useBrowserShellStore = create<BrowserShellState>((set, get) => ({
     ];
 
     set(applyTabListUpdate(state, nextTabs, duplicate.id));
-    void get().setActiveTab(duplicate.id);
-    if (duplicate.url) {
-      void get().loadUrl(duplicate.url);
-    }
+    // Await setActiveTab before loadUrl to avoid race condition
+    void get().setActiveTab(duplicate.id).then(() => {
+      if (duplicate.url) {
+        void get().loadUrl(duplicate.url);
+      }
+    });
   },
   togglePinTab: (tabId) => {
     set((state) => {
@@ -466,28 +539,26 @@ export const useBrowserShellStore = create<BrowserShellState>((set, get) => ({
     await get().loadUrl(tab.url);
   },
   reopenClosedTab: () => {
-    set((state) => {
-      if (state.closedTabs.length === 0) {
-        return {};
-      }
+    const state = get();
+    if (state.closedTabs.length === 0) {
+      return;
+    }
 
-      const [restored, ...remainingClosed] = state.closedTabs;
-      const reopened = cloneTab(restored);
-      const nextTabs = [...getTabList(state), reopened];
+    const [restored, ...remainingClosed] = state.closedTabs;
+    const reopened = cloneTab(restored);
+    const nextTabs = [...getTabList(state), reopened];
 
-      return {
-        ...applyTabListUpdate(state, nextTabs, reopened.id),
-        closedTabs: remainingClosed,
-      };
+    set({
+      ...applyTabListUpdate(state, nextTabs, reopened.id),
+      closedTabs: remainingClosed,
     });
 
-    const reopened = getTabList(get()).at(-1);
-    if (reopened?.url) {
-      void get().setActiveTab(reopened.id);
-      void get().loadUrl(reopened.url);
-    } else if (reopened) {
-      void get().setActiveTab(reopened.id);
-    }
+    // Await setActiveTab before loadUrl to avoid race condition
+    void get().setActiveTab(reopened.id).then(() => {
+      if (reopened.url) {
+        void get().loadUrl(reopened.url);
+      }
+    });
   },
   copyTabUrl: async (tabId) => {
     const tab = getTabList(get()).find((entry) => entry.id === tabId);
@@ -525,7 +596,60 @@ export const useBrowserShellStore = create<BrowserShellState>((set, get) => ({
       return applyTabListUpdate(state, sourceTabs, activeId);
     });
   },
-}));
+  goBack: () => {
+    const state = get();
+    const activeId = getActiveTabId(state);
+    if (!activeId) return;
+
+    const history = getHistory(state, activeId);
+    const { history: newHistory, url } = navigateHistory(history, -1);
+    if (!url) return;
+
+    set((s) => ({
+      tabHistory: { ...s.tabHistory, [activeId]: newHistory },
+      ...applyActiveTabUrl(s, url),
+    }));
+  },
+  goForward: () => {
+    const state = get();
+    const activeId = getActiveTabId(state);
+    if (!activeId) return;
+
+    const history = getHistory(state, activeId);
+    const { history: newHistory, url } = navigateHistory(history, 1);
+    if (!url) return;
+
+    set((s) => ({
+      tabHistory: { ...s.tabHistory, [activeId]: newHistory },
+      ...applyActiveTabUrl(s, url),
+    }));
+  },
+  canGoBack: () => {
+    const state = get();
+    const activeId = getActiveTabId(state);
+    if (!activeId) return false;
+    const history = getHistory(state, activeId);
+    return history.index > 0;
+  },
+  canGoForward: () => {
+    const state = get();
+    const activeId = getActiveTabId(state);
+    if (!activeId) return false;
+    const history = getHistory(state, activeId);
+    return history.index < history.entries.length - 1;
+  },
+}),
+    {
+      name: "sdkwork-browser-shell",
+      partialize: (state) => ({
+        engineId: state.engineId,
+        localTabs: state.localTabs,
+        localActiveTabId: state.localActiveTabId,
+        tabHistory: state.tabHistory,
+      }),
+    },
+  ),
+);
 
 function getTabList(state: BrowserShellState): BrowserTabSnapshot[] {
   if (usesLocalTabChrome()) {

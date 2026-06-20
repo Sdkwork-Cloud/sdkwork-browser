@@ -1395,8 +1395,8 @@ button:focus-visible {
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
 }
 
 .animate-fade-in {
@@ -1426,3 +1426,43 @@ button:focus-visible {
 }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Omnibox loading progress — Chrome-style bottom bar */
+.omnibox-loading {
+  position: relative;
+}
+
+.omnibox-loading::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+/* Accessibility: respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles — hide browser chrome, show only content */
+@media print {
+  .tabbar,
+  .nav-toolbar,
+  .bookmark-bar,
+  .window-controls,
+  .ntp-footer {
+    display: none !important;
+  }
+}

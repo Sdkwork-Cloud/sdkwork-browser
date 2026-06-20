@@ -4,6 +4,7 @@ import { BrowserContentPanel } from "../components/BrowserContentPanel.tsx";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
 import { useAgentStore } from "../stores/agentStore.ts";
 import { useBrowserShellStore, selectActiveTabUrl } from "../stores/browserShellStore.ts";
+import { normalizeNavigationUrl } from "../utils/navigationUrl.ts";
 
 interface QuickLink {
   name: string;
@@ -22,14 +23,6 @@ const QUICK_LINKS: QuickLink[] = [
   { name: "YouTube", url: "https://www.youtube.com", letter: "Y", color: "#ff0000" },
   { name: "Bing", url: "https://www.bing.com", letter: "B", color: "#0078d4" },
 ];
-
-function normalizeUrl(input: string): string {
-  const trimmed = input.trim();
-  if (!trimmed) return "";
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  if (/^[\w-]+(\.[\w-]+)+/.test(trimmed)) return `https://${trimmed}`;
-  return `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
-}
 
 function greetingForHour(hour: number): string {
   if (hour < 5) return "Good night";
@@ -53,7 +46,8 @@ function formatDate(date: Date): string {
 }
 
 export function HomePage() {
-  const shell = createBrowserShell();
+  // Memoize shell — only needed for tagline, don't recreate every render
+  const shell = useMemo(() => createBrowserShell(), []);
   const loading = useBrowserShellStore((s) => s.loading);
   const error = useBrowserShellStore((s) => s.error);
   const refreshSnapshot = useBrowserShellStore((s) => s.refreshSnapshot);
@@ -75,7 +69,8 @@ export function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  const greeting = useMemo(() => greetingForHour(now.getHours()), [now]);
+  // Greeting only depends on the hour, not the full Date — avoids recompute every second
+  const greeting = useMemo(() => greetingForHour(now.getHours()), [now.getHours()]);
 
   // The active tab's URL drives what we show — just like a real browser.
   // Empty URL → new tab page; non-empty → browser content.
@@ -83,7 +78,7 @@ export function HomePage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const target = normalizeUrl(query);
+    const target = normalizeNavigationUrl(query);
     if (!target) return;
     void loadUrl(target);
   }
