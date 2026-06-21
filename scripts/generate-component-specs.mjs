@@ -69,7 +69,7 @@ function walkCrates() {
 
     const type = entry.includes("routes")
       ? "rust-route-crate"
-      : entry.includes("storage")
+      : entry.includes("storage") || entry.includes("database-host") || entry.includes("repository-sqlx")
         ? "rust-storage-crate"
         : "rust-service";
 

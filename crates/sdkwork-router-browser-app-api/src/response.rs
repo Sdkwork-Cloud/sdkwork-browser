@@ -10,7 +10,7 @@ use std::convert::Infallible;
 use std::time::Duration;
 use sdkwork_browser_agent_service::BrowserAiActionResult;
 use sdkwork_browser_platform_service::PlatformError;
-use sdkwork_browser_shared_service::new_entity_uuid;
+use sdkwork_browser_shared_service::new_request_id;
 use serde::Serialize;
 use serde_json::{json, Value};
 
@@ -28,7 +28,7 @@ impl BrowserApiResult {
         Self {
             code: result.code,
             message: result.message,
-            request_id: new_entity_uuid().to_string(),
+            request_id: new_request_id(),
             data: result.data,
         }
     }
@@ -37,7 +37,7 @@ impl BrowserApiResult {
         Self {
             code: "OK".into(),
             message: message.into(),
-            request_id: new_entity_uuid().to_string(),
+            request_id: new_request_id(),
             data,
         }
     }

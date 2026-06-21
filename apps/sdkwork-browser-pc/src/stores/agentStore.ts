@@ -1,8 +1,7 @@
 import type { BrowserAiActionId, BrowserCommandItem } from "@sdkwork/browser-contracts";
 import { BROWSER_AI_ACTIONS } from "@sdkwork/browser-contracts";
 import { create } from "zustand";
-import { resolveAgentChatTransport } from "../bootstrap/agentChatTransport.ts";
-import { consumeGatewayAgentChatStream } from "../bootstrap/gatewayStream.ts";
+import { resolveAgentChatTransport, consumeGatewayAgentChatStream } from "@sdkwork/browser-pc-core";
 import {
   executeBrowserAiAction,
   fetchPageContext,

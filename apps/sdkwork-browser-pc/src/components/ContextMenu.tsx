@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { isolateFromDragRegion } from "../utils/tauriDragRegion.ts";
+import { isolateFromDragRegion } from "@sdkwork/browser-pc-commons";
 
 const VIEWPORT_PADDING = 8;
 

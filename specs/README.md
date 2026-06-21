@@ -19,6 +19,6 @@ node scripts/generate-component-specs.mjs
 | Framework | Status | Location |
 | --- | --- | --- |
 | sdkwork-web-framework | Integrated | route crates `web_bootstrap.rs` |
-| sdkwork-database | Integrated | `sdkwork-browser-storage-sqlx-rust` |
-| sdkwork-utils | Integrated | `sdkwork-browser-shared-service` |
+| sdkwork-database | Integrated | `sdkwork-platform-browser-repository-sqlx` |
+| sdkwork-utils | Integrated | `sdkwork-browser-shared-service` (id, string, validation helpers) |
 | sdkwork-discovery | Deferred | ADR-003 |

@@ -1,0 +1,8 @@
+{
+  "environment": "development",
+  "deploymentProfile": "cloud",
+  "runtimeTarget": "browser",
+  "sdkBaseUrls": {
+    "appApi": "/app/v3/api"
+  }
+}

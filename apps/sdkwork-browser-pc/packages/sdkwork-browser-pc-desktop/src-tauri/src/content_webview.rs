@@ -205,6 +205,21 @@ pub fn hide_content_webview(window: &WebviewWindow) -> Result<(), ContentWebview
         .map_err(|error| ContentWebviewError::Webview(error.to_string()))
 }
 
+pub fn reload_content_webview(window: &WebviewWindow) -> Result<(), ContentWebviewError> {
+    let host_window = shell_window(window);
+    let Some(webview) = host_window.get_webview(CONTENT_WEBVIEW_LABEL) else {
+        return Ok(());
+    };
+    // Use eval with location.reload() instead of navigate() to the same URL.
+    // WebView2 may skip on_page_load Finished event when navigating to the
+    // same URL, causing the loading indicator to stay on until the 15s
+    // safety timeout. location.reload() triggers a full page reload cycle
+    // with reliable on_page_load events.
+    webview
+        .eval("location.reload()")
+        .map_err(|error| ContentWebviewError::Webview(error.to_string()))
+}
+
 pub fn capture_content_dom(window: &WebviewWindow) -> Result<(), ContentWebviewError> {
     let host_window = shell_window(window);
     let Some(webview) = host_window.get_webview(CONTENT_WEBVIEW_LABEL) else {

@@ -17,13 +17,16 @@
 
 ## Package Structure
 
-- `packages/sdkwork-browser-pc-react/` - PC React browser shell
-- `packages/sdkwork-browser-pc-desktop/` - Tauri Rust desktop host
+- `packages/sdkwork-browser-pc-core/` - runtime bootstrap and SDK wiring
+- `packages/sdkwork-browser-pc-commons/` - shared PC utilities
+- `packages/sdkwork-browser-pc-shell/` - application shell layout
+- `packages/sdkwork-browser-pc-browser/` - browser capability UI module
+- `packages/sdkwork-browser-pc-desktop/` - Tauri desktop host
 
 ## Verification
 
 ```powershell
 pnpm typecheck
-pnpm test:pc-react
+pnpm test:pc-browser
 cargo test -p sdkwork-browser-tauri-host
 ```

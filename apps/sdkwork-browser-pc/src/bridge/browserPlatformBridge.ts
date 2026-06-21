@@ -8,8 +8,8 @@ import {
   listGatewayMcpTools,
   navigateGatewayUrl,
   shouldPreferGatewayPlatform,
-} from "../bootstrap/gatewayPlatform.ts";
-import type { GatewayPlatformSnapshot } from "../bootstrap/gatewayPlatform.ts";
+} from "@sdkwork/browser-pc-core";
+import type { GatewayPlatformSnapshot } from "@sdkwork/browser-pc-core";
 
 
 
@@ -206,7 +206,7 @@ export async function fetchBrowserPlatformSnapshot(): Promise<BrowserPlatformSna
       const snapshot = await fetchGatewayPlatformSnapshot();
       return snapshot ? fromGatewaySnapshot(snapshot) : null;
     } catch (error) {
-      // In web preview mode, the Gateway may not be running. Don't throw —
+      // In web preview mode, the Gateway may not be running. Don't throw �??
       // return null so the app can proceed with local tab management.
       if (!isTauriRuntime()) {
         return null;
@@ -247,7 +247,7 @@ export async function loadBrowserUrl(url: string): Promise<BrowserPlatformSnapsh
       const snapshot = await navigateGatewayUrl(url);
       return snapshot ? fromGatewaySnapshot(snapshot) : null;
     } catch (error) {
-      // In web preview mode, the Gateway may not be running. Don't throw —
+      // In web preview mode, the Gateway may not be running. Don't throw �??
       // return null so the caller (loadUrl) can proceed without a snapshot.
       // The iframe in BrowserContentPanel handles the actual page navigation.
       if (!isTauriRuntime()) {
@@ -306,7 +306,7 @@ function readWebPageContext(): BrowserPageContext | null {
   }
   // In web preview mode, the browsed page is in a cross-origin iframe.
   // Reading document.body/outerHTML here returns the host app's DOM, not the
-  // page content — which would give the AI completely wrong context.
+  // page content �?? which would give the AI completely wrong context.
   // Return null; same-origin iframe content is synced via syncLiveHtml instead.
   if (!isTauriRuntime()) {
     return null;
@@ -508,6 +508,13 @@ export async function hideContentWebview(): Promise<void> {
     return;
   }
   await invoke("browser_content_hide");
+}
+
+export async function reloadContentWebview(): Promise<void> {
+  if (!isTauriRuntime()) {
+    return;
+  }
+  await invoke("browser_content_reload");
 }
 
 export async function captureContentDom(): Promise<void> {

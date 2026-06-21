@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use sdkwork_browser_shared_service::new_entity_uuid;
 use uuid::Uuid;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -21,7 +22,7 @@ impl BrowserCookieService {
 
     pub fn set(&mut self, name: impl Into<String>, value: impl Into<String>, domain: impl Into<String>) {
         self.cookies.push(BrowserCookie {
-            id: Uuid::new_v4(),
+            id: new_entity_uuid(),
             name: name.into(),
             value: value.into(),
             domain: domain.into(),

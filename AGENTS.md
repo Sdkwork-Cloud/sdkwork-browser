@@ -20,7 +20,7 @@ Do not copy root standard text into this repository. If these relative paths do 
 
 ## Application Identity
 
-No `sdkwork.app.config.json` is present at this root. Application manifests live under `apps/sdkwork-browser-pc/`, `apps/sdkwork-browser-h5/`, and `apps/sdkwork-browser-flutter-mobile/`.
+Root `sdkwork.app.config.json` defines the browser platform workspace identity. Per-surface manifests live under `apps/sdkwork-browser-pc/`, `apps/sdkwork-browser-h5/`, and `apps/sdkwork-browser-flutter-mobile/`.
 
 ## Local Dictionary Structure
 

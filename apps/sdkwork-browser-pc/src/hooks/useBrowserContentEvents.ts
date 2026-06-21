@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
 import { useBrowserShellStore } from "../stores/browserShellStore.ts";
-import { normalizeNavigationUrl } from "../utils/navigationUrl.ts";
+import { normalizeNavigationUrl } from "@sdkwork/browser-pc-commons";
 
 /**
  * Subscribes to native content-webview navigation events (in-page links, title changes, popups).

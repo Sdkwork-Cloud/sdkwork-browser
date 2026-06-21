@@ -20,6 +20,6 @@ pnpm run db:drift:check
 
 ## Migration status
 
-No legacy SQL was auto-imported. Author `contract/schema.yaml` before adding migrations.
+Versioned migrations live under `migrations/{sqlite,postgres}/`. Baseline DDL is mirrored from `ddl/baseline/` as `0001_browser_legacy_baseline`.
 
-Runtime services MUST create pools through `sdkwork-database-sqlx` and register `DefaultDatabaseModule` at bootstrap.
+Runtime services MUST create pools through `sdkwork-database-sqlx` and register `DefaultDatabaseModule` at bootstrap via `sdkwork-platform-browser-repository-sqlx`.

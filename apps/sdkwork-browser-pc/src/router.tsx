@@ -8,7 +8,7 @@ import { HomePage } from "./pages/HomePage.tsx";
 import { TabsPage } from "./pages/TabsPage.tsx";
 import { AiPanelPage } from "./pages/AiPanelPage.tsx";
 import { SettingsPage } from "./pages/SettingsPage.tsx";
-import { ShellLayout } from "./components/ShellLayout.tsx";
+import { ShellLayout } from "@sdkwork/browser-pc-shell";
 
 const rootRoute = createRootRoute({
   component: () => (

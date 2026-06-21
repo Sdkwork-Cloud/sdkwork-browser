@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createBrowserSdkClients } from "../bootstrap/sdkClients.ts";
+import { createBrowserSdkClients } from "@sdkwork/browser-pc-core";
 
 interface EngineRow {
   id: string;

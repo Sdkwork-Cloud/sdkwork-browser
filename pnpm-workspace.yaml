@@ -2,6 +2,7 @@ packages:
   - "packages/common/*/*"
   - "apps/sdkwork-browser-pc"
   - "apps/sdkwork-browser-pc/packages/*"
+  - "apps/sdkwork-browser-h5"
   - "apps/sdkwork-browser-h5/packages/*"
   - "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
   - "sdks/*"

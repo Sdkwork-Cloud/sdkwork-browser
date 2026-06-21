@@ -1,0 +1,96 @@
+CREATE TABLE IF NOT EXISTS browser_bookmark (
+    id BIGINT PRIMARY KEY,
+    uuid VARCHAR(64) NOT NULL UNIQUE,
+    tenant_id BIGINT NOT NULL DEFAULT 0,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    session_uuid VARCHAR(64) NOT NULL,
+    title VARCHAR(512) NOT NULL,
+    url TEXT NOT NULL,
+    folder VARCHAR(256) NOT NULL DEFAULT 'default',
+    payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ,
+    deleted_by BIGINT
+);
+
+CREATE TABLE IF NOT EXISTS browser_history (
+    id BIGINT PRIMARY KEY,
+    uuid VARCHAR(64) NOT NULL UNIQUE,
+    tenant_id BIGINT NOT NULL DEFAULT 0,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    session_uuid VARCHAR(64) NOT NULL,
+    title VARCHAR(512) NOT NULL,
+    url TEXT NOT NULL,
+    visited_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ,
+    deleted_by BIGINT
+);
+
+CREATE TABLE IF NOT EXISTS browser_session (
+    id BIGINT PRIMARY KEY,
+    uuid VARCHAR(64) NOT NULL UNIQUE,
+    tenant_id BIGINT NOT NULL DEFAULT 0,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    account_label VARCHAR(256) NOT NULL,
+    kind VARCHAR(64) NOT NULL DEFAULT 'persistent',
+    payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ,
+    deleted_by BIGINT
+);
+
+CREATE TABLE IF NOT EXISTS browser_tab (
+    id BIGINT PRIMARY KEY,
+    uuid VARCHAR(64) NOT NULL UNIQUE,
+    tenant_id BIGINT NOT NULL DEFAULT 0,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    session_uuid VARCHAR(64) NOT NULL,
+    title VARCHAR(512) NOT NULL,
+    url TEXT NOT NULL,
+    pin_state VARCHAR(32) NOT NULL DEFAULT 'unpinned',
+    group_id VARCHAR(128),
+    closed BOOLEAN NOT NULL DEFAULT FALSE,
+    payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ,
+    deleted_by BIGINT
+);
+
+CREATE TABLE IF NOT EXISTS browser_download (
+    id BIGINT PRIMARY KEY,
+    uuid VARCHAR(64) NOT NULL UNIQUE,
+    tenant_id BIGINT NOT NULL DEFAULT 0,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    session_uuid VARCHAR(64) NOT NULL,
+    file_name VARCHAR(512) NOT NULL,
+    source_url TEXT NOT NULL,
+    status VARCHAR(64) NOT NULL DEFAULT 'pending',
+    payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ,
+    deleted_by BIGINT
+);
+
+CREATE INDEX IF NOT EXISTS idx_browser_bookmark_session_folder
+    ON browser_bookmark (session_uuid, folder, updated_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_browser_history_session_visited
+    ON browser_history (session_uuid, visited_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_browser_tab_session_closed
+    ON browser_tab (session_uuid, closed, updated_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_browser_download_session_status
+    ON browser_download (session_uuid, status, updated_at DESC);

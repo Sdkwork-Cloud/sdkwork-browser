@@ -29,7 +29,7 @@ Browser Runtime Platform — PRD-aligned, SDKWork-compliant crate matrix.
 | Download | `sdkwork-browser-download-service` |
 | Cookie | `sdkwork-browser-cookie-service` |
 | Session | `sdkwork-browser-session-service` |
-| Storage | `sdkwork-browser-storage-sqlx-rust` |
+| Storage | `sdkwork-platform-browser-repository-sqlx` |
 | Network | `sdkwork-browser-network-service` |
 | Security | `sdkwork-browser-security-service` |
 
@@ -53,5 +53,6 @@ Browser Runtime Platform — PRD-aligned, SDKWork-compliant crate matrix.
 
 | Crate | Role |
 | --- | --- |
+| `sdkwork-browser-api-server` | HTTP API server (app-api + backend-api) |
 | `sdkwork-routes-browser-app-api` | App-api manifest |
 | `sdkwork-routes-browser-backend-api` | Backend-api manifest |

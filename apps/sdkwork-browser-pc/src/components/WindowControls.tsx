@@ -1,7 +1,7 @@
 import type { PointerEvent, ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
-import { isolateFromDragRegion } from "../utils/tauriDragRegion.ts";
+import { isolateFromDragRegion } from "@sdkwork/browser-pc-commons";
 import {
   closeDesktopWindow,
   isDesktopWindowMaximized,

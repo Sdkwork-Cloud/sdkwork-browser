@@ -55,6 +55,8 @@ importers:
         specifier: ^8.0.10
         version: 8.0.16(@types/node@25.9.3)(jiti@2.7.0)
 
+  apps/sdkwork-browser-h5: {}
+
   apps/sdkwork-browser-h5/packages/sdkwork-browser-h5-react:
     dependencies:
       '@sdkwork/browser-contracts':
@@ -78,9 +80,18 @@ importers:
       '@sdkwork/browser-contracts':
         specifier: workspace:*
         version: link:../../packages/common/browser/sdkwork-browser-contracts
-      '@sdkwork/browser-pc-react':
+      '@sdkwork/browser-pc-browser':
         specifier: workspace:*
-        version: link:packages/sdkwork-browser-pc-react
+        version: link:packages/sdkwork-browser-pc-browser
+      '@sdkwork/browser-pc-commons':
+        specifier: workspace:*
+        version: link:packages/sdkwork-browser-pc-commons
+      '@sdkwork/browser-pc-core':
+        specifier: workspace:*
+        version: link:packages/sdkwork-browser-pc-core
+      '@sdkwork/browser-pc-shell':
+        specifier: workspace:*
+        version: link:packages/sdkwork-browser-pc-shell
       '@tanstack/react-router':
         specifier: ^1.166.2
         version: 1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -122,23 +133,64 @@ importers:
         specifier: ^4.1.2
         version: 4.1.9(@types/node@25.9.3)(vite@6.4.3(@types/node@25.9.3)(jiti@2.7.0)(lightningcss@1.32.0))
 
-  apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-desktop:
-    devDependencies:
-      '@tauri-apps/cli':
-        specifier: ^2.11.2
-        version: 2.11.2
-
-  apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-react:
+  apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-browser:
     dependencies:
       '@sdkwork/browser-contracts':
         specifier: workspace:*
         version: link:../../../../packages/common/browser/sdkwork-browser-contracts
+      '@sdkwork/browser-pc-commons':
+        specifier: workspace:*
+        version: link:../sdkwork-browser-pc-commons
+      '@sdkwork/browser-pc-core':
+        specifier: workspace:*
+        version: link:../sdkwork-browser-pc-core
       react:
         specifier: '>=18.2.0 <20.0.0'
         version: 19.2.7
       react-dom:
         specifier: '>=18.2.0 <20.0.0'
         version: 19.2.7(react@19.2.7)
+
+  apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-commons: {}
+
+  apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-core:
+    dependencies:
+      '@sdkwork/browser-app-sdk':
+        specifier: workspace:*
+        version: link:../../../../sdks/sdkwork-browser-app-sdk/sdkwork-browser-app-sdk-typescript/generated/server-openapi
+      '@sdkwork/browser-backend-sdk':
+        specifier: workspace:*
+        version: link:../../../../sdks/sdkwork-browser-backend-sdk/sdkwork-browser-backend-sdk-typescript/generated/server-openapi
+
+  apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-desktop:
+    devDependencies:
+      '@tauri-apps/cli':
+        specifier: ^2.11.2
+        version: 2.11.2
+
+  apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-shell:
+    dependencies:
+      '@sdkwork/browser-pc-browser':
+        specifier: workspace:*
+        version: link:../sdkwork-browser-pc-browser
+      '@sdkwork/browser-pc-commons':
+        specifier: workspace:*
+        version: link:../sdkwork-browser-pc-commons
+      '@sdkwork/browser-pc-core':
+        specifier: workspace:*
+        version: link:../sdkwork-browser-pc-core
+      '@tanstack/react-router':
+        specifier: '>=1.0.0'
+        version: 1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: '>=18.2.0 <20.0.0'
+        version: 19.2.7
+      react-dom:
+        specifier: '>=18.2.0 <20.0.0'
+        version: 19.2.7(react@19.2.7)
+      zustand:
+        specifier: '>=5.0.0'
+        version: 5.0.14(@types/react@19.2.17)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
 
   packages/common/browser/sdkwork-browser-contracts: {}
 

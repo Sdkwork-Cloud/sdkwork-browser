@@ -225,6 +225,9 @@ impl BrowserPlugin for BrowserMcpService {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::Mutex;
+
+    static MCP_ENV_LOCK: Mutex<()> = Mutex::new(());
 
     #[test]
     fn lists_tools_for_connectors() {
@@ -234,6 +237,9 @@ mod tests {
 
     #[test]
     fn invokes_github_search_tool() {
+        let _guard = MCP_ENV_LOCK.lock().expect("mcp env lock");
+        std::env::remove_var("BROWSER_MCP_TRANSPORT");
+        std::env::remove_var("BROWSER_MCP_STDIO_COMMAND");
         let service = BrowserMcpService::new();
         let result = service.invoke_tool(&McpToolInvokeRequest {
             connector_id: "github".into(),
@@ -246,6 +252,7 @@ mod tests {
 
     #[test]
     fn stdio_transport_adds_command_metadata() {
+        let _guard = MCP_ENV_LOCK.lock().expect("mcp env lock");
         std::env::set_var("BROWSER_MCP_TRANSPORT", "stdio");
         std::env::set_var("BROWSER_MCP_STDIO_COMMAND", stdio_transport::MOCK_STDIO_COMMAND);
         let service = BrowserMcpService::new();

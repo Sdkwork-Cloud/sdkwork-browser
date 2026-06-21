@@ -1,0 +1,9 @@
+DROP INDEX IF EXISTS idx_browser_download_session_status;
+DROP INDEX IF EXISTS idx_browser_tab_session_closed;
+DROP INDEX IF EXISTS idx_browser_history_session_visited;
+DROP INDEX IF EXISTS idx_browser_bookmark_session_folder;
+DROP TABLE IF EXISTS browser_download;
+DROP TABLE IF EXISTS browser_tab;
+DROP TABLE IF EXISTS browser_session;
+DROP TABLE IF EXISTS browser_history;
+DROP TABLE IF EXISTS browser_bookmark;

@@ -11,7 +11,7 @@ SDKWork Browser ships:
 
 - HTTP route manifests via `sdkwork-routes-browser-app-api` and `sdkwork-routes-browser-backend-api`
 - `sdkwork-web-framework` bootstrap for future HTTP gateway integration
-- Persistence contracts via `sdkwork-browser-storage-sqlx-rust` and `sdkwork-database`
+- Persistence contracts via `sdkwork-platform-browser-repository-sqlx` and `sdkwork-database`
 - Desktop-first runtime (Tauri/native engines) with optional cloud HTTP surface
 
 There is **no hosted gRPC service process** and no `apis/rpc/` proto authority in this workspace yet.

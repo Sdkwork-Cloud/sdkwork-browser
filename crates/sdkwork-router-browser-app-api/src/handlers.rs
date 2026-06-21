@@ -4,6 +4,8 @@ use serde_json::json;
 use sdkwork_browser_agent_service::BrowserAgentChatRequest;
 use sdkwork_browser_platform_service::McpToolInvokeRequest;
 
+use sdkwork_browser_shared_service::new_request_id;
+
 use crate::dto::BrowserOperationCommand;
 use crate::response::{ok_json, ok_sse, snapshot_data, ApiProblem, BrowserApiResult, HandlerResult};
 use crate::state::BrowserAppState;
@@ -58,7 +60,7 @@ pub async fn ai_actions_create(
         return ok_json(BrowserApiResult {
             code: result.code,
             message: result.message,
-            request_id: uuid::Uuid::new_v4().to_string(),
+            request_id: new_request_id(),
             data: result.data,
         });
     }

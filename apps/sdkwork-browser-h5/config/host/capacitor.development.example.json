@@ -1,0 +1,6 @@
+{
+  "appId": "com.sdkwork.browser.h5",
+  "serverUrl": "https://browser-h5.sdkwork.com",
+  "androidScheme": "sdkworkbrowserh5",
+  "iosScheme": "sdkworkbrowserh5"
+}

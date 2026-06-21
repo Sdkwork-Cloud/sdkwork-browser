@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
-import { isolateFromDragRegion } from "../utils/tauriDragRegion.ts";
+import { isolateFromDragRegion } from "@sdkwork/browser-pc-commons";
 import { useBrowserShellStore, selectActiveTabUrl, selectShellTabs, selectShellActiveTabId, selectCanGoBack, selectCanGoForward } from "../stores/browserShellStore.ts";
 import { useThemeStore } from "../stores/themeStore.ts";
 import { useAgentStore } from "../stores/agentStore.ts";
-import { normalizeNavigationUrl } from "../utils/navigationUrl.ts";
+import { normalizeNavigationUrl } from "@sdkwork/browser-pc-commons";
 import { AiChatSidebar } from "./AiChatSidebar.tsx";
 import { CommandPalette } from "./CommandPalette.tsx";
 import {

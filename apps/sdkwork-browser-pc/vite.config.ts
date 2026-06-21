@@ -1,7 +1,12 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Connect, PluginOption } from "vite";
 import { defineConfig, loadEnv } from 'vite';
+
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
+const pcPackages = path.join(rootDir, "packages");
 
 const devHost = "127.0.0.1";
 const devPort = Number(process.env.SDKWORK_BROWSER_PC_DEV_PORT ?? 1620);
@@ -225,7 +230,16 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.SDKWORK_ACCESS_TOKEN': JSON.stringify(env.SDKWORK_ACCESS_TOKEN ?? ''),
     },
-    plugins: [react(), tailwindcss(), browserProxyPlugin()],
+        plugins: [react(), tailwindcss(), browserProxyPlugin()],
+    resolve: {
+      alias: {
+        "@sdkwork/browser-pc-core": path.join(pcPackages, "sdkwork-browser-pc-core/src/index.ts"),
+        "@sdkwork/browser-pc-commons": path.join(pcPackages, "sdkwork-browser-pc-commons/src/index.ts"),
+        "@sdkwork/browser-pc-browser": path.join(pcPackages, "sdkwork-browser-pc-browser/src/index.ts"),
+        "@sdkwork/browser-pc-shell": path.join(pcPackages, "sdkwork-browser-pc-shell/src/index.ts"),
+        "@sdkwork/browser-pc-react": path.join(pcPackages, "sdkwork-browser-pc-browser/src/index.ts"),
+      },
+    },
     server: {
       host: devHost,
       port: devPort,

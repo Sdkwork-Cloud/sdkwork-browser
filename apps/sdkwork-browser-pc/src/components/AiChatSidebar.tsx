@@ -1,6 +1,6 @@
 import { BROWSER_AI_ACTIONS } from "@sdkwork/browser-contracts";
 import { useEffect, useRef, useState } from "react";
-import { describeAgentChatTransport } from "../bootstrap/agentChatTransport.ts";
+import { describeAgentChatTransport } from "@sdkwork/browser-pc-core";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
 import { useAgentStore } from "../stores/agentStore.ts";
 import { useBrowserShellStore } from "../stores/browserShellStore.ts";

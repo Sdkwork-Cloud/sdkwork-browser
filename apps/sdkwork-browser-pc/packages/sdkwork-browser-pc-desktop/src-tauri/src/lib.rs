@@ -37,6 +37,7 @@ pub fn run() {
             browser_content_navigate,
             browser_content_open,
             browser_content_hide,
+            browser_content_reload,
             browser_content_capture,
             desktop_window_minimize,
             desktop_window_toggle_maximize,
@@ -194,6 +195,11 @@ fn browser_content_open(
 #[tauri::command]
 fn browser_content_hide(window: WebviewWindow) -> Result<(), ContentWebviewError> {
     content_webview::hide_content_webview(&window)
+}
+
+#[tauri::command]
+fn browser_content_reload(window: WebviewWindow) -> Result<(), ContentWebviewError> {
+    content_webview::reload_content_webview(&window)
 }
 
 #[tauri::command]

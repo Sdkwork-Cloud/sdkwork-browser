@@ -5,11 +5,12 @@ import {
   isBrowserDesktopHost,
   mountContentWebview,
   openContentWebview,
+  reloadContentWebview,
   syncLiveHtml,
   type ContentWebviewBounds,
 } from "../bridge/browserPlatformBridge.ts";
 import { useBrowserShellStore } from "../stores/browserShellStore.ts";
-import { urlsEquivalent } from "../utils/navigationUrl.ts";
+import { urlsEquivalent } from "@sdkwork/browser-pc-commons";
 
 interface BrowserContentPanelProps {
   url: string;
@@ -61,8 +62,15 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const loadedUrlRef = useRef<string | null>(null);
   const blockedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [previewUrl, setPreviewUrl] = useState(url);
   const hostMode = isBrowserDesktopHost();
+  // Initialize previewUrl to the proxy URL immediately in web preview mode.
+  // Using the direct URL here would cause the iframe to briefly load it
+  // (blocked by X-Frame-Options) before the effect updates it to the proxy
+  // URL — producing net::ERR_ABORTED errors and a flash of error page.
+  const [previewUrl, setPreviewUrl] = useState(() => {
+    if (hostMode || !url) return "";
+    return toProxyUrl(url);
+  });
   const [syncState, setSyncState] = useState<ContentSyncState>("idle");
   const [loadError, setLoadError] = useState<string | null>(null);
   const [dismissedBlocked, setDismissedBlocked] = useState(false);
@@ -109,8 +117,20 @@ export function BrowserContentPanel({ url, reloadNonce = 0, activeTabId = null }
     setLoadError(null);
 
     try {
-      await openContentWebview(targetUrl, bounds);
-      loadedUrlRef.current = targetUrl;
+      // For reloads (force=true) of an already-loaded URL, use
+      // reloadContentWebview (location.reload()) instead of navigate().
+      // WebView2 may skip on_page_load Finished event when navigating to
+      // the same URL, causing the loading indicator to stay on until the
+      // 15s safety timeout. location.reload() triggers a full reload cycle
+      // with reliable on_page_load events.
+      const isSameUrlReload = force && loadedUrlRef.current &&
+        urlsEquivalent(loadedUrlRef.current, targetUrl);
+      if (isSameUrlReload) {
+        await reloadContentWebview();
+      } else {
+        await openContentWebview(targetUrl, bounds);
+        loadedUrlRef.current = targetUrl;
+      }
       // Don't set "synced" here — the page is still loading. The store's
       // loading state (cleared by browser-content-page-loaded event) drives
       // effectiveSyncState via the derived state below.

@@ -1,10 +1,10 @@
-import { createBrowserShell } from "@sdkwork/browser-pc-react";
+import { createBrowserShell } from "@sdkwork/browser-pc-browser";
 import { useEffect, useMemo, useState } from "react";
 import { BrowserContentPanel } from "../components/BrowserContentPanel.tsx";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
 import { useAgentStore } from "../stores/agentStore.ts";
 import { useBrowserShellStore, selectActiveTabUrl } from "../stores/browserShellStore.ts";
-import { normalizeNavigationUrl } from "../utils/navigationUrl.ts";
+import { normalizeNavigationUrl } from "@sdkwork/browser-pc-commons";
 
 interface QuickLink {
   name: string;

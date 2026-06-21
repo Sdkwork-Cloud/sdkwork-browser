@@ -1,0 +1,30 @@
+{
+  "name": "@sdkwork/browser-pc-core",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "PC browser runtime bootstrap, SDK clients, and IAM wiring.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./bootstrap/*": "./src/bootstrap/*"
+  },
+  "files": ["src", "README.md"],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sdkwork/browser-app-sdk": "workspace:*",
+    "@sdkwork/browser-backend-sdk": "workspace:*"
+  },
+  "sdkwork": {
+    "workspace": "sdkwork-browser",
+    "architecture": "pc",
+    "role": "core",
+    "domain": "platform",
+    "capability": "browser"
+  }
+}

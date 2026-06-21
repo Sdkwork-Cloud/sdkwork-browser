@@ -1,0 +1,12 @@
+{
+  "name": "sdkwork-browser-h5",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter sdkwork-browser-h5-react dev",
+    "build": "pnpm --filter sdkwork-browser-h5-react build",
+    "typecheck": "pnpm --filter sdkwork-browser-h5-react typecheck",
+    "test": "pnpm --filter sdkwork-browser-h5-react test"
+  }
+}

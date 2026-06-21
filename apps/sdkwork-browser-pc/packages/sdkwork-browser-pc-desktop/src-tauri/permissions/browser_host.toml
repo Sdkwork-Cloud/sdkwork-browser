@@ -24,6 +24,7 @@ permissions = [
   "allow-browser-content-open",
   "allow-browser-content-hide",
   "allow-browser-content-capture",
+  "allow-browser-content-reload",
   "allow-desktop-window-minimize",
   "allow-desktop-window-toggle-maximize",
   "allow-desktop-window-close",
@@ -129,6 +130,11 @@ commands.allow = ["browser_content_hide"]
 identifier = "allow-browser-content-capture"
 description = "Enables the browser_content_capture command."
 commands.allow = ["browser_content_capture"]
+
+[[permission]]
+identifier = "allow-browser-content-reload"
+description = "Enables the browser_content_reload command."
+commands.allow = ["browser_content_reload"]
 
 [[permission]]
 identifier = "allow-desktop-window-minimize"

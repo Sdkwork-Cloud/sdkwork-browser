@@ -14,7 +14,7 @@ import {
   type BrowserTabSnapshot,
   type CefSurfaceSnapshot,
 } from "../bridge/browserPlatformBridge.ts";
-import { normalizeNavigationUrl, tabTitleFromUrl, urlsEquivalent } from "../utils/navigationUrl.ts";
+import { normalizeNavigationUrl, tabTitleFromUrl, urlsEquivalent } from "@sdkwork/browser-pc-commons";
 
 const MAX_CLOSED_TABS = 12;
 

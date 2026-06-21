@@ -177,10 +177,10 @@
       "description": "Permission identifier",
       "oneOf": [
         {
-          "description": "SDKWork Browser platform host bridge commands invoked from the renderer.\n#### This permission set includes:\n\n- `allow-browser-host-status`\n- `allow-browser-platform-snapshot`\n- `allow-browser-start-engine`\n- `allow-browser-load-url`\n- `allow-browser-switch-engine`\n- `allow-browser-cef-surface`\n- `allow-browser-sync-live-html`\n- `allow-browser-page-context`\n- `allow-browser-agent-execute`\n- `allow-browser-agent-chat`\n- `allow-browser-agent-chat-stream`\n- `allow-browser-mcp-list-tools`\n- `allow-browser-mcp-invoke`\n- `allow-browser-group-tabs`\n- `allow-browser-set-active-tab`\n- `allow-browser-content-mount`\n- `allow-browser-content-navigate`\n- `allow-browser-content-open`\n- `allow-browser-content-hide`\n- `allow-browser-content-capture`\n- `allow-desktop-window-minimize`\n- `allow-desktop-window-toggle-maximize`\n- `allow-desktop-window-close`\n- `allow-desktop-window-is-maximized`",
+          "description": "SDKWork Browser platform host bridge commands invoked from the renderer.\n#### This permission set includes:\n\n- `allow-browser-host-status`\n- `allow-browser-platform-snapshot`\n- `allow-browser-start-engine`\n- `allow-browser-load-url`\n- `allow-browser-switch-engine`\n- `allow-browser-cef-surface`\n- `allow-browser-sync-live-html`\n- `allow-browser-page-context`\n- `allow-browser-agent-execute`\n- `allow-browser-agent-chat`\n- `allow-browser-agent-chat-stream`\n- `allow-browser-mcp-list-tools`\n- `allow-browser-mcp-invoke`\n- `allow-browser-group-tabs`\n- `allow-browser-set-active-tab`\n- `allow-browser-content-mount`\n- `allow-browser-content-navigate`\n- `allow-browser-content-open`\n- `allow-browser-content-hide`\n- `allow-browser-content-capture`\n- `allow-browser-content-reload`\n- `allow-desktop-window-minimize`\n- `allow-desktop-window-toggle-maximize`\n- `allow-desktop-window-close`\n- `allow-desktop-window-is-maximized`",
           "type": "string",
           "const": "browser-host-commands",
-          "markdownDescription": "SDKWork Browser platform host bridge commands invoked from the renderer.\n#### This permission set includes:\n\n- `allow-browser-host-status`\n- `allow-browser-platform-snapshot`\n- `allow-browser-start-engine`\n- `allow-browser-load-url`\n- `allow-browser-switch-engine`\n- `allow-browser-cef-surface`\n- `allow-browser-sync-live-html`\n- `allow-browser-page-context`\n- `allow-browser-agent-execute`\n- `allow-browser-agent-chat`\n- `allow-browser-agent-chat-stream`\n- `allow-browser-mcp-list-tools`\n- `allow-browser-mcp-invoke`\n- `allow-browser-group-tabs`\n- `allow-browser-set-active-tab`\n- `allow-browser-content-mount`\n- `allow-browser-content-navigate`\n- `allow-browser-content-open`\n- `allow-browser-content-hide`\n- `allow-browser-content-capture`\n- `allow-desktop-window-minimize`\n- `allow-desktop-window-toggle-maximize`\n- `allow-desktop-window-close`\n- `allow-desktop-window-is-maximized`"
+          "markdownDescription": "SDKWork Browser platform host bridge commands invoked from the renderer.\n#### This permission set includes:\n\n- `allow-browser-host-status`\n- `allow-browser-platform-snapshot`\n- `allow-browser-start-engine`\n- `allow-browser-load-url`\n- `allow-browser-switch-engine`\n- `allow-browser-cef-surface`\n- `allow-browser-sync-live-html`\n- `allow-browser-page-context`\n- `allow-browser-agent-execute`\n- `allow-browser-agent-chat`\n- `allow-browser-agent-chat-stream`\n- `allow-browser-mcp-list-tools`\n- `allow-browser-mcp-invoke`\n- `allow-browser-group-tabs`\n- `allow-browser-set-active-tab`\n- `allow-browser-content-mount`\n- `allow-browser-content-navigate`\n- `allow-browser-content-open`\n- `allow-browser-content-hide`\n- `allow-browser-content-capture`\n- `allow-browser-content-reload`\n- `allow-desktop-window-minimize`\n- `allow-desktop-window-toggle-maximize`\n- `allow-desktop-window-close`\n- `allow-desktop-window-is-maximized`"
         },
         {
           "description": "Enables the browser_agent_chat command.",
@@ -235,6 +235,12 @@
           "type": "string",
           "const": "allow-browser-content-open",
           "markdownDescription": "Enables the browser_content_open command."
+        },
+        {
+          "description": "Enables the browser_content_reload command.",
+          "type": "string",
+          "const": "allow-browser-content-reload",
+          "markdownDescription": "Enables the browser_content_reload command."
         },
         {
           "description": "Enables the browser_group_tabs command.",

@@ -1,8 +1,6 @@
 import { BROWSER_AI_ACTIONS } from "@sdkwork/browser-contracts";
 import { useEffect, useState } from "react";
-import { createBrowserSdkClients } from "../bootstrap/sdkClients.ts";
-import { describeAgentChatTransport } from "../bootstrap/agentChatTransport.ts";
-import { describeRuntimeTransport } from "../bootstrap/runtimeTransport.ts";
+import { createBrowserSdkClients, describeAgentChatTransport, describeRuntimeTransport } from "@sdkwork/browser-pc-core";
 import { isBrowserDesktopHost } from "../bridge/browserPlatformBridge.ts";
 import { McpToolsPanel } from "../components/McpToolsPanel.tsx";
 import { OperatorConsolePanel } from "../components/OperatorConsolePanel.tsx";
