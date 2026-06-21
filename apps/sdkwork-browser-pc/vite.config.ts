@@ -230,7 +230,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.SDKWORK_ACCESS_TOKEN': JSON.stringify(env.SDKWORK_ACCESS_TOKEN ?? ''),
     },
-        plugins: [react(), tailwindcss(), browserProxyPlugin()],
+    plugins: [react(), tailwindcss(), browserProxyPlugin()],
     resolve: {
       alias: {
         "@sdkwork/browser-pc-core": path.join(pcPackages, "sdkwork-browser-pc-core/src/index.ts"),

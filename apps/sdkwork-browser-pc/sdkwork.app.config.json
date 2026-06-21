@@ -23,16 +23,26 @@
     "grantMode": "current",
     "platform": "DESKTOP",
     "appId": null,
-    "organizationId": null
+    "organizationId": "0",
+    "tenantId": "100001"
   },
   "runtime": {
     "family": "pc",
     "framework": "react",
-    "runtimes": ["BROWSER", "DESKTOP", "TABLET"],
-    "deliveryModes": ["DIRECT_DOWNLOAD"],
+    "runtimes": [
+      "BROWSER",
+      "DESKTOP",
+      "TABLET"
+    ],
+    "deliveryModes": [
+      "DIRECT_DOWNLOAD"
+    ],
     "defaultPlatform": "DESKTOP",
     "defaultArchitecture": "x64",
-    "supportedDeploymentProfiles": ["standalone", "cloud"],
+    "supportedDeploymentProfiles": [
+      "standalone",
+      "cloud"
+    ],
     "defaultDeploymentProfile": "standalone"
   },
   "media": {
@@ -54,16 +64,26 @@
     },
     "screenshots": [],
     "previews": [],
-    "metadata": { "assetVersion": "0.1.0", "defaultLocale": "en-US" }
+    "metadata": {
+      "assetVersion": "0.1.0",
+      "defaultLocale": "en-US"
+    }
   },
   "publish": {
     "status": "ACTIVE",
-    "platforms": ["DESKTOP"],
-    "installPlatforms": ["DESKTOP"],
+    "platforms": [
+      "DESKTOP"
+    ],
+    "installPlatforms": [
+      "DESKTOP"
+    ],
     "defaultPackageId": "desktop-windows-x64-standalone-zip",
     "storeUrl": "https://sdkwork.com/apps/sdkwork-browser-pc",
     "stores": [],
-    "config": { "workspaceRoot": ".", "framework": "react" }
+    "config": {
+      "workspaceRoot": ".",
+      "framework": "react"
+    }
   },
   "environments": {
     "development": {
@@ -93,13 +113,18 @@
           "enabled": true
         }
       ],
-      "metadata": { "workspaceRoot": ".", "packageManager": "pnpm" }
+      "metadata": {
+        "workspaceRoot": ".",
+        "packageManager": "pnpm"
+      }
     }
   },
   "release": {
     "currentVersion": "0.1.0",
     "defaultChannel": "STABLE",
-    "latest": { "STABLE": "0.1.0" },
+    "latest": {
+      "STABLE": "0.1.0"
+    },
     "notes": []
   },
   "security": {
@@ -108,7 +133,11 @@
     "sbomRequired": false
   },
   "devApp": {
-    "build": { "targets": ["desktop"] },
+    "build": {
+      "targets": [
+        "desktop"
+      ]
+    },
     "sourceRoot": "."
   },
   "specs": {

@@ -148,6 +148,8 @@ async function writeRouteManifest(surface, routes) {
       path: route.path,
       operationId: route.operationId,
       tags: [route.tag],
+      requestContext: "WebRequestContext",
+      apiSurface: surface.routeSurface,
       auth: {
         mode: surface.authMode,
         required: true,
@@ -245,6 +247,8 @@ function buildOperation(surface, route) {
     security: [{ AuthToken: [], AccessToken: [] }],
     "x-sdkwork-owner": surface.sdkOwner,
     "x-sdkwork-api-authority": surface.authorityName,
+    "x-sdkwork-request-context": "WebRequestContext",
+    "x-sdkwork-api-surface": surface.routeSurface,
   };
 
   if (route.method === "post") {

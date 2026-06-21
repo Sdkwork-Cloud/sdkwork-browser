@@ -84,6 +84,8 @@
         ],
         "x-sdkwork-owner": "sdkwork-browser",
         "x-sdkwork-api-authority": "sdkwork-browser-app-api",
+        "x-sdkwork-request-context": "WebRequestContext",
+        "x-sdkwork-api-surface": "app-api",
         "requestBody": {
           "required": true,
           "content": {
@@ -153,6 +155,8 @@
         ],
         "x-sdkwork-owner": "sdkwork-browser",
         "x-sdkwork-api-authority": "sdkwork-browser-app-api",
+        "x-sdkwork-request-context": "WebRequestContext",
+        "x-sdkwork-api-surface": "app-api",
         "requestBody": {
           "required": true,
           "content": {
@@ -222,6 +226,8 @@
         ],
         "x-sdkwork-owner": "sdkwork-browser",
         "x-sdkwork-api-authority": "sdkwork-browser-app-api",
+        "x-sdkwork-request-context": "WebRequestContext",
+        "x-sdkwork-api-surface": "app-api",
         "requestBody": {
           "required": true,
           "content": {

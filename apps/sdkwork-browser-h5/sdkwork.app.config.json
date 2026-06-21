@@ -23,16 +23,24 @@
     "grantMode": "current",
     "platform": "MOBILE",
     "appId": null,
-    "organizationId": null
+    "organizationId": "0",
+    "tenantId": "100001"
   },
   "runtime": {
     "family": "mobile",
     "framework": "react",
-    "runtimes": ["BROWSER", "CAPACITOR"],
-    "deliveryModes": ["WEB_URL"],
+    "runtimes": [
+      "BROWSER",
+      "CAPACITOR"
+    ],
+    "deliveryModes": [
+      "WEB_URL"
+    ],
     "defaultPlatform": "MOBILE",
     "defaultArchitecture": "universal",
-    "supportedDeploymentProfiles": ["cloud"],
+    "supportedDeploymentProfiles": [
+      "cloud"
+    ],
     "defaultDeploymentProfile": "cloud"
   },
   "media": {
@@ -54,16 +62,26 @@
     },
     "screenshots": [],
     "previews": [],
-    "metadata": { "assetVersion": "0.1.0", "defaultLocale": "en-US" }
+    "metadata": {
+      "assetVersion": "0.1.0",
+      "defaultLocale": "en-US"
+    }
   },
   "publish": {
     "status": "ACTIVE",
-    "platforms": ["MOBILE"],
-    "installPlatforms": ["MOBILE"],
+    "platforms": [
+      "MOBILE"
+    ],
+    "installPlatforms": [
+      "MOBILE"
+    ],
     "defaultPackageId": "h5-universal-cloud-browser-zip",
     "storeUrl": "https://sdkwork.com/apps/sdkwork-browser-h5",
     "stores": [],
-    "config": { "workspaceRoot": ".", "framework": "react" }
+    "config": {
+      "workspaceRoot": ".",
+      "framework": "react"
+    }
   },
   "environments": {
     "development": {
@@ -93,13 +111,18 @@
           "enabled": true
         }
       ],
-      "metadata": { "workspaceRoot": ".", "packageManager": "pnpm" }
+      "metadata": {
+        "workspaceRoot": ".",
+        "packageManager": "pnpm"
+      }
     }
   },
   "release": {
     "currentVersion": "0.1.0",
     "defaultChannel": "STABLE",
-    "latest": { "STABLE": "0.1.0" },
+    "latest": {
+      "STABLE": "0.1.0"
+    },
     "notes": []
   },
   "security": {
@@ -108,7 +131,11 @@
     "sbomRequired": false
   },
   "devApp": {
-    "build": { "targets": ["h5"] },
+    "build": {
+      "targets": [
+        "h5"
+      ]
+    },
     "sourceRoot": "."
   },
   "specs": {

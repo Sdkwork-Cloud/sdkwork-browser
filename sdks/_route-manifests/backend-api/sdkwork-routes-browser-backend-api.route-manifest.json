@@ -21,6 +21,8 @@
       "tags": [
         "browser"
       ],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
       "auth": {
         "mode": "dual-token",
         "required": true
@@ -39,6 +41,8 @@
       "tags": [
         "browser"
       ],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
       "auth": {
         "mode": "dual-token",
         "required": true
