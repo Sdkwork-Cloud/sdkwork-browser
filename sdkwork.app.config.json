@@ -27,16 +27,32 @@
     "grantMode": "current",
     "platform": "WEB",
     "appId": null,
-    "organizationId": null
+    "organizationId": null,
+    "accessTokenPermissionScope": [
+      "iam.users.read",
+      "iam.organizations.read",
+      "iam.roles.read",
+      "iam.permissions.read"
+    ]
   },
   "runtime": {
     "family": "multi-surface",
     "framework": "rust-runtime",
-    "runtimes": ["WEB", "DESKTOP", "MOBILE"],
-    "deliveryModes": ["WEB_URL", "DIRECT_DOWNLOAD"],
+    "runtimes": [
+      "WEB",
+      "DESKTOP",
+      "MOBILE"
+    ],
+    "deliveryModes": [
+      "WEB_URL",
+      "DIRECT_DOWNLOAD"
+    ],
     "defaultPlatform": "DESKTOP",
     "defaultArchitecture": "x64",
-    "supportedDeploymentProfiles": ["standalone", "cloud"],
+    "supportedDeploymentProfiles": [
+      "standalone",
+      "cloud"
+    ],
     "defaultDeploymentProfile": "standalone"
   },
   "media": {
@@ -65,8 +81,16 @@
   },
   "publish": {
     "status": "ACTIVE",
-    "platforms": ["WEB", "DESKTOP", "MOBILE"],
-    "installPlatforms": ["WEB", "DESKTOP", "MOBILE"],
+    "platforms": [
+      "WEB",
+      "DESKTOP",
+      "MOBILE"
+    ],
+    "installPlatforms": [
+      "WEB",
+      "DESKTOP",
+      "MOBILE"
+    ],
     "defaultPackageId": "desktop-windows-x64-standalone-zip",
     "storeUrl": "https://sdkwork.com/apps/sdkwork-browser",
     "stores": [],
@@ -112,7 +136,9 @@
   "release": {
     "currentVersion": "0.1.0",
     "defaultChannel": "STABLE",
-    "latest": { "STABLE": "0.1.0" },
+    "latest": {
+      "STABLE": "0.1.0"
+    },
     "notes": []
   },
   "security": {
@@ -121,7 +147,9 @@
     "sbomRequired": false
   },
   "devApp": {
-    "build": { "targets": [] },
+    "build": {
+      "targets": []
+    },
     "sourceRoot": "."
   },
   "metadata": {
