@@ -49,3 +49,10 @@ cargo test --workspace
 ```
 
 Docs: [`docs/prd-alignment.md`](docs/prd-alignment.md) · [`docs/adr/ADR-002-browser-engine-standard.md`](docs/adr/ADR-002-browser-engine-standard.md)
+
+## Documentation Canon
+
+- [docs/README.md](docs/README.md)
+- [docs/product/prd/PRD.md](docs/product/prd/PRD.md)
+- [docs/architecture/tech/TECH_ARCHITECTURE.md](docs/architecture/tech/TECH_ARCHITECTURE.md)
+

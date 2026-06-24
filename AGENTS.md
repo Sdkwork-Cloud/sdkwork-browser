@@ -34,6 +34,12 @@ Root `sdkwork.app.config.json` defines the browser platform workspace identity. 
 - `configs/`, `deployments/`, `docs/`, `scripts/`, `tests/`: standard project-root dictionary.
 - `package.json`, `pnpm-workspace.yaml`, `Cargo.toml`: language/build manifests.
 
+## Documentation Canon
+
+- [docs/README.md](docs/README.md)
+- [docs/product/prd/PRD.md](docs/product/prd/PRD.md)
+- [docs/architecture/tech/TECH_ARCHITECTURE.md](docs/architecture/tech/TECH_ARCHITECTURE.md)
+
 ## Spec Resolution Order
 
 1. Read this `AGENTS.md` and any nearer component-level `AGENTS.md`.
