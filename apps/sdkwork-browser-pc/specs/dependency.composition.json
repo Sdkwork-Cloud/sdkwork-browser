@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.dependency.composition",
+  "applicationCode": "browser",
+  "clientArchitecture": "pc",
+  "surfaces": [
+    {
+      "surface": "app",
+      "corePackage": "@sdkwork/browser-pc-core",
+      "sdkClients": [],
+      "reusableModules": [],
+      "hostAdapters": [],
+      "dependencyApiExports": [],
+      "dependencyApiSurfaces": []
+    }
+  ],
+  "buildToolEntries": {
+    "pnpm": {
+      "workspacePackages": [
+        "@sdkwork/browser-pc-core",
+        "@sdkwork/browser-pc-browser",
+        "@sdkwork/browser-pc-commons",
+        "sdkwork-browser-pc-desktop",
+        "@sdkwork/browser-pc-shell"
+      ]
+    }
+  }
+}
