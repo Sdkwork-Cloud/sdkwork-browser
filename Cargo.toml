@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/sdkwork-browser-gateway-assembly",
     "crates/sdkwork-browser-engine-api-service",
     "crates/sdkwork-browser-engine-registry-service",
     "crates/sdkwork-browser-engine-webview-service",
@@ -9,8 +10,8 @@ members = [
     "crates/sdkwork-browser-platform-service",
     "crates/sdkwork-browser-service-host",
     "crates/sdkwork-browser-api-server",
-    "crates/sdkwork-router-browser-app-api",
-    "crates/sdkwork-router-browser-backend-api",
+    "crates/sdkwork-routes-browser-app-api",
+    "crates/sdkwork-routes-browser-backend-api",
     "crates/sdkwork-browser-abstraction-service",
     "crates/sdkwork-browser-tauri-host",
     "crates/sdkwork-browser-native-host",
@@ -28,8 +29,6 @@ members = [
     "crates/sdkwork-platform-browser-repository-sqlx",
     "crates/sdkwork-browser-database-host",
     "crates/sdkwork-browser-shared-service",
-    "crates/sdkwork-routes-browser-app-api",
-    "crates/sdkwork-routes-browser-backend-api",
     "apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-desktop/src-tauri",
 ]
 

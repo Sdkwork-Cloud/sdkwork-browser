@@ -1,5 +1,5 @@
 use axum::Router;
-use sdkwork_iam_web_adapter::IamDatabaseWebRequestContextResolver;
+use sdkwork_iam_web_adapter::IamWebRequestContextResolver;
 use sdkwork_routes_browser_app_api::APP_API_PREFIX;
 use sdkwork_routes_browser_backend_api::BACKEND_API_PREFIX;
 use sdkwork_web_axum::{with_web_request_context, WebFrameworkLayer};
@@ -50,7 +50,7 @@ pub fn browser_gateway_api_prefixes() -> Vec<String> {
 }
 
 pub fn wrap_gateway_router_with_web_framework(
-    resolver: IamDatabaseWebRequestContextResolver,
+    resolver: IamWebRequestContextResolver,
     router: Router,
 ) -> Router {
     let route_manifest = HttpRouteManifest::new(GATEWAY_ROUTES);
@@ -69,6 +69,6 @@ pub fn wrap_gateway_router_with_web_framework(
 }
 
 pub async fn wrap_gateway_router_with_web_framework_from_env(router: Router) -> Router {
-    let resolver = sdkwork_iam_web_adapter::iam_database_resolver_from_env().await;
+    let resolver = sdkwork_iam_web_adapter::iam_web_request_context_resolver_from_env().await;
     wrap_gateway_router_with_web_framework(resolver, router)
 }

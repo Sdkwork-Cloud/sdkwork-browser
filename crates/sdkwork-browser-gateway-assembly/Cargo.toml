@@ -1,0 +1,16 @@
+[package]
+name = "sdkwork-browser-gateway-assembly"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+description = "Generated gateway assembly for sdkwork-browser application HTTP plane."
+
+[lib]
+name = "sdkwork_browser_gateway_assembly"
+path = "src/lib.rs"
+
+[dependencies]
+axum.workspace = true
+tokio = { version = "1.48", features = ["macros", "rt-multi-thread"] }
+sdkwork_routes_browser_app_api = { package = "sdkwork-routes-browser-app-api", path = "../sdkwork-routes-browser-app-api" }
+sdkwork_routes_browser_backend_api = { package = "sdkwork-routes-browser-backend-api", path = "../sdkwork-routes-browser-backend-api" }

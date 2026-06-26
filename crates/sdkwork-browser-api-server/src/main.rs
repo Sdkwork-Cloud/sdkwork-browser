@@ -2,8 +2,8 @@ mod gateway_manifest;
 
 use gateway_manifest::wrap_gateway_router_with_web_framework_from_env;
 use sdkwork_browser_service_host::BrowserRuntimeFactory;
-use sdkwork_router_browser_app_api::{mount_browser_app_api, BrowserAppState};
-use sdkwork_router_browser_backend_api::mount_browser_backend_api;
+use sdkwork_routes_browser_app_api::{mount_browser_app_api, BrowserAppState};
+use sdkwork_routes_browser_backend_api::mount_browser_backend_api;
 use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
 
 #[tokio::main]

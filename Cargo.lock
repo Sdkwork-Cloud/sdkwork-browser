@@ -3657,8 +3657,8 @@ dependencies = [
  "axum",
  "sdkwork-browser-service-host",
  "sdkwork-iam-web-adapter",
- "sdkwork-router-browser-app-api",
- "sdkwork-router-browser-backend-api",
+ "sdkwork-routes-browser-app-api",
+ "sdkwork-routes-browser-backend-api",
  "sdkwork-routes-browser-app-api",
  "sdkwork-routes-browser-backend-api",
  "sdkwork-web-axum",
@@ -4023,7 +4023,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-router-browser-app-api"
+name = "sdkwork-routes-browser-app-api"
 version = "0.1.0"
 dependencies = [
  "axum",
@@ -4045,7 +4045,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-router-browser-backend-api"
+name = "sdkwork-routes-browser-backend-api"
 version = "0.1.0"
 dependencies = [
  "axum",
@@ -4054,7 +4054,7 @@ dependencies = [
  "sdkwork-browser-platform-service",
  "sdkwork-browser-service-host",
  "sdkwork-iam-web-adapter",
- "sdkwork-router-browser-app-api",
+ "sdkwork-routes-browser-app-api",
  "sdkwork-routes-browser-backend-api",
  "serde_json",
  "tokio",

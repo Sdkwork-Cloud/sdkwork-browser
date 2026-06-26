@@ -38,9 +38,9 @@ const requiredPaths = [
   "crates/sdkwork-platform-browser-repository-sqlx/Cargo.toml",
   "crates/sdkwork-browser-database-host/Cargo.toml",
   "crates/sdkwork-browser-shared-service/Cargo.toml",
-  "crates/sdkwork-router-browser-app-api/Cargo.toml",
   "crates/sdkwork-routes-browser-app-api/Cargo.toml",
-  "crates/sdkwork-router-browser-backend-api/Cargo.toml",
+  "crates/sdkwork-routes-browser-app-api/Cargo.toml",
+  "crates/sdkwork-routes-browser-backend-api/Cargo.toml",
   "sdks/_route-manifests/app-api/sdkwork-routes-browser-app-api.route-manifest.json",
   "sdks/_route-manifests/backend-api/sdkwork-routes-browser-backend-api.route-manifest.json",
   "apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-core/package.json",
@@ -154,7 +154,7 @@ for (const helper of ["new_request_id", "normalize_text", "is_valid_url", "sdkwo
 }
 
 const handlers = readFileSync(
-  join(root, "crates/sdkwork-router-browser-app-api/src/handlers.rs"),
+  join(root, "crates/sdkwork-routes-browser-app-api/src/handlers.rs"),
   "utf8",
 );
 assert.doesNotMatch(handlers, /Uuid::new_v4/, "handlers must use shared-service request ids");
