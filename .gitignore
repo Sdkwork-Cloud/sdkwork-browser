@@ -5,3 +5,7 @@ target/
 *.local
 .env.local
 .env.*.local
+
+# SDKWork local runtime state
+.runtime/
+**/.runtime/

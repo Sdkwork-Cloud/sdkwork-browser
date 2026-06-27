@@ -2,6 +2,8 @@ pub mod http_route_manifest;
 pub mod manifest;
 pub mod web_bootstrap;
 
+use sdkwork_web_core::HttpRouteManifest;
+
 pub use http_route_manifest::app_route_manifest;
 pub use manifest::{
     app_routes, required_dual_token_headers, BrowserHttpRoute, HttpMethod, APP_API_PREFIX,

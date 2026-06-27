@@ -1,9 +1,7 @@
 mod gateway_manifest;
 
 use gateway_manifest::wrap_gateway_router_with_web_framework_from_env;
-use sdkwork_browser_service_host::BrowserRuntimeFactory;
-use sdkwork_routes_browser_app_api::{mount_browser_app_api, BrowserAppState};
-use sdkwork_routes_browser_backend_api::mount_browser_backend_api;
+use sdkwork_browser_gateway_assembly::assemble_application_router;
 use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
 
 #[tokio::main]
@@ -13,18 +11,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .init();
 
     let bind = std::env::var("BROWSER_APP_BIND").unwrap_or_else(|_| "127.0.0.1:8080".into());
-    let platform = BrowserRuntimeFactory::create_webview_platform()?;
-    let state = BrowserAppState::new(platform);
-
-    let router = mount_browser_backend_api(
-        mount_browser_app_api(axum::Router::new(), state.clone()),
-        state,
-    );
-    let router = wrap_gateway_router_with_web_framework_from_env(router).await;
+    let assembly = assemble_application_router()?;
+    let router = wrap_gateway_router_with_web_framework_from_env(assembly.router).await;
     let router = service_router(router, ServiceRouterConfig::default().with_always_ready());
 
     let listener = tokio::net::TcpListener::bind(&bind).await?;
-    tracing::info!(%bind, "sdkwork-browser api-server listening (app-api + backend-api)");
+    tracing::info!(%bind, "sdkwork-browser standalone-gateway listening (app-api + backend-api)");
     axum::serve(listener, router).await?;
     Ok(())
 }

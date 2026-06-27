@@ -1,7 +1,6 @@
 use axum::Router;
 use sdkwork_iam_web_adapter::IamWebRequestContextResolver;
-use sdkwork_routes_browser_app_api::APP_API_PREFIX;
-use sdkwork_routes_browser_backend_api::BACKEND_API_PREFIX;
+use sdkwork_browser_gateway_assembly::{APP_API_PREFIX, BACKEND_API_PREFIX};
 use sdkwork_web_axum::{with_web_request_context, WebFrameworkLayer};
 use sdkwork_web_core::{HttpMethod, HttpRoute, HttpRouteManifest, WebRequestContextProfile};
 

@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-browser-api-server",
+    "name": "sdkwork-browser-standalone-gateway",
     "displayName": "Sdkwork Browser Api Server",
     "version": "0.1.0",
     "type": "rust-service",
-    "root": "sdkwork-browser/crates/sdkwork-browser-api-server",
+    "root": "sdkwork-browser/crates/sdkwork-browser-standalone-gateway",
     "domain": "platform",
     "capability": "browser",
     "languages": [
@@ -60,7 +60,7 @@
   },
   "verification": {
     "commands": [
-      "cargo test -p sdkwork_browser_api_server"
+      "cargo test -p sdkwork_browser_standalone_gateway"
     ]
   }
 }
