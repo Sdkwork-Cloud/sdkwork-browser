@@ -56,7 +56,7 @@
     },
     {
       "path": "sdkwork_browser_app_sdk/api/browser.py",
-      "sha256": "e99216307cbe578db7678695dd0f13b1683de5d058ed2201d702c38f6c79fb7f"
+      "sha256": "f26e415eb459845c59d07f88f0417aba2c7c79082bed4d73520db177d8703f70"
     },
     {
       "path": "sdkwork_browser_app_sdk/client.py",
@@ -68,11 +68,47 @@
     },
     {
       "path": "sdkwork_browser_app_sdk/models/__init__.py",
-      "sha256": "4e972fef8bbf72e62b08b5ee816f7f568947bcd8369fccbdc38fcaadd47d39a5"
+      "sha256": "ecd4b504653b0d85e95029ecc860bc387c43c8d50ec8fad127b6e377380c44c8"
     },
     {
-      "path": "sdkwork_browser_app_sdk/models/browser_api_result.py",
-      "sha256": "0c8a64f97bbe4c868c9630563d1eaa045f959949157160fb717500340b05b573"
+      "path": "sdkwork_browser_app_sdk/models/field_error.py",
+      "sha256": "8bb46bf56c6424b0ec3d2a5b6aceca41145c5cb39ab6c2cd21b00569802115bb"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/page_info.py",
+      "sha256": "0f81129ea8bcb4251c3d8bdd788be210051c6f1a3535fd18cf770bca14fdfd13"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/problem_detail.py",
+      "sha256": "83791144d8d34923d3444e098f1d51d061e04541dcc5c6bc9f038ef0be891574"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/sdk_work_api_response.py",
+      "sha256": "c76a9fa3784ba83c7ca1314987ef9811ed94f15164328840ef89b49b00cbd0a4"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/sdk_work_command_data.py",
+      "sha256": "b56c81e6d443fa7d37811561a951bf91979571dd3b53b7ec2cdeef107999347f"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/sdk_work_command_response.py",
+      "sha256": "8fe28ce2ab996f43ca52a5e0b2e462a42b171c68bddd41341bb26cac9ca15a2c"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/sdk_work_list_response.py",
+      "sha256": "a66e283546743b13a3d380a9c1861cb38a3402c90715fea557c97cb290616486"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/sdk_work_page_data.py",
+      "sha256": "6903097c7602ae22293e53b9ed707e2e39a69f4cb012b8563a52d386c0a5ad10"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/sdk_work_resource_data.py",
+      "sha256": "f890d654c53e83aa1275abfa085a132c0042b19f918ff11fef3b101f3a314a23"
+    },
+    {
+      "path": "sdkwork_browser_app_sdk/models/sdk_work_resource_response.py",
+      "sha256": "04999dbef6e10773d76f9d28fc5db40074609449a7b9f4ab915b177e73ad3353"
     },
     {
       "path": "sdkwork-sdk.json",

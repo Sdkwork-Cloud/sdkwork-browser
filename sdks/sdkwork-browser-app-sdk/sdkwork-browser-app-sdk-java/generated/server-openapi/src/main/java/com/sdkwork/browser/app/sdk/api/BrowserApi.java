@@ -14,21 +14,21 @@ public class BrowserApi {
     }
 
     /** browser.aiActions.create */
-    public BrowserApiResult aiActionsCreate(Map<String, Object> body) throws Exception {
+    public SdkWorkResourceResponse aiActionsCreate(Map<String, Object> body) throws Exception {
         Object raw = client.post(ApiPaths.appPath("/browser/ai/actions"), body, null, null, "application/json");
-        return client.convertValue(raw, new TypeReference<BrowserApiResult>() {});
+        return client.convertValue(raw, new TypeReference<SdkWorkResourceResponse>() {});
     }
 
     /** browser.sessions.create */
-    public BrowserApiResult sessionsCreate(Map<String, Object> body) throws Exception {
+    public SdkWorkResourceResponse sessionsCreate(Map<String, Object> body) throws Exception {
         Object raw = client.post(ApiPaths.appPath("/browser/sessions"), body, null, null, "application/json");
-        return client.convertValue(raw, new TypeReference<BrowserApiResult>() {});
+        return client.convertValue(raw, new TypeReference<SdkWorkResourceResponse>() {});
     }
 
     /** browser.tabs.create */
-    public BrowserApiResult tabsCreate(Map<String, Object> body) throws Exception {
+    public SdkWorkResourceResponse tabsCreate(Map<String, Object> body) throws Exception {
         Object raw = client.post(ApiPaths.appPath("/browser/tabs"), body, null, null, "application/json");
-        return client.convertValue(raw, new TypeReference<BrowserApiResult>() {});
+        return client.convertValue(raw, new TypeReference<SdkWorkResourceResponse>() {});
     }
 
 

@@ -1,10 +1,19 @@
 from typing import List, Dict, Any
 
-from .browser_api_result import BrowserApiResult
+from .sdk_work_api_response import SdkWorkApiResponse
+from .sdk_work_resource_data import SdkWorkResourceData
+from .sdk_work_page_data import SdkWorkPageData
+from .sdk_work_command_data import SdkWorkCommandData
+from .page_info import PageInfo
+from .problem_detail import ProblemDetail
+from .field_error import FieldError
+from .sdk_work_resource_response import SdkWorkResourceResponse
+from .sdk_work_list_response import SdkWorkListResponse
+from .sdk_work_command_response import SdkWorkCommandResponse
 from .browser_operator_session import BrowserOperatorSession
 from .agent_provider_diagnostic import AgentProviderDiagnostic
 from .agent_runtime_diagnostics import AgentRuntimeDiagnostics
 from .browser_sessions_list_data import BrowserSessionsListData
-from .browser_sessions_list_result import BrowserSessionsListResult
+from .browser_sessions_list_response import BrowserSessionsListResponse
 
-__all__ = ['BrowserApiResult', 'BrowserOperatorSession', 'AgentProviderDiagnostic', 'AgentRuntimeDiagnostics', 'BrowserSessionsListData', 'BrowserSessionsListResult']
+__all__ = ['SdkWorkApiResponse', 'SdkWorkResourceData', 'SdkWorkPageData', 'SdkWorkCommandData', 'PageInfo', 'ProblemDetail', 'FieldError', 'SdkWorkResourceResponse', 'SdkWorkListResponse', 'SdkWorkCommandResponse', 'BrowserOperatorSession', 'AgentProviderDiagnostic', 'AgentRuntimeDiagnostics', 'BrowserSessionsListData', 'BrowserSessionsListResponse']

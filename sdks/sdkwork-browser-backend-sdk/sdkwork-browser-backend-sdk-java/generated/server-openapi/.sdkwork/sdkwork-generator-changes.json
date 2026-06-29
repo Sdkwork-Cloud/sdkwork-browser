@@ -9,16 +9,23 @@
     "protocol": "http",
     "packageName": "com.sdkwork:sdkwork-browser-backend-sdk"
   },
-  "changeFingerprint": "8911eef8adfd902c4d4b516c4bd3b633384d2340884d09595d509948b19e48c4",
+  "changeFingerprint": "7cc3bbacb9e4f820d222fc07ae3a56b97c29d80580cf1d9e5f394805324d99d5",
   "changes": {
     "createdGeneratedFiles": [
-      "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentProviderDiagnostic.java",
-      "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentRuntimeDiagnostics.java",
-      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserOperatorSession.java",
-      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListData.java",
-      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResult.java"
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResponse.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/FieldError.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/PageInfo.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/ProblemDetail.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkApiResponse.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkCommandData.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkCommandResponse.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkListResponse.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkPageData.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkResourceData.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkResourceResponse.java"
     ],
     "updatedGeneratedFiles": [
+      "README.md",
       "src/main/java/com/sdkwork/browser/backend/sdk/api/BrowserApi.java"
     ],
     "unchangedGeneratedFiles": [
@@ -28,15 +35,20 @@
       "CHANGELOG.md",
       "LICENSE",
       "pom.xml",
-      "README.md",
       "sdkwork-sdk.json",
       "src/main/java/com/sdkwork/browser/backend/sdk/api/ApiPaths.java",
       "src/main/java/com/sdkwork/browser/backend/sdk/api/package-info.java",
       "src/main/java/com/sdkwork/browser/backend/sdk/http/HttpClient.java",
-      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserApiResult.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentProviderDiagnostic.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentRuntimeDiagnostics.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserOperatorSession.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListData.java",
       "src/main/java/com/sdkwork/browser/backend/sdk/SdkworkBackendClient.java"
     ],
-    "deletedGeneratedFiles": [],
+    "deletedGeneratedFiles": [
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserApiResult.java",
+      "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResult.java"
+    ],
     "scaffoldedFiles": [],
     "preservedScaffoldFiles": [
       "custom/README.md"
@@ -47,7 +59,8 @@
     "schemaVersion": 1,
     "areas": [
       "api-surface",
-      "models"
+      "models",
+      "documentation"
     ],
     "details": [
       {
@@ -59,27 +72,41 @@
       {
         "area": "models",
         "paths": [
-          "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentProviderDiagnostic.java",
-          "src/main/java/com/sdkwork/browser/backend/sdk/model/AgentRuntimeDiagnostics.java",
-          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserOperatorSession.java",
-          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListData.java",
-          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResult.java"
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserApiResult.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResponse.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/BrowserSessionsListResult.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/FieldError.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/PageInfo.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/ProblemDetail.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkApiResponse.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkCommandData.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkCommandResponse.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkListResponse.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkPageData.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkResourceData.java",
+          "src/main/java/com/sdkwork/browser/backend/sdk/model/SdkWorkResourceResponse.java"
+        ]
+      },
+      {
+        "area": "documentation",
+        "paths": [
+          "README.md"
         ]
       }
     ],
     "requiresVerification": true,
-    "summary": "Detected impact areas: api-surface, models. Verification is required."
+    "summary": "Detected impact areas: api-surface, models, documentation. Verification is required."
   },
   "verificationPlan": {
     "shouldRun": true,
     "runPhase": "now",
-    "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
+    "summary": "Detected impact areas: api-surface, models, documentation. Verification is required. Run the required verification commands now against the generated SDK output.",
     "steps": [
       {
         "id": "check",
         "title": "Unified package check",
         "required": true,
-        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models, documentation.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-java\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -97,12 +124,14 @@
   },
   "executionDecision": {
     "schemaVersion": 1,
-    "riskLevel": "medium",
+    "riskLevel": "high",
     "nextAction": "verify",
     "requiresManualReview": false,
     "applyRequiresExpectedFingerprint": false,
     "summary": "Changes have been applied. Run the required verification plan now.",
     "reasons": [
+      "deleted-generated-files",
+      "manual-review-required",
       "verification-required"
     ]
   },

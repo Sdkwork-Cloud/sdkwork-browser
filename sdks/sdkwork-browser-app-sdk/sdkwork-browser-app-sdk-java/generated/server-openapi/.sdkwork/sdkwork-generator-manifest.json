@@ -36,7 +36,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "ca9b5edbaa81b7744da03458d1370955e87ad1c65515495559117eeb6d5a3e67"
+      "sha256": "452f1d2390d3cff9478fd14cdef1010532e914a4a876c83c2a06f743ba5ab2b9"
     },
     {
       "path": "sdkwork-sdk.json",
@@ -48,7 +48,7 @@
     },
     {
       "path": "src/main/java/com/sdkwork/browser/app/sdk/api/BrowserApi.java",
-      "sha256": "5c07a079ddeafa1727f264814cb3edbbc52cd1f248d55cdfc5b07100b2a4b517"
+      "sha256": "08da42fe3907c8765d29be022a07a0ee9fef53acc76b9cf64373a7dc783dcc8a"
     },
     {
       "path": "src/main/java/com/sdkwork/browser/app/sdk/api/package-info.java",
@@ -59,8 +59,44 @@
       "sha256": "1bbd9ecfd87f5d51f6ae57c175b88702036660a43da5a7c7282fb8449e025f27"
     },
     {
-      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/BrowserApiResult.java",
-      "sha256": "7cf8f15f38ef4df0ed7c77a9318c65dffc8da2c9b35e82b6b56a8bee8d1ef7f6"
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/FieldError.java",
+      "sha256": "561047b959033bd62bebbd30fd73eeec6eda9bad08570ac96fa6db542dc213a2"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/PageInfo.java",
+      "sha256": "8e78f9acd6050b22559d7acda9bf667ecc89e7f1d2583c46aa8358bf72069c92"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/ProblemDetail.java",
+      "sha256": "e29e3cbf7dac207bd6236479b972705324552ed171324a5a3b17e4d824c49219"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkApiResponse.java",
+      "sha256": "5f01a6a5aefeb8068d94a032015afa75fed2e1f54610019199309956a492c317"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkCommandData.java",
+      "sha256": "0a4aaa19988039375d92d0ea0f85b7dd748e5499de12c79e881e447cc72dfe38"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkCommandResponse.java",
+      "sha256": "83c510f1d9430e36c78d49020bd771e215ce279f5466a9fc0ebf8a9ae43c356f"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkListResponse.java",
+      "sha256": "a374797c9d366e904c11a344806d926c64049c98e277e2fd7c4b25b6991db3f3"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkPageData.java",
+      "sha256": "0f505f8c8d4858ff03c71b5192112c9d2032e5ad61ea1dba419ee85d35d41cc6"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkResourceData.java",
+      "sha256": "0e66eb56fee1eca503387b1fb5d5ed47c4cf6e2bd0a272cab5bf7966fc659a8c"
+    },
+    {
+      "path": "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkResourceResponse.java",
+      "sha256": "2a3d8ac54b473f08f02b99751f800b7610ff44fc5db40a3877b2dd0f25dc369f"
     },
     {
       "path": "src/main/java/com/sdkwork/browser/app/sdk/SdkworkAppClient.java",

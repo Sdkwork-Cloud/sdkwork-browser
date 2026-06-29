@@ -35,7 +35,7 @@ public class Main {
 client.setAccessToken("your-access-token");
 
         // Use the SDK
-        BrowserApiResult result = client.getBrowser().enginesList();
+        SdkWorkListResponse result = client.getBrowser().enginesList();
         System.out.println(result);
     }
 }
@@ -69,7 +69,7 @@ client.getHttpClient().setHeader("X-Custom-Header", "value");
 
 ```java
 // browser.engines.list
-BrowserApiResult result = client.getBrowser().enginesList();
+SdkWorkListResponse result = client.getBrowser().enginesList();
 System.out.println(result);
 ```
 
@@ -77,7 +77,7 @@ System.out.println(result);
 
 ```java
 try {
-    BrowserApiResult result = client.getBrowser().enginesList();
+    SdkWorkListResponse result = client.getBrowser().enginesList();
     System.out.println(result);
 } catch (Exception e) {
     System.err.println("Error: " + e.getMessage());

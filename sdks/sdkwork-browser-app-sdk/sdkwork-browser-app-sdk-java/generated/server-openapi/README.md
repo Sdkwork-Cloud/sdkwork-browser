@@ -38,7 +38,7 @@ client.setAccessToken("your-access-token");
 
         // Use the SDK
         Map<String, Object> body = new LinkedHashMap<>();
-        BrowserApiResult result = client.getBrowser().aiActionsCreate(body);
+        SdkWorkResourceResponse result = client.getBrowser().aiActionsCreate(body);
         System.out.println(result);
     }
 }
@@ -73,7 +73,7 @@ client.getHttpClient().setHeader("X-Custom-Header", "value");
 ```java
 // browser.aiActions.create
 Map<String, Object> body = new LinkedHashMap<>();
-BrowserApiResult result = client.getBrowser().aiActionsCreate(body);
+SdkWorkResourceResponse result = client.getBrowser().aiActionsCreate(body);
 System.out.println(result);
 ```
 
@@ -82,7 +82,7 @@ System.out.println(result);
 ```java
 try {
     Map<String, Object> body = new LinkedHashMap<>();
-    BrowserApiResult result = client.getBrowser().aiActionsCreate(body);
+    SdkWorkResourceResponse result = client.getBrowser().aiActionsCreate(body);
     System.out.println(result);
 } catch (Exception e) {
     System.err.println("Error: " + e.getMessage());

@@ -9,19 +9,25 @@
     "protocol": "http",
     "packageName": "@sdkwork/browser-backend-sdk"
   },
-  "changeFingerprint": "98f34ebdf755a77e88bd37a51b7591c6a4afdc9de295da9d16ec447bc24375bb",
+  "changeFingerprint": "bd3335d7c407225996ca073fdd70aa69ba665dbc5289d50a16bcc5be1375f216",
   "changes": {
     "createdGeneratedFiles": [
-      "src/types/agent-provider-diagnostic.ts",
-      "src/types/agent-runtime-diagnostics.ts",
-      "src/types/browser-operator-session.ts",
-      "src/types/browser-sessions-list-data.ts",
-      "src/types/browser-sessions-list-result.ts"
+      "src/types/browser-sessions-list-response.ts",
+      "src/types/field-error.ts",
+      "src/types/page-info.ts",
+      "src/types/sdk-work-api-response.ts",
+      "src/types/sdk-work-command-data.ts",
+      "src/types/sdk-work-command-response.ts",
+      "src/types/sdk-work-list-response.ts",
+      "src/types/sdk-work-page-data.ts",
+      "src/types/sdk-work-platform-error-code.ts",
+      "src/types/sdk-work-resource-data.ts",
+      "src/types/sdk-work-resource-response.ts"
     ],
     "updatedGeneratedFiles": [
       "src/api/browser.ts",
-      "src/http/client.ts",
-      "src/types/index.ts"
+      "src/types/index.ts",
+      "src/types/problem-detail.ts"
     ],
     "unchangedGeneratedFiles": [
       "bin/publish-core.mjs",
@@ -38,16 +44,22 @@
       "src/api/index.ts",
       "src/api/paths.ts",
       "src/auth/index.ts",
+      "src/http/client.ts",
       "src/http/index.ts",
       "src/index.ts",
       "src/sdk.ts",
-      "src/types/browser-api-result.ts",
+      "src/types/agent-provider-diagnostic.ts",
+      "src/types/agent-runtime-diagnostics.ts",
       "src/types/browser-operation-command.ts",
+      "src/types/browser-operator-session.ts",
+      "src/types/browser-sessions-list-data.ts",
       "src/types/common.ts",
-      "src/types/problem-detail.ts",
       "tsconfig.json"
     ],
-    "deletedGeneratedFiles": [],
+    "deletedGeneratedFiles": [
+      "src/types/browser-api-result.ts",
+      "src/types/browser-sessions-list-result.ts"
+    ],
     "scaffoldedFiles": [],
     "preservedScaffoldFiles": [
       "custom/build-runtime.mjs",
@@ -59,48 +71,49 @@
     "schemaVersion": 1,
     "areas": [
       "api-surface",
-      "models",
-      "runtime"
+      "models"
     ],
     "details": [
       {
         "area": "api-surface",
         "paths": [
-          "src/api/browser.ts",
-          "src/http/client.ts"
+          "src/api/browser.ts"
         ]
       },
       {
         "area": "models",
         "paths": [
-          "src/types/agent-provider-diagnostic.ts",
-          "src/types/agent-runtime-diagnostics.ts",
-          "src/types/browser-operator-session.ts",
-          "src/types/browser-sessions-list-data.ts",
+          "src/types/browser-api-result.ts",
+          "src/types/browser-sessions-list-response.ts",
           "src/types/browser-sessions-list-result.ts",
-          "src/types/index.ts"
-        ]
-      },
-      {
-        "area": "runtime",
-        "paths": [
-          "src/http/client.ts"
+          "src/types/field-error.ts",
+          "src/types/index.ts",
+          "src/types/page-info.ts",
+          "src/types/problem-detail.ts",
+          "src/types/sdk-work-api-response.ts",
+          "src/types/sdk-work-command-data.ts",
+          "src/types/sdk-work-command-response.ts",
+          "src/types/sdk-work-list-response.ts",
+          "src/types/sdk-work-page-data.ts",
+          "src/types/sdk-work-platform-error-code.ts",
+          "src/types/sdk-work-resource-data.ts",
+          "src/types/sdk-work-resource-response.ts"
         ]
       }
     ],
     "requiresVerification": true,
-    "summary": "Detected impact areas: api-surface, models, runtime. Verification is required."
+    "summary": "Detected impact areas: api-surface, models. Verification is required."
   },
   "verificationPlan": {
     "shouldRun": true,
     "runPhase": "now",
-    "summary": "Detected impact areas: api-surface, models, runtime. Verification is required. Run the required verification commands now against the generated SDK output.",
+    "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
     "steps": [
       {
         "id": "check",
         "title": "Unified package check",
         "required": true,
-        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models, runtime.",
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -118,7 +131,7 @@
         "id": "build",
         "title": "Unified package build",
         "required": true,
-        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: api-surface, models, runtime.",
+        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: api-surface, models.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-backend-sdk\\sdkwork-browser-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -136,12 +149,14 @@
   },
   "executionDecision": {
     "schemaVersion": 1,
-    "riskLevel": "medium",
+    "riskLevel": "high",
     "nextAction": "verify",
     "requiresManualReview": false,
     "applyRequiresExpectedFingerprint": false,
     "summary": "Changes have been applied. Run the required verification plan now.",
     "reasons": [
+      "deleted-generated-files",
+      "manual-review-required",
       "verification-required"
     ]
   },

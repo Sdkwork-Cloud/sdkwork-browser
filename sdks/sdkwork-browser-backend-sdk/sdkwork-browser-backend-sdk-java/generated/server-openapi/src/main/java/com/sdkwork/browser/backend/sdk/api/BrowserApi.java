@@ -14,15 +14,15 @@ public class BrowserApi {
     }
 
     /** browser.engines.list */
-    public BrowserApiResult enginesList() throws Exception {
+    public SdkWorkListResponse enginesList() throws Exception {
         Object raw = client.get(ApiPaths.backendPath("/browser/engines"));
-        return client.convertValue(raw, new TypeReference<BrowserApiResult>() {});
+        return client.convertValue(raw, new TypeReference<SdkWorkListResponse>() {});
     }
 
     /** browser.sessions.list */
-    public BrowserSessionsListResult sessionsList() throws Exception {
+    public BrowserSessionsListResponse sessionsList() throws Exception {
         Object raw = client.get(ApiPaths.backendPath("/browser/sessions"));
-        return client.convertValue(raw, new TypeReference<BrowserSessionsListResult>() {});
+        return client.convertValue(raw, new TypeReference<BrowserSessionsListResponse>() {});
     }
 
 

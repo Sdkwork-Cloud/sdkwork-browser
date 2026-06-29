@@ -56,7 +56,7 @@
     },
     {
       "path": "sdkwork_browser_backend_sdk/api/browser.py",
-      "sha256": "c7f95575862a679b17060a3afc2591985a53c927d39e31d694a6840289f9837b"
+      "sha256": "3a811179cf389665aaea1b1ce57e101dda57ec265ad0cded50df86071ab4070a"
     },
     {
       "path": "sdkwork_browser_backend_sdk/client.py",
@@ -68,7 +68,7 @@
     },
     {
       "path": "sdkwork_browser_backend_sdk/models/__init__.py",
-      "sha256": "4d338a749abc271d5b7d227e6ff73e8a9dd0d41cae19f6f1d61f5c87c1ed84f6"
+      "sha256": "9856a82f4d66594d59db67b33558acca41328a403566c0b52281ac416cf6cb43"
     },
     {
       "path": "sdkwork_browser_backend_sdk/models/agent_provider_diagnostic.py",
@@ -79,10 +79,6 @@
       "sha256": "3f5eb13649df711b345401f5b5a82abe3ffe18ef1c5968bc12236ad71485dd0a"
     },
     {
-      "path": "sdkwork_browser_backend_sdk/models/browser_api_result.py",
-      "sha256": "0c8a64f97bbe4c868c9630563d1eaa045f959949157160fb717500340b05b573"
-    },
-    {
       "path": "sdkwork_browser_backend_sdk/models/browser_operator_session.py",
       "sha256": "b288fb8cb3cf4016a930ad73a1283809928898edc15839633056c88f9b45a43b"
     },
@@ -91,8 +87,48 @@
       "sha256": "e666d8a8ed5c28162271517d1f57582152d2a5c01f01bdf06a3106a9e2b44ef8"
     },
     {
-      "path": "sdkwork_browser_backend_sdk/models/browser_sessions_list_result.py",
-      "sha256": "94562183a096a88db17df4d4ca5bac5bf93a3aba598bd020c20456058aeb774a"
+      "path": "sdkwork_browser_backend_sdk/models/browser_sessions_list_response.py",
+      "sha256": "1071a40579afc5c0d0c94e8da4c043bbc07c7d7757e08fc21d4656d3c781a2e0"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/field_error.py",
+      "sha256": "8bb46bf56c6424b0ec3d2a5b6aceca41145c5cb39ab6c2cd21b00569802115bb"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/page_info.py",
+      "sha256": "0f81129ea8bcb4251c3d8bdd788be210051c6f1a3535fd18cf770bca14fdfd13"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/problem_detail.py",
+      "sha256": "83791144d8d34923d3444e098f1d51d061e04541dcc5c6bc9f038ef0be891574"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/sdk_work_api_response.py",
+      "sha256": "c76a9fa3784ba83c7ca1314987ef9811ed94f15164328840ef89b49b00cbd0a4"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/sdk_work_command_data.py",
+      "sha256": "b56c81e6d443fa7d37811561a951bf91979571dd3b53b7ec2cdeef107999347f"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/sdk_work_command_response.py",
+      "sha256": "8fe28ce2ab996f43ca52a5e0b2e462a42b171c68bddd41341bb26cac9ca15a2c"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/sdk_work_list_response.py",
+      "sha256": "a66e283546743b13a3d380a9c1861cb38a3402c90715fea557c97cb290616486"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/sdk_work_page_data.py",
+      "sha256": "6903097c7602ae22293e53b9ed707e2e39a69f4cb012b8563a52d386c0a5ad10"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/sdk_work_resource_data.py",
+      "sha256": "f890d654c53e83aa1275abfa085a132c0042b19f918ff11fef3b101f3a314a23"
+    },
+    {
+      "path": "sdkwork_browser_backend_sdk/models/sdk_work_resource_response.py",
+      "sha256": "04999dbef6e10773d76f9d28fc5db40074609449a7b9f4ab915b177e73ad3353"
     },
     {
       "path": "sdkwork-sdk.json",

@@ -1,6 +1,11 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  sdkWorkEnvelopeComponentSchemas,
+  successResponseSchemaRef,
+  typedSdkWorkResourceResponse,
+} from "../../sdkwork-specs/tools/lib/openapi-envelope-schemas.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const browserRoot = resolve(__dirname, "..");
@@ -202,21 +207,8 @@ function buildOpenApi(surface, routes) {
         },
       },
       schemas: {
-        BrowserApiResult: {
-          type: "object",
-          required: ["code", "message", "requestId", "data"],
-          properties: {
-            code: { type: "string" },
-            message: { type: "string" },
-            requestId: { type: "string", format: "uuid" },
-            data: { type: "object", additionalProperties: true },
-          },
-        },
+        ...sdkWorkEnvelopeComponentSchemas,
         BrowserOperationCommand: {
-          type: "object",
-          additionalProperties: true,
-        },
-        ProblemDetail: {
           type: "object",
           additionalProperties: true,
         },
@@ -270,9 +262,9 @@ function successResponseSchema(surface, route) {
     surface.routeSurface === "backend-api" &&
     route.operationId === "browser.sessions.list"
   ) {
-    return { $ref: "#/components/schemas/BrowserSessionsListResult" };
+    return { $ref: "#/components/schemas/BrowserSessionsListResponse" };
   }
-  return { $ref: "#/components/schemas/BrowserApiResult" };
+  return { $ref: successResponseSchemaRef(route) };
 }
 
 function surfaceBackendSchemas(surface) {
@@ -381,18 +373,9 @@ function surfaceBackendSchemas(surface) {
         agentDiagnostics: { $ref: "#/components/schemas/AgentRuntimeDiagnostics" },
       },
     },
-    BrowserSessionsListResult: {
-      allOf: [
-        { $ref: "#/components/schemas/BrowserApiResult" },
-        {
-          type: "object",
-          required: ["data"],
-          properties: {
-            data: { $ref: "#/components/schemas/BrowserSessionsListData" },
-          },
-        },
-      ],
-    },
+    BrowserSessionsListResponse: typedSdkWorkResourceResponse(
+      "#/components/schemas/BrowserSessionsListData",
+    ),
   };
 }
 

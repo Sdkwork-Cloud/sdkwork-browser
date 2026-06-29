@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional
 from ..http_client import HttpClient
-from ..models import BrowserApiResult, BrowserSessionsListResult
+from ..models import BrowserSessionsListResponse, SdkWorkListResponse
 
 def _append_query_string(path: str, raw_query_string: str) -> str:
     query = raw_query_string.lstrip('?')
@@ -29,7 +29,7 @@ class BrowserEnginesApi:
         self._client = client
 
 
-    def list(self) -> BrowserApiResult:
+    def list(self) -> SdkWorkListResponse:
         """browser.engines.list"""
         return self._client.get(f"/backend/v3/api/browser/engines")
 
@@ -40,6 +40,6 @@ class BrowserSessionsApi:
         self._client = client
 
 
-    def list(self) -> BrowserSessionsListResult:
+    def list(self) -> BrowserSessionsListResponse:
         """browser.sessions.list"""
         return self._client.get(f"/backend/v3/api/browser/sessions")

@@ -9,10 +9,24 @@
     "protocol": "http",
     "packageName": "com.sdkwork:sdkwork-browser-app-sdk"
   },
-  "changeFingerprint": "e3410ea50cb252eb220f3bc8bacd83a48107a504b237eee7a599bcd94b34bb16",
+  "changeFingerprint": "27150d2bec331eeecac63c88e3b4dbfce0b2daf4b72e38c3958e9017d53288c9",
   "changes": {
-    "createdGeneratedFiles": [],
-    "updatedGeneratedFiles": [],
+    "createdGeneratedFiles": [
+      "src/main/java/com/sdkwork/browser/app/sdk/model/FieldError.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/PageInfo.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/ProblemDetail.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkApiResponse.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkCommandData.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkCommandResponse.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkListResponse.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkPageData.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkResourceData.java",
+      "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkResourceResponse.java"
+    ],
+    "updatedGeneratedFiles": [
+      "README.md",
+      "src/main/java/com/sdkwork/browser/app/sdk/api/BrowserApi.java"
+    ],
     "unchangedGeneratedFiles": [
       "bin/publish-core.mjs",
       "bin/publish.ps1",
@@ -20,16 +34,15 @@
       "CHANGELOG.md",
       "LICENSE",
       "pom.xml",
-      "README.md",
       "sdkwork-sdk.json",
       "src/main/java/com/sdkwork/browser/app/sdk/api/ApiPaths.java",
-      "src/main/java/com/sdkwork/browser/app/sdk/api/BrowserApi.java",
       "src/main/java/com/sdkwork/browser/app/sdk/api/package-info.java",
       "src/main/java/com/sdkwork/browser/app/sdk/http/HttpClient.java",
-      "src/main/java/com/sdkwork/browser/app/sdk/model/BrowserApiResult.java",
       "src/main/java/com/sdkwork/browser/app/sdk/SdkworkAppClient.java"
     ],
-    "deletedGeneratedFiles": [],
+    "deletedGeneratedFiles": [
+      "src/main/java/com/sdkwork/browser/app/sdk/model/BrowserApiResult.java"
+    ],
     "scaffoldedFiles": [],
     "preservedScaffoldFiles": [
       "custom/README.md"
@@ -38,26 +51,80 @@
   },
   "impact": {
     "schemaVersion": 1,
-    "areas": [],
-    "details": [],
-    "requiresVerification": false,
-    "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped."
+    "areas": [
+      "api-surface",
+      "models",
+      "documentation"
+    ],
+    "details": [
+      {
+        "area": "api-surface",
+        "paths": [
+          "src/main/java/com/sdkwork/browser/app/sdk/api/BrowserApi.java"
+        ]
+      },
+      {
+        "area": "models",
+        "paths": [
+          "src/main/java/com/sdkwork/browser/app/sdk/model/BrowserApiResult.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/FieldError.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/PageInfo.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/ProblemDetail.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkApiResponse.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkCommandData.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkCommandResponse.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkListResponse.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkPageData.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkResourceData.java",
+          "src/main/java/com/sdkwork/browser/app/sdk/model/SdkWorkResourceResponse.java"
+        ]
+      },
+      {
+        "area": "documentation",
+        "paths": [
+          "README.md"
+        ]
+      }
+    ],
+    "requiresVerification": true,
+    "summary": "Detected impact areas: api-surface, models, documentation. Verification is required."
   },
   "verificationPlan": {
-    "shouldRun": false,
-    "runPhase": "skip",
-    "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped.",
-    "steps": []
+    "shouldRun": true,
+    "runPhase": "now",
+    "summary": "Detected impact areas: api-surface, models, documentation. Verification is required. Run the required verification commands now against the generated SDK output.",
+    "steps": [
+      {
+        "id": "check",
+        "title": "Unified package check",
+        "required": true,
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models, documentation.",
+        "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-app-sdk\\sdkwork-browser-app-sdk-java\\generated\\server-openapi",
+        "command": "node",
+        "args": [
+          "./bin/publish-core.mjs",
+          "--language",
+          "java",
+          "--project-dir",
+          ".",
+          "--action",
+          "check"
+        ],
+        "displayCommand": "node ./bin/publish-core.mjs --language java --project-dir . --action check"
+      }
+    ]
   },
   "executionDecision": {
     "schemaVersion": 1,
-    "riskLevel": "low",
-    "nextAction": "skip",
+    "riskLevel": "high",
+    "nextAction": "verify",
     "requiresManualReview": false,
     "applyRequiresExpectedFingerprint": false,
-    "summary": "No actionable changes were detected. No apply or verification step is required.",
+    "summary": "Changes have been applied. Run the required verification plan now.",
     "reasons": [
-      "no-actionable-changes"
+      "deleted-generated-files",
+      "manual-review-required",
+      "verification-required"
     ]
   },
   "preservedLegacyFiles": false

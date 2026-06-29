@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional
 from ..http_client import HttpClient
-from ..models import BrowserApiResult
+from ..models import SdkWorkResourceResponse
 
 def _append_query_string(path: str, raw_query_string: str) -> str:
     query = raw_query_string.lstrip('?')
@@ -30,7 +30,7 @@ class BrowserAiActionsApi:
         self._client = client
 
 
-    def ai_actions_create(self, body: Dict[str, Any]) -> BrowserApiResult:
+    def ai_actions_create(self, body: Dict[str, Any]) -> SdkWorkResourceResponse:
         """browser.aiActions.create"""
         return self._client.post(f"/app/v3/api/browser/ai/actions", json=body)
 
@@ -41,7 +41,7 @@ class BrowserSessionsApi:
         self._client = client
 
 
-    def create(self, body: Dict[str, Any]) -> BrowserApiResult:
+    def create(self, body: Dict[str, Any]) -> SdkWorkResourceResponse:
         """browser.sessions.create"""
         return self._client.post(f"/app/v3/api/browser/sessions", json=body)
 
@@ -52,6 +52,6 @@ class BrowserTabsApi:
         self._client = client
 
 
-    def create(self, body: Dict[str, Any]) -> BrowserApiResult:
+    def create(self, body: Dict[str, Any]) -> SdkWorkResourceResponse:
         """browser.tabs.create"""
         return self._client.post(f"/app/v3/api/browser/tabs", json=body)

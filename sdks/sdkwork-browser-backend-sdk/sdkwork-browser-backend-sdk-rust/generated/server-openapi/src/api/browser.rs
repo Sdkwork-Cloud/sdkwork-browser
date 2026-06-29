@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::api::paths::backend_path;
 use crate::http::{SdkworkError, SdkworkHttpClient};
-use crate::models::{BrowserApiResult, BrowserSessionsListResult};
+use crate::models::{BrowserSessionsListResponse, SdkWorkListResponse};
 
 #[derive(Clone)]
 pub struct BrowserApi {
@@ -15,13 +15,13 @@ impl BrowserApi {
     }
 
     /// browser.engines.list
-    pub async fn engines_list(&self) -> Result<BrowserApiResult, SdkworkError> {
+    pub async fn engines_list(&self) -> Result<SdkWorkListResponse, SdkworkError> {
         let path = backend_path(&"/browser/engines".to_string());
         self.client.get(&path, None, None).await
     }
 
     /// browser.sessions.list
-    pub async fn sessions_list(&self) -> Result<BrowserSessionsListResult, SdkworkError> {
+    pub async fn sessions_list(&self) -> Result<BrowserSessionsListResponse, SdkworkError> {
         let path = backend_path(&"/browser/sessions".to_string());
         self.client.get(&path, None, None).await
     }

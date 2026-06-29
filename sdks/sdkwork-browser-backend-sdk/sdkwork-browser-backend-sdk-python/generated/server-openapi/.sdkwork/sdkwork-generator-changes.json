@@ -9,14 +9,20 @@
     "protocol": "http",
     "packageName": "sdkwork-browser-backend-sdk"
   },
-  "changeFingerprint": "cf2556b66d28fcf120d8688cc9a9cbbd01950108b607679d4cb08a236b2e2ffa",
+  "changeFingerprint": "252e88941d6367573da9f5218c947eacabd16ff6ed11f9976f7e937d69335eb6",
   "changes": {
     "createdGeneratedFiles": [
-      "sdkwork_browser_backend_sdk/models/agent_provider_diagnostic.py",
-      "sdkwork_browser_backend_sdk/models/agent_runtime_diagnostics.py",
-      "sdkwork_browser_backend_sdk/models/browser_operator_session.py",
-      "sdkwork_browser_backend_sdk/models/browser_sessions_list_data.py",
-      "sdkwork_browser_backend_sdk/models/browser_sessions_list_result.py"
+      "sdkwork_browser_backend_sdk/models/browser_sessions_list_response.py",
+      "sdkwork_browser_backend_sdk/models/field_error.py",
+      "sdkwork_browser_backend_sdk/models/page_info.py",
+      "sdkwork_browser_backend_sdk/models/problem_detail.py",
+      "sdkwork_browser_backend_sdk/models/sdk_work_api_response.py",
+      "sdkwork_browser_backend_sdk/models/sdk_work_command_data.py",
+      "sdkwork_browser_backend_sdk/models/sdk_work_command_response.py",
+      "sdkwork_browser_backend_sdk/models/sdk_work_list_response.py",
+      "sdkwork_browser_backend_sdk/models/sdk_work_page_data.py",
+      "sdkwork_browser_backend_sdk/models/sdk_work_resource_data.py",
+      "sdkwork_browser_backend_sdk/models/sdk_work_resource_response.py"
     ],
     "updatedGeneratedFiles": [
       "sdkwork_browser_backend_sdk/api/browser.py",
@@ -36,11 +42,17 @@
       "sdkwork_browser_backend_sdk/api/__init__.py",
       "sdkwork_browser_backend_sdk/client.py",
       "sdkwork_browser_backend_sdk/http_client.py",
-      "sdkwork_browser_backend_sdk/models/browser_api_result.py",
+      "sdkwork_browser_backend_sdk/models/agent_provider_diagnostic.py",
+      "sdkwork_browser_backend_sdk/models/agent_runtime_diagnostics.py",
+      "sdkwork_browser_backend_sdk/models/browser_operator_session.py",
+      "sdkwork_browser_backend_sdk/models/browser_sessions_list_data.py",
       "sdkwork-sdk.json",
       "setup.py"
     ],
-    "deletedGeneratedFiles": [],
+    "deletedGeneratedFiles": [
+      "sdkwork_browser_backend_sdk/models/browser_api_result.py",
+      "sdkwork_browser_backend_sdk/models/browser_sessions_list_result.py"
+    ],
     "scaffoldedFiles": [],
     "preservedScaffoldFiles": [
       "custom/README.md"
@@ -65,11 +77,19 @@
         "area": "models",
         "paths": [
           "sdkwork_browser_backend_sdk/models/__init__.py",
-          "sdkwork_browser_backend_sdk/models/agent_provider_diagnostic.py",
-          "sdkwork_browser_backend_sdk/models/agent_runtime_diagnostics.py",
-          "sdkwork_browser_backend_sdk/models/browser_operator_session.py",
-          "sdkwork_browser_backend_sdk/models/browser_sessions_list_data.py",
-          "sdkwork_browser_backend_sdk/models/browser_sessions_list_result.py"
+          "sdkwork_browser_backend_sdk/models/browser_api_result.py",
+          "sdkwork_browser_backend_sdk/models/browser_sessions_list_response.py",
+          "sdkwork_browser_backend_sdk/models/browser_sessions_list_result.py",
+          "sdkwork_browser_backend_sdk/models/field_error.py",
+          "sdkwork_browser_backend_sdk/models/page_info.py",
+          "sdkwork_browser_backend_sdk/models/problem_detail.py",
+          "sdkwork_browser_backend_sdk/models/sdk_work_api_response.py",
+          "sdkwork_browser_backend_sdk/models/sdk_work_command_data.py",
+          "sdkwork_browser_backend_sdk/models/sdk_work_command_response.py",
+          "sdkwork_browser_backend_sdk/models/sdk_work_list_response.py",
+          "sdkwork_browser_backend_sdk/models/sdk_work_page_data.py",
+          "sdkwork_browser_backend_sdk/models/sdk_work_resource_data.py",
+          "sdkwork_browser_backend_sdk/models/sdk_work_resource_response.py"
         ]
       }
     ],
@@ -103,12 +123,14 @@
   },
   "executionDecision": {
     "schemaVersion": 1,
-    "riskLevel": "medium",
+    "riskLevel": "high",
     "nextAction": "verify",
     "requiresManualReview": false,
     "applyRequiresExpectedFingerprint": false,
     "summary": "Changes have been applied. Run the required verification plan now.",
     "reasons": [
+      "deleted-generated-files",
+      "manual-review-required",
       "verification-required"
     ]
   },

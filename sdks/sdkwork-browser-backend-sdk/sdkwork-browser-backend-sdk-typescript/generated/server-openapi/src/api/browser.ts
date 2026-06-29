@@ -1,7 +1,7 @@
 import { backendApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { BrowserApiResult, BrowserSessionsListResult } from '../types';
+import type { BrowserSessionsListResponse, SdkWorkListResponse } from '../types';
 
 
 export class BrowserSessionsApi {
@@ -13,8 +13,8 @@ export class BrowserSessionsApi {
 
 
 /** browser.sessions.list */
-  async list(): Promise<BrowserSessionsListResult> {
-    return this.client.get<BrowserSessionsListResult>(backendApiPath(`/browser/sessions`));
+  async list(): Promise<BrowserSessionsListResponse> {
+    return this.client.get<BrowserSessionsListResponse>(backendApiPath(`/browser/sessions`));
   }
 }
 
@@ -27,8 +27,8 @@ export class BrowserEnginesApi {
 
 
 /** browser.engines.list */
-  async list(): Promise<BrowserApiResult> {
-    return this.client.get<BrowserApiResult>(backendApiPath(`/browser/engines`));
+  async list(): Promise<SdkWorkListResponse> {
+    return this.client.get<SdkWorkListResponse>(backendApiPath(`/browser/engines`));
   }
 }
 
