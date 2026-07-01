@@ -11,14 +11,30 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "paths": {
-      "@sdkwork/browser-contracts": ["./packages/common/browser/sdkwork-browser-contracts/src/index.ts"],
-      "@sdkwork/browser-pc-core": ["./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-core/src/index.ts"],
-      "@sdkwork/browser-pc-commons": ["./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-commons/src/index.ts"],
-      "@sdkwork/browser-pc-browser": ["./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-browser/src/index.ts"],
-      "@sdkwork/browser-pc-react": ["./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-browser/src/index.ts"],
-      "@sdkwork/browser-h5-react": ["./apps/sdkwork-browser-h5/packages/sdkwork-browser-h5-react/src/index.ts"]
+      "@sdkwork/browser-contracts": [
+        "apps/sdkwork-browser-common/packages/sdkwork-browser-contracts/src/index.ts"
+      ],
+      "@sdkwork/browser-pc-core": [
+        "./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-core/src/index.ts"
+      ],
+      "@sdkwork/browser-pc-commons": [
+        "./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-commons/src/index.ts"
+      ],
+      "@sdkwork/browser-pc-browser": [
+        "./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-browser/src/index.ts"
+      ],
+      "@sdkwork/browser-pc-react": [
+        "./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-browser/src/index.ts"
+      ],
+      "@sdkwork/browser-h5-react": [
+        "./apps/sdkwork-browser-h5/packages/sdkwork-browser-h5-react/src/index.ts"
+      ]
     }
   }
 }

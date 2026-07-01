@@ -6,10 +6,19 @@ Canonical lifecycle assets for `sdkwork-browser` per `DATABASE_FRAMEWORK_SPEC.md
 - serviceCode: `BROWSER`
 - tablePrefix: `browser_`
 
+## Initialization state
+
+This module is in **initialization state** for greenfield deployments:
+
+1. **Baseline** — `database/ddl/baseline/{engine}/0001_browser_baseline.sql` contains the full DDL snapshot.
+2. **Migrations** — `database/migrations/{engine}/` is reserved for post-GA incremental schema changes only. It is intentionally empty at initialization.
+3. **Drift** — run `pnpm db:drift:check` before release.
+
 ## Commands
 
 ```bash
 pnpm run db:validate
+pnpm run db:materialize:contract
 pnpm run db:plan
 pnpm run db:init
 pnpm run db:migrate
@@ -17,9 +26,3 @@ pnpm run db:seed
 pnpm run db:status
 pnpm run db:drift:check
 ```
-
-## Migration status
-
-Versioned migrations live under `migrations/{sqlite,postgres}/`. Baseline DDL is mirrored from `ddl/baseline/` as `0001_browser_legacy_baseline`.
-
-Runtime services MUST create pools through `sdkwork-database-sqlx` and register `DefaultDatabaseModule` at bootstrap via `sdkwork-platform-browser-repository-sqlx`.

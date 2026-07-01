@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.composition.resolved",
+  "repository": "sdkwork-browser",
+  "integrations": [
+    {
+      "workspace": "sdkwork-browser-app-sdk",
+      "surface": "app-api",
+      "apiPrefix": "/app/v3/api",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": null,
+      "envKey": "VITE_SDKWORK_BROWSER_APP_API_BASE_URL",
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/browser-h5-core",
+      "source": "apps/sdkwork-browser-h5/packages/sdkwork-browser-h5-core/specs/component.spec.json"
+    },
+    {
+      "workspace": "sdkwork-browser-app-sdk",
+      "surface": "app-api",
+      "apiPrefix": "/app/v3/api",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": null,
+      "envKey": "VITE_SDKWORK_BROWSER_APP_API_BASE_URL",
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/browser-pc-core",
+      "source": "apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-core/specs/component.spec.json"
+    }
+  ],
+  "permissions": {
+    "inheritanceMode": "module-catalog-with-overrides",
+    "inheritedManifests": []
+  },
+  "env": {},
+  "requiresPlatformGatewayProcess": false,
+  "issues": [],
+  "meta": {
+    "resolver": "sdkwork-specs/tools/lib/composition-resolver.mjs",
+    "credentialModes": {
+      "sdkwork-browser-app-sdk": "authenticated-app-api"
+    }
+  }
+}

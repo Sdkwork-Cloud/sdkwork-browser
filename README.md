@@ -1,4 +1,5 @@
 # SDKWork Browser
+repository-kind: application
 
 **Browser Runtime Platform** — not a browser app, not a single engine, but a pluggable **Browser Engine Standard** + **Browser Engine Registry** for the SDKWork ecosystem.
 

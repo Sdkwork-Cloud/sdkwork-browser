@@ -16,9 +16,9 @@ axum.workspace = true
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-sdkwork-iam-web-adapter = { path = "../../../sdkwork-iam/crates/sdkwork-iam-web-adapter" }
-sdkwork-web-axum = { path = "../../../sdkwork-web-framework/crates/sdkwork-web-axum" }
-sdkwork-web-core = { path = "../../../sdkwork-web-framework/crates/sdkwork-web-core" }
-sdkwork-web-bootstrap = { path = "../../../sdkwork-web-framework/crates/sdkwork-web-bootstrap" }
+sdkwork-iam-web-adapter = { workspace = true }
+sdkwork-web-axum = { workspace = true }
+sdkwork-web-core = { workspace = true }
+sdkwork-web-bootstrap = { workspace = true }
 
 

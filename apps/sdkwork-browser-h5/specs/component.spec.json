@@ -59,8 +59,7 @@
     ],
     "sdkClients": [],
     "events": [],
-    "configKeys": [],
-    "dependencyComposition": "specs/dependency.composition.json"
+    "configKeys": []
   },
   "verification": {
     "commands": [
