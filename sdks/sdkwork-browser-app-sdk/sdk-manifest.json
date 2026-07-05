@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "sdkFamily": "sdkwork-browser-app-sdk",
+  "sdkName": "sdkwork-browser-app-sdk",
+  "packageName": "@sdkwork/browser-app-sdk",
+  "transportPackageName": "sdkwork-browser-app-sdk-generated-typescript",
+  "typescript": {
+    "composedRoot": "sdkwork-browser-app-sdk-typescript",
+    "composedEntry": "sdkwork-browser-app-sdk-typescript/src/index.ts",
+    "transportRoot": "sdkwork-browser-app-sdk-typescript/generated/server-openapi",
+    "transportEntry": "sdkwork-browser-app-sdk-typescript/generated/server-openapi/src/index.ts"
+  },
+  "sdkOwner": "sdkwork-browser",
+  "apiAuthority": "sdkwork-browser-app-api",
+  "generationInputSpec": null,
+  "sdkDependencies": []
+}

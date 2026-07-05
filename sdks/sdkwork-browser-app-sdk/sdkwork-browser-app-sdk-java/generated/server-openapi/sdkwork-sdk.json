@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "language": "java",
   "sdkType": "app",
-  "packageName": "com.sdkwork:sdkwork-browser-app-sdk",
+  "packageName": "sdkwork-browser-app-sdk-generated-typescript",
+  "transportPackageName": "sdkwork-browser-app-sdk-generated-typescript",
+  "consumerPackageName": "@sdkwork/browser-app-sdk",
   "generator": "@sdkwork/sdk-generator",
   "capabilities": {
     "supportsGeneratedTests": true,

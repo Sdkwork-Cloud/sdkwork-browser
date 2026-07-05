@@ -10,105 +10,37 @@
   },
   "status": "ok",
   "mode": "apply",
-  "hasChanges": true,
-  "hasDestructiveChanges": true,
-  "changeFingerprint": "e4fe4a35eaf35fa77d942806527971767c3fb1d2de9d52f953b7cbea16c885e0",
+  "hasChanges": false,
+  "hasDestructiveChanges": false,
+  "changeFingerprint": "592b8361362f73cff8cc30fd36cd1253444b18dc1ca7e0c935a0ad0ff1727cdc",
   "changeImpact": {
     "schemaVersion": 1,
-    "areas": [
-      "api-surface",
-      "models"
-    ],
-    "details": [
-      {
-        "area": "api-surface",
-        "paths": [
-          "sdkwork_browser_app_sdk/api/browser.py",
-          "sdkwork_browser_app_sdk/models/__init__.py"
-        ]
-      },
-      {
-        "area": "models",
-        "paths": [
-          "sdkwork_browser_app_sdk/models/__init__.py",
-          "sdkwork_browser_app_sdk/models/browser_api_result.py",
-          "sdkwork_browser_app_sdk/models/field_error.py",
-          "sdkwork_browser_app_sdk/models/page_info.py",
-          "sdkwork_browser_app_sdk/models/problem_detail.py",
-          "sdkwork_browser_app_sdk/models/sdk_work_api_response.py",
-          "sdkwork_browser_app_sdk/models/sdk_work_command_data.py",
-          "sdkwork_browser_app_sdk/models/sdk_work_command_response.py",
-          "sdkwork_browser_app_sdk/models/sdk_work_list_response.py",
-          "sdkwork_browser_app_sdk/models/sdk_work_page_data.py",
-          "sdkwork_browser_app_sdk/models/sdk_work_resource_data.py",
-          "sdkwork_browser_app_sdk/models/sdk_work_resource_response.py"
-        ]
-      }
-    ],
-    "requiresVerification": true,
-    "summary": "Detected impact areas: api-surface, models. Verification is required."
+    "areas": [],
+    "details": [],
+    "requiresVerification": false,
+    "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped."
   },
   "executionDecision": {
     "schemaVersion": 1,
-    "riskLevel": "high",
-    "nextAction": "verify",
+    "riskLevel": "low",
+    "nextAction": "skip",
     "requiresManualReview": false,
     "applyRequiresExpectedFingerprint": false,
-    "summary": "Changes have been applied. Run the required verification plan now.",
+    "summary": "No actionable changes were detected. No apply or verification step is required.",
     "reasons": [
-      "deleted-generated-files",
-      "manual-review-required",
-      "verification-required"
+      "no-actionable-changes"
     ]
   },
   "executionHandoff": {
     "schemaVersion": 1,
-    "summary": "Run the required verification commands now.",
-    "steps": [
-      {
-        "id": "verify-check",
-        "title": "Unified package check",
-        "required": true,
-        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
-        "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-app-sdk\\sdkwork-browser-app-sdk-python\\generated\\server-openapi",
-        "command": "node",
-        "args": [
-          "./bin/publish-core.mjs",
-          "--language",
-          "python",
-          "--project-dir",
-          ".",
-          "--action",
-          "check"
-        ],
-        "displayCommand": "node ./bin/publish-core.mjs --language python --project-dir . --action check"
-      }
-    ]
+    "summary": "No further commands are required.",
+    "steps": []
   },
   "verificationPlan": {
-    "shouldRun": true,
-    "runPhase": "now",
-    "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
-    "steps": [
-      {
-        "id": "check",
-        "title": "Unified package check",
-        "required": true,
-        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
-        "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-app-sdk\\sdkwork-browser-app-sdk-python\\generated\\server-openapi",
-        "command": "node",
-        "args": [
-          "./bin/publish-core.mjs",
-          "--language",
-          "python",
-          "--project-dir",
-          ".",
-          "--action",
-          "check"
-        ],
-        "displayCommand": "node ./bin/publish-core.mjs --language python --project-dir . --action check"
-      }
-    ]
+    "shouldRun": false,
+    "runPhase": "skip",
+    "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped.",
+    "steps": []
   },
   "sdk": {
     "name": "sdkwork-browser-app-sdk",
@@ -133,29 +65,15 @@
   "syncSummary": {
     "dryRun": false,
     "controlPlaneEnabled": true,
-    "writtenFiles": 12,
+    "writtenFiles": 0,
     "skippedScaffoldFiles": 1,
-    "skippedUnchangedGeneratedFiles": 15,
-    "deletedGeneratedFiles": 1,
+    "skippedUnchangedGeneratedFiles": 27,
+    "deletedGeneratedFiles": 0,
     "changeSummaryPath": ".sdkwork/sdkwork-generator-changes.json",
-    "changeFingerprint": "e4fe4a35eaf35fa77d942806527971767c3fb1d2de9d52f953b7cbea16c885e0",
+    "changeFingerprint": "592b8361362f73cff8cc30fd36cd1253444b18dc1ca7e0c935a0ad0ff1727cdc",
     "changes": {
-      "createdGeneratedFiles": [
-        "sdkwork_browser_app_sdk/models/field_error.py",
-        "sdkwork_browser_app_sdk/models/page_info.py",
-        "sdkwork_browser_app_sdk/models/problem_detail.py",
-        "sdkwork_browser_app_sdk/models/sdk_work_api_response.py",
-        "sdkwork_browser_app_sdk/models/sdk_work_command_data.py",
-        "sdkwork_browser_app_sdk/models/sdk_work_command_response.py",
-        "sdkwork_browser_app_sdk/models/sdk_work_list_response.py",
-        "sdkwork_browser_app_sdk/models/sdk_work_page_data.py",
-        "sdkwork_browser_app_sdk/models/sdk_work_resource_data.py",
-        "sdkwork_browser_app_sdk/models/sdk_work_resource_response.py"
-      ],
-      "updatedGeneratedFiles": [
-        "sdkwork_browser_app_sdk/api/browser.py",
-        "sdkwork_browser_app_sdk/models/__init__.py"
-      ],
+      "createdGeneratedFiles": [],
+      "updatedGeneratedFiles": [],
       "unchangedGeneratedFiles": [
         "bin/publish-core.mjs",
         "bin/publish.ps1",
@@ -168,14 +86,24 @@
         "requirements.txt",
         "sdkwork_browser_app_sdk/__init__.py",
         "sdkwork_browser_app_sdk/api/__init__.py",
+        "sdkwork_browser_app_sdk/api/browser.py",
         "sdkwork_browser_app_sdk/client.py",
         "sdkwork_browser_app_sdk/http_client.py",
+        "sdkwork_browser_app_sdk/models/__init__.py",
+        "sdkwork_browser_app_sdk/models/field_error.py",
+        "sdkwork_browser_app_sdk/models/page_info.py",
+        "sdkwork_browser_app_sdk/models/problem_detail.py",
+        "sdkwork_browser_app_sdk/models/sdk_work_api_response.py",
+        "sdkwork_browser_app_sdk/models/sdk_work_command_data.py",
+        "sdkwork_browser_app_sdk/models/sdk_work_command_response.py",
+        "sdkwork_browser_app_sdk/models/sdk_work_list_response.py",
+        "sdkwork_browser_app_sdk/models/sdk_work_page_data.py",
+        "sdkwork_browser_app_sdk/models/sdk_work_resource_data.py",
+        "sdkwork_browser_app_sdk/models/sdk_work_resource_response.py",
         "sdkwork-sdk.json",
         "setup.py"
       ],
-      "deletedGeneratedFiles": [
-        "sdkwork_browser_app_sdk/models/browser_api_result.py"
-      ],
+      "deletedGeneratedFiles": [],
       "scaffoldedFiles": [],
       "preservedScaffoldFiles": [
         "custom/README.md"
@@ -184,75 +112,26 @@
     },
     "impact": {
       "schemaVersion": 1,
-      "areas": [
-        "api-surface",
-        "models"
-      ],
-      "details": [
-        {
-          "area": "api-surface",
-          "paths": [
-            "sdkwork_browser_app_sdk/api/browser.py",
-            "sdkwork_browser_app_sdk/models/__init__.py"
-          ]
-        },
-        {
-          "area": "models",
-          "paths": [
-            "sdkwork_browser_app_sdk/models/__init__.py",
-            "sdkwork_browser_app_sdk/models/browser_api_result.py",
-            "sdkwork_browser_app_sdk/models/field_error.py",
-            "sdkwork_browser_app_sdk/models/page_info.py",
-            "sdkwork_browser_app_sdk/models/problem_detail.py",
-            "sdkwork_browser_app_sdk/models/sdk_work_api_response.py",
-            "sdkwork_browser_app_sdk/models/sdk_work_command_data.py",
-            "sdkwork_browser_app_sdk/models/sdk_work_command_response.py",
-            "sdkwork_browser_app_sdk/models/sdk_work_list_response.py",
-            "sdkwork_browser_app_sdk/models/sdk_work_page_data.py",
-            "sdkwork_browser_app_sdk/models/sdk_work_resource_data.py",
-            "sdkwork_browser_app_sdk/models/sdk_work_resource_response.py"
-          ]
-        }
-      ],
-      "requiresVerification": true,
-      "summary": "Detected impact areas: api-surface, models. Verification is required."
+      "areas": [],
+      "details": [],
+      "requiresVerification": false,
+      "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped."
     },
     "verificationPlan": {
-      "shouldRun": true,
-      "runPhase": "now",
-      "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
-      "steps": [
-        {
-          "id": "check",
-          "title": "Unified package check",
-          "required": true,
-          "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
-          "workingDirectory": "E:\\sdkwork-space\\sdkwork-browser\\sdks\\sdkwork-browser-app-sdk\\sdkwork-browser-app-sdk-python\\generated\\server-openapi",
-          "command": "node",
-          "args": [
-            "./bin/publish-core.mjs",
-            "--language",
-            "python",
-            "--project-dir",
-            ".",
-            "--action",
-            "check"
-          ],
-          "displayCommand": "node ./bin/publish-core.mjs --language python --project-dir . --action check"
-        }
-      ]
+      "shouldRun": false,
+      "runPhase": "skip",
+      "summary": "No generated, scaffold, or backup changes detected. Verification can be skipped.",
+      "steps": []
     },
     "executionDecision": {
       "schemaVersion": 1,
-      "riskLevel": "high",
-      "nextAction": "verify",
+      "riskLevel": "low",
+      "nextAction": "skip",
       "requiresManualReview": false,
       "applyRequiresExpectedFingerprint": false,
-      "summary": "Changes have been applied. Run the required verification plan now.",
+      "summary": "No actionable changes were detected. No apply or verification step is required.",
       "reasons": [
-        "deleted-generated-files",
-        "manual-review-required",
-        "verification-required"
+        "no-actionable-changes"
       ]
     },
     "backedUpFiles": [],

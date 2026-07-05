@@ -1,7 +1,7 @@
 import { appApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { BrowserOperationCommand, SdkWorkResourceResponse } from '../types';
+import type { BrowserOperationCommand } from '../types';
 
 
 export class BrowserTabsApi {
@@ -13,8 +13,8 @@ export class BrowserTabsApi {
 
 
 /** browser.tabs.create */
-  async create(body: BrowserOperationCommand): Promise<SdkWorkResourceResponse> {
-    return this.client.post<SdkWorkResourceResponse>(appApiPath(`/browser/tabs`), body, undefined, undefined, 'application/json');
+  async create(body: BrowserOperationCommand): Promise<Record<string, unknown>> {
+    return this.client.post<Record<string, unknown>>(appApiPath(`/browser/tabs`), body, undefined, undefined, 'application/json');
   }
 }
 
@@ -27,8 +27,8 @@ export class BrowserSessionsApi {
 
 
 /** browser.sessions.create */
-  async create(body: BrowserOperationCommand): Promise<SdkWorkResourceResponse> {
-    return this.client.post<SdkWorkResourceResponse>(appApiPath(`/browser/sessions`), body, undefined, undefined, 'application/json');
+  async create(body: BrowserOperationCommand): Promise<Record<string, unknown>> {
+    return this.client.post<Record<string, unknown>>(appApiPath(`/browser/sessions`), body, undefined, undefined, 'application/json');
   }
 }
 
@@ -41,8 +41,8 @@ export class BrowserAiActionsApi {
 
 
 /** browser.aiActions.create */
-  async create(body: BrowserOperationCommand): Promise<SdkWorkResourceResponse> {
-    return this.client.post<SdkWorkResourceResponse>(appApiPath(`/browser/ai/actions`), body, undefined, undefined, 'application/json');
+  async create(body: BrowserOperationCommand): Promise<Record<string, unknown>> {
+    return this.client.post<Record<string, unknown>>(appApiPath(`/browser/ai/actions`), body, undefined, undefined, 'application/json');
   }
 }
 
