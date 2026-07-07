@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import {
   sdkWorkEnvelopeComponentSchemas,
   successResponseSchemaRef,
-  typedSdkWorkResourceResponse,
 } from "../../sdkwork-specs/tools/lib/openapi-envelope-schemas.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -228,10 +227,11 @@ function buildOperation(surface, route) {
         description: "Success",
         content: {
           "application/json": {
-            schema: successResponseSchema(surface, route),
+            schema: { $ref: successResponseSchema(surface, route) },
           },
         },
       },
+      400: problemResponse("Bad request"),
       401: problemResponse("Unauthorized"),
       403: problemResponse("Forbidden"),
       500: problemResponse("Internal server error"),
@@ -254,16 +254,37 @@ function buildOperation(surface, route) {
     };
   }
 
+  if (isListOperation(route)) {
+    operation.parameters = listQueryParameters();
+  }
+
   return operation;
 }
 
-function successResponseSchema(surface, route) {
-  if (
-    surface.routeSurface === "backend-api" &&
-    route.operationId === "browser.sessions.list"
-  ) {
-    return { $ref: "#/components/schemas/BrowserSessionsListResponse" };
-  }
+function isListOperation(route) {
+  return route.method === "get" && String(route.operationId || "").endsWith(".list");
+}
+
+function listQueryParameters() {
+  return [
+    queryParameter("page", { type: "integer", minimum: 1, default: 1 }),
+    queryParameter("page_size", { type: "integer", minimum: 1, maximum: 200, default: 20 }),
+    queryParameter("cursor", { type: "string" }),
+    queryParameter("sort", { type: "string" }),
+    queryParameter("q", { type: "string" }),
+  ];
+}
+
+function queryParameter(name, schema) {
+  return {
+    name,
+    in: "query",
+    required: false,
+    schema,
+  };
+}
+
+function successResponseSchema(_surface, route) {
   return { $ref: successResponseSchemaRef(route) };
 }
 
@@ -362,20 +383,6 @@ function surfaceBackendSchemas(surface) {
         runtimeMode: { type: "string" },
       },
     },
-    BrowserSessionsListData: {
-      type: "object",
-      required: ["sessions", "agentDiagnostics"],
-      properties: {
-        sessions: {
-          type: "array",
-          items: { $ref: "#/components/schemas/BrowserOperatorSession" },
-        },
-        agentDiagnostics: { $ref: "#/components/schemas/AgentRuntimeDiagnostics" },
-      },
-    },
-    BrowserSessionsListResponse: typedSdkWorkResourceResponse(
-      "#/components/schemas/BrowserSessionsListData",
-    ),
   };
 }
 

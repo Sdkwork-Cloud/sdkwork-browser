@@ -142,11 +142,13 @@ impl BrowserMcpService {
                     data: json!({ "transport": "stdio", "stdioCommand": command }),
                 },
             },
-            Err(error) => {
-                let mut fallback = self.invoke_tool_stub(request, "stdio-fallback");
-                fallback.message = format!("{error}; fallback: {}", fallback.message);
-                fallback
-            }
+            Err(error) => McpToolInvokeResult {
+                code: "ERROR".into(),
+                connector_id: request.connector_id.clone(),
+                tool_name: request.tool_name.clone(),
+                message: error,
+                data: json!({ "transport": "stdio", "stdioCommand": command }),
+            },
         }
     }
 
@@ -190,7 +192,7 @@ impl BrowserMcpService {
             .unwrap_or("sdkwork-browser");
 
         McpToolInvokeResult {
-            code: "OK".into(),
+            code: "STUB".into(),
             connector_id: request.connector_id.clone(),
             tool_name: request.tool_name.clone(),
             message: format!(

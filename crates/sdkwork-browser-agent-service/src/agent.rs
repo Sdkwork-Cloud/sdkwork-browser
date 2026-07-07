@@ -122,10 +122,6 @@ impl BrowserAgentService {
         &[
             AgentCapability::PageUnderstanding,
             AgentCapability::PageAction,
-            AgentCapability::FormFill,
-            AgentCapability::AutoLogin,
-            AgentCapability::AutoTest,
-            AgentCapability::DataCapture,
         ]
     }
 

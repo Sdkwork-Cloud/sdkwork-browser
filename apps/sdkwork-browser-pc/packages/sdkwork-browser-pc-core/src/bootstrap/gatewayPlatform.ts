@@ -74,12 +74,13 @@ export async function executeGatewayAiAction(
     message: request.message,
     engineId: request.engineId,
   });
+  const row = readRecord(result);
 
   return {
-    code: result.code,
-    message: result.message,
+    code: typeof row?.code === "string" ? row.code : "OK",
+    message: typeof row?.message === "string" ? row.message : "",
     action: request.action,
-    data: readRecord(result.data) ?? undefined,
+    data: readRecord(row?.data) ?? undefined,
   };
 }
 
@@ -88,7 +89,7 @@ export async function listGatewayMcpTools(): Promise<GatewayMcpToolDescriptor[]>
   const result = await clients.app.browser.aiActions.create({
     action: "mcpListTools",
   });
-  const data = readRecord(result.data);
+  const data = readRecord(result);
   const tools = data?.tools;
   if (!Array.isArray(tools)) {
     return [];
@@ -118,12 +119,12 @@ export async function invokeGatewayMcpTool(
     arguments: request.arguments ?? {},
   });
 
-  const data = readRecord(result.data);
+  const data = readRecord(result);
   return {
-    code: result.code,
+    code: typeof data?.code === "string" ? data.code : "OK",
     connectorId: request.connectorId,
     toolName: request.toolName,
-    message: result.message,
+    message: typeof data?.message === "string" ? data.message : "",
     data: data ?? undefined,
   };
 }
@@ -137,7 +138,7 @@ export async function fetchGatewayPlatformSnapshot(
     targetUrl: payload?.targetUrl,
     engineId: payload?.engineId,
   });
-  return mapGatewaySnapshot(result.data);
+  return mapGatewaySnapshot(result);
 }
 
 export async function navigateGatewayUrl(url: string): Promise<GatewayPlatformSnapshot | null> {
@@ -146,7 +147,7 @@ export async function navigateGatewayUrl(url: string): Promise<GatewayPlatformSn
     action: "navigate",
     targetUrl: url,
   });
-  return mapGatewaySnapshot(result.data);
+  return mapGatewaySnapshot(result);
 }
 
 export async function groupGatewayTabs(): Promise<GatewayPlatformSnapshot | null> {

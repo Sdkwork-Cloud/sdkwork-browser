@@ -14,10 +14,47 @@ const DEV_AUTH_TOKEN =
 const DEV_ACCESS_TOKEN =
   "tenant_id=sdkwork;user_id=browser;session_id=local;app_id=sdkwork-browser;environment=dev;deployment_mode=local";
 
+function isDevAuthAllowed(): boolean {
+  const mode = import.meta.env.MODE;
+  if (mode === "production") {
+    return false;
+  }
+  const explicit = import.meta.env.VITE_BROWSER_ALLOW_DEV_AUTH;
+  if (explicit === "false" || explicit === "0") {
+    return false;
+  }
+  return mode === "development" || explicit === "true" || explicit === "1";
+}
+
+function resolveAuthToken(): string {
+  if (!isDevAuthAllowed()) {
+    throw new Error(
+      "Browser auth is not configured. Complete IAM login or enable dev auth in development.",
+    );
+  }
+  return DEV_AUTH_TOKEN;
+}
+
+function resolveAccessToken(): string {
+  const configured =
+    typeof process !== "undefined"
+      ? String((process.env as Record<string, string | undefined>).SDKWORK_ACCESS_TOKEN ?? "").trim()
+      : "";
+  if (configured.length > 0) {
+    return configured;
+  }
+  if (!isDevAuthAllowed()) {
+    throw new Error(
+      "Browser access token is not configured. Set SDKWORK_ACCESS_TOKEN for dev bootstrap or enable dev auth in development.",
+    );
+  }
+  return DEV_ACCESS_TOKEN;
+}
+
 export function gatewayAuthHeaders(): Record<string, string> {
   return {
-    Authorization: `Bearer ${DEV_AUTH_TOKEN}`,
-    "Access-Token": DEV_ACCESS_TOKEN,
+    Authorization: `Bearer ${resolveAuthToken()}`,
+    "Access-Token": resolveAccessToken(),
     "X-SDKWork-Runtime-Environment": getRuntimeEnvironment(),
   };
 }
@@ -52,8 +89,8 @@ function createSdkClientConfig(baseUrl: string) {
   return {
     baseUrl,
     platform: "DESKTOP" as const,
-    authToken: DEV_AUTH_TOKEN,
-    accessToken: DEV_ACCESS_TOKEN,
+    authToken: resolveAuthToken(),
+    accessToken: resolveAccessToken(),
     headers: {
       "X-SDKWork-Runtime-Environment": getRuntimeEnvironment(),
     },

@@ -17,8 +17,8 @@ interface SessionRow {
   agentRuntimeId: string;
 }
 
-function readEngines(data: Record<string, unknown>): EngineRow[] {
-  const engines = data.engines;
+function readEngines(page: { items?: unknown[] }): EngineRow[] {
+  const engines = page.items;
   if (!Array.isArray(engines)) {
     return [];
   }
@@ -40,8 +40,8 @@ function readEngines(data: Record<string, unknown>): EngineRow[] {
   });
 }
 
-function readSessions(data: Record<string, unknown>): SessionRow[] {
-  const sessions = data.sessions;
+function readSessions(page: { items?: unknown[] }): SessionRow[] {
+  const sessions = page.items;
   if (!Array.isArray(sessions)) {
     return [];
   }
@@ -82,9 +82,9 @@ export function OperatorConsolePanel() {
         clients.backend.browser.engines.list(),
         clients.backend.browser.sessions.list(),
       ]);
-      setEngines(readEngines(engineResult.data));
-      setSessions(readSessions(sessionResult.data));
-      setStatus(`Gateway OK · ${engineResult.code} / ${sessionResult.code}`);
+      setEngines(readEngines(engineResult));
+      setSessions(readSessions(sessionResult));
+      setStatus("Gateway OK");
       setStatusTone("ok");
     } catch (error) {
       setStatus(

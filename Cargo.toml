@@ -12,6 +12,7 @@ members = [
     "crates/sdkwork-browser-standalone-gateway",
     "crates/sdkwork-routes-browser-app-api",
     "crates/sdkwork-routes-browser-backend-api",
+    "crates/sdkwork-routes-browser-support",
     "crates/sdkwork-browser-abstraction-service",
     "crates/sdkwork-browser-tauri-host",
     "crates/sdkwork-browser-native-host",
@@ -33,25 +34,24 @@ members = [
 ]
 
 [workspace.dependencies]
-sdkwork-web-bootstrap = { path = "../../../sdkwork-web-framework/crates/sdkwork-web-bootstrap" }
-sdkwork-web-core = { path = "../../../sdkwork-web-framework/crates/sdkwork-web-core" }
-sdkwork-web-axum = { path = "../../../sdkwork-web-framework/crates/sdkwork-web-axum" }
-sdkwork-iam-web-adapter = { path = "../../../sdkwork-iam/crates/sdkwork-iam-web-adapter" }
+sdkwork-web-bootstrap = { path = "../sdkwork-web-framework/crates/sdkwork-web-bootstrap" }
+sdkwork-web-core = { path = "../sdkwork-web-framework/crates/sdkwork-web-core" }
+sdkwork-web-axum = { path = "../sdkwork-web-framework/crates/sdkwork-web-axum" }
+sdkwork-iam-web-adapter = { path = "../sdkwork-iam/crates/sdkwork-iam-web-adapter" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
 async-trait = "0.1"
 uuid = { version = "1", features = ["v4", "serde"] }
-tokio = { version = "1", features = ["macros", "rt"] }
+tokio = { version = "1", features = ["macros", "rt", "rt-multi-thread", "sync"] }
 sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config" }
 sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle" }
 sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi" }
 sdkwork-database-sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx" }
 sdkwork-browser-database-host = { path = "crates/sdkwork-browser-database-host" }
-sdkwork-web-core = { path = "../sdkwork-web-framework/crates/sdkwork-web-core" }
-sdkwork-web-axum = { path = "../sdkwork-web-framework/crates/sdkwork-web-axum" }
-sdkwork-iam-web-adapter = { path = "../sdkwork-iam/crates/sdkwork-iam-web-adapter" }
 sdkwork-utils-rust = { path = "../sdkwork-utils/packages/sdkwork-utils-rust" }
+sdkwork-browser-platform-service = { path = "crates/sdkwork-browser-platform-service" }
+sdkwork-routes-browser-support = { path = "crates/sdkwork-routes-browser-support" }
 axum = { version = "0.8", default-features = false, features = ["json"] }
 bytes = "1"
 futures = "0.3"

@@ -7,7 +7,7 @@ use sdkwork_routes_browser_backend_api::{
 fn exposes_backend_api_route_manifest_identity() {
     assert_eq!(ROUTE_CRATE_PACKAGE, "sdkwork-routes-browser-backend-api");
     assert_eq!(BACKEND_API_PREFIX, "/backend/v3/api");
-    assert_eq!(browser_backend_api_route_count(), 2);
+    assert_eq!(browser_backend_api_route_count(), 3);
 }
 
 #[test]

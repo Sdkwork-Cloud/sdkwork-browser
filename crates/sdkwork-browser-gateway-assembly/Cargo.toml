@@ -12,6 +12,8 @@ path = "src/lib.rs"
 [dependencies]
 anyhow = "1.0.98"
 axum.workspace = true
-tokio = { version = "1.48", features = ["macros", "rt-multi-thread"] }
+tokio.workspace = true
+sdkwork-browser-platform-service.workspace = true
+sdkwork-routes-browser-support.workspace = true
 sdkwork_routes_browser_app_api = { package = "sdkwork-routes-browser-app-api", path = "../sdkwork-routes-browser-app-api" }
 sdkwork_routes_browser_backend_api = { package = "sdkwork-routes-browser-backend-api", path = "../sdkwork-routes-browser-backend-api" }

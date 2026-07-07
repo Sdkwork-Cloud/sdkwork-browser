@@ -88,14 +88,38 @@ CREATE TABLE IF NOT EXISTS browser_download (
     deleted_by BIGINT
 );
 
+ALTER TABLE browser_bookmark
+    ADD CONSTRAINT fk_browser_bookmark_session
+    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
+
+ALTER TABLE browser_history
+    ADD CONSTRAINT fk_browser_history_session
+    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
+
+ALTER TABLE browser_tab
+    ADD CONSTRAINT fk_browser_tab_session
+    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
+
+ALTER TABLE browser_download
+    ADD CONSTRAINT fk_browser_download_session
+    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
+
+CREATE INDEX IF NOT EXISTS idx_browser_session_account_kind
+    ON browser_session (account_label, kind, updated_at DESC)
+    WHERE deleted_at IS NULL;
+
 CREATE INDEX IF NOT EXISTS idx_browser_bookmark_session_folder
-    ON browser_bookmark (session_uuid, folder, updated_at DESC);
+    ON browser_bookmark (session_uuid, folder, updated_at DESC)
+    WHERE deleted_at IS NULL;
 
 CREATE INDEX IF NOT EXISTS idx_browser_history_session_visited
-    ON browser_history (session_uuid, visited_at DESC);
+    ON browser_history (session_uuid, visited_at DESC)
+    WHERE deleted_at IS NULL;
 
 CREATE INDEX IF NOT EXISTS idx_browser_tab_session_closed
-    ON browser_tab (session_uuid, closed, updated_at DESC);
+    ON browser_tab (session_uuid, closed, updated_at DESC)
+    WHERE deleted_at IS NULL;
 
 CREATE INDEX IF NOT EXISTS idx_browser_download_session_status
-    ON browser_download (session_uuid, status, updated_at DESC);
+    ON browser_download (session_uuid, status, updated_at DESC)
+    WHERE deleted_at IS NULL;

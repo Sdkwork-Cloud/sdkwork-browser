@@ -1,4 +1,5 @@
 ﻿mod mcp;
+mod shell;
 mod stdio_session;
 mod stdio_transport;
 

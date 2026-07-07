@@ -13,7 +13,8 @@ impl StdioSession {
         if command == MOCK_STDIO_COMMAND {
             return Err("mock transport uses stateless round trip".into());
         }
-        let (program, args) = shell_command(command);
+        let (program, args) = crate::shell::parse_command(command)
+            .ok_or_else(|| format!("invalid MCP stdio command: {command}"))?;
         let child = Command::new(program)
             .args(args)
             .stdin(Stdio::piped())
@@ -101,17 +102,6 @@ pub fn invoke_stdio(command: &str, request_json: &str) -> Result<String, String>
     }
     stdio_transport::round_trip(command, request_json)
 }
-
-#[cfg(windows)]
-fn shell_command(command: &str) -> (String, Vec<String>) {
-    ("cmd".to_string(), vec!["/C".to_string(), command.to_string()])
-}
-
-#[cfg(not(windows))]
-fn shell_command(command: &str) -> (String, Vec<String>) {
-    ("sh".to_string(), vec!["-c".to_string(), command.to_string()])
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

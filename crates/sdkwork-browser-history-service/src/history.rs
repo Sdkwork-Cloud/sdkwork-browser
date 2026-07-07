@@ -3,6 +3,9 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+/// Maximum history entries retained in memory to prevent unbounded growth.
+pub const MAX_HISTORY_ENTRIES: usize = 10_000;
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct BrowserHistoryEntry {
     pub id: Uuid,
@@ -28,6 +31,10 @@ impl BrowserHistoryService {
             url: url.into(),
             visited_at: Utc::now(),
         });
+        if self.entries.len() > MAX_HISTORY_ENTRIES {
+            let overflow = self.entries.len() - MAX_HISTORY_ENTRIES;
+            self.entries.drain(0..overflow);
+        }
     }
 
     pub fn search(&self, query: &str) -> Vec<&BrowserHistoryEntry> {
@@ -45,5 +52,9 @@ impl BrowserHistoryService {
 
     pub fn list(&self) -> &[BrowserHistoryEntry] {
         &self.entries
+    }
+
+    pub fn len(&self) -> usize {
+        self.entries.len()
     }
 }

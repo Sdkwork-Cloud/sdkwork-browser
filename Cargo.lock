@@ -3624,21 +3624,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-browser-api-server"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-browser-gateway-assembly",
- "sdkwork-iam-web-adapter",
- "sdkwork-web-axum",
- "sdkwork-web-bootstrap",
- "sdkwork-web-core",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "sdkwork-browser-bookmark-service"
 version = "0.1.0"
 dependencies = [
@@ -3736,8 +3721,10 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
+ "sdkwork-browser-platform-service",
  "sdkwork-routes-browser-app-api",
  "sdkwork-routes-browser-backend-api",
+ "sdkwork-routes-browser-support",
  "tokio",
 ]
 
@@ -3805,6 +3792,7 @@ dependencies = [
  "sdkwork-browser-mcp-service",
  "sdkwork-browser-plugin-service",
  "sdkwork-browser-tab-service",
+ "sdkwork-utils-rust",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -3856,6 +3844,21 @@ version = "0.1.0"
 dependencies = [
  "sdkwork-utils-rust",
  "uuid",
+]
+
+[[package]]
+name = "sdkwork-browser-standalone-gateway"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-browser-gateway-assembly",
+ "sdkwork-iam-web-adapter",
+ "sdkwork-web-axum",
+ "sdkwork-web-bootstrap",
+ "sdkwork-web-core",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -4046,9 +4049,16 @@ name = "sdkwork-routes-browser-app-api"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "sdkwork-browser-agent-service",
+ "sdkwork-browser-mcp-service",
+ "sdkwork-browser-platform-service",
  "sdkwork-iam-web-adapter",
+ "sdkwork-routes-browser-support",
  "sdkwork-web-axum",
  "sdkwork-web-core",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
@@ -4056,9 +4066,26 @@ name = "sdkwork-routes-browser-backend-api"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "sdkwork-browser-platform-service",
  "sdkwork-iam-web-adapter",
+ "sdkwork-routes-browser-support",
+ "sdkwork-utils-rust",
  "sdkwork-web-axum",
  "sdkwork-web-core",
+ "tokio",
+]
+
+[[package]]
+name = "sdkwork-routes-browser-support"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-browser-platform-service",
+ "sdkwork-utils-rust",
+ "sdkwork-web-core",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
@@ -4129,7 +4156,9 @@ dependencies = [
  "getrandom 0.2.17",
  "hmac",
  "http",
+ "percent-encoding",
  "rsa",
+ "sdkwork-utils-rust",
  "sdkwork-web-contract",
  "serde",
  "serde_json",

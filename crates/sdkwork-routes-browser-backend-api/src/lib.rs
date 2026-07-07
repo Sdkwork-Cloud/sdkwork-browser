@@ -1,7 +1,11 @@
 pub mod http_route_manifest;
 pub mod manifest;
+pub mod paths;
+pub mod routes;
 pub mod web_bootstrap;
 
+use axum::Router;
+use sdkwork_routes_browser_support::BrowserGatewayState;
 use sdkwork_web_core::HttpRouteManifest;
 
 pub use http_route_manifest::backend_route_manifest;
@@ -19,6 +23,6 @@ pub fn gateway_route_manifest() -> HttpRouteManifest {
     backend_route_manifest()
 }
 
-pub fn gateway_mount() -> axum::Router {
-    axum::Router::new()
+pub fn gateway_mount(state: BrowserGatewayState) -> Router {
+    routes::build_router(state)
 }

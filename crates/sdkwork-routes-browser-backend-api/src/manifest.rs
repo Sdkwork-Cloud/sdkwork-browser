@@ -55,6 +55,12 @@ pub fn backend_routes() -> Vec<BrowserHttpRoute> {
             "browser",
             "browser.engines.list",
         ),
+        BrowserHttpRoute::new(
+            HttpMethod::Get,
+            "/backend/v3/api/browser/agent/diagnostics",
+            "browser",
+            "browser.agent.diagnostics",
+        ),
     ]
 }
 

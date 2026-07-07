@@ -16,7 +16,13 @@ use sdkwork_browser_mcp_service::{
 };
 use sdkwork_browser_plugin_service::bootstrap_default_plugins;
 use sdkwork_browser_tab_service::BrowserTabService;
+use sdkwork_utils_rust::{
+    offset_limit_page_from_iter, offset_list_page_data, OffsetListPageParams, SdkWorkPageData,
+};
 use uuid::Uuid;
+
+/// Maximum retained live HTML override bytes to avoid OOM on large pages.
+pub const MAX_LIVE_HTML_BYTES: usize = 5 * 1024 * 1024;
 
 use crate::config::BrowserConfig;
 
@@ -138,7 +144,7 @@ impl BrowserPlatform {
     }
 
     pub fn set_live_html(&mut self, html: Option<String>) {
-        self.live_html_override = html;
+        self.live_html_override = html.map(|value| truncate_live_html(value));
     }
 
     pub fn list_mcp_tools(&self) -> Vec<McpToolDescriptor> {
@@ -258,6 +264,28 @@ impl BrowserPlatform {
     }
 
     pub fn list_operator_engines(&self) -> Vec<BrowserEngineDescriptor> {
+        self.collect_operator_engines()
+    }
+
+    pub fn list_operator_engines_page(
+        &self,
+        params: OffsetListPageParams,
+    ) -> SdkWorkPageData<BrowserEngineDescriptor> {
+        paginate_offset(self.collect_operator_engines(), params)
+    }
+
+    pub fn list_operator_sessions(&self) -> Vec<BrowserOperatorSession> {
+        self.collect_operator_sessions()
+    }
+
+    pub fn list_operator_sessions_page(
+        &self,
+        params: OffsetListPageParams,
+    ) -> SdkWorkPageData<BrowserOperatorSession> {
+        paginate_offset(self.collect_operator_sessions(), params)
+    }
+
+    fn collect_operator_engines(&self) -> Vec<BrowserEngineDescriptor> {
         self.registry
             .list_engine_ids()
             .into_iter()
@@ -281,7 +309,7 @@ impl BrowserPlatform {
             .collect()
     }
 
-    pub fn list_operator_sessions(&self) -> Vec<BrowserOperatorSession> {
+    fn collect_operator_sessions(&self) -> Vec<BrowserOperatorSession> {
         let observed_at_unix = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .map(|duration| duration.as_secs())
@@ -412,6 +440,26 @@ fn tab_title_from_url(url: &str) -> String {
         .filter(|host| !host.is_empty())
         .map(str::to_owned)
         .unwrap_or_else(|| "New Tab".to_string())
+}
+
+fn truncate_live_html(html: String) -> String {
+    if html.len() <= MAX_LIVE_HTML_BYTES {
+        return html;
+    }
+    let mut truncated = html;
+    truncated.truncate(MAX_LIVE_HTML_BYTES);
+    truncated
+}
+
+fn paginate_offset<T: Clone>(
+    items: Vec<T>,
+    params: OffsetListPageParams,
+) -> SdkWorkPageData<T> {
+    let total_items = items.len() as i64;
+    let limit = params.page_size as usize;
+    let offset = params.offset as usize;
+    let page = offset_limit_page_from_iter(items.into_iter(), limit, offset);
+    offset_list_page_data(page.items, total_items, params)
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]

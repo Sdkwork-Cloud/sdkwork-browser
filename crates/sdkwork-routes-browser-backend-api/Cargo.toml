@@ -12,7 +12,11 @@ path = "src/lib.rs"
 sdkwork-web-core.workspace = true
 sdkwork-web-axum.workspace = true
 sdkwork-iam-web-adapter.workspace = true
+sdkwork-routes-browser-support.workspace = true
+sdkwork-browser-platform-service.workspace = true
+sdkwork-utils-rust.workspace = true
 axum.workspace = true
+tokio.workspace = true
 
 [dev-dependencies]
 sdkwork-web-core.workspace = true
