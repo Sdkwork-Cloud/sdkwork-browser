@@ -1,21 +1,15 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 4,
   "kind": "sdkwork.app.topology",
   "appId": "sdkwork-browser",
   "archetype": "application-http-gateway",
   "profileRoot": "configs/topology",
-  "profilePattern": "{deploymentProfile}.{serviceLayout}.{environment}.env",
+  "profilePattern": "{deploymentProfile}.{environment}.env",
   "vocabulary": {
     "deploymentProfile": {
       "allowed": [
         "standalone",
         "cloud"
-      ]
-    },
-    "serviceLayout": {
-      "allowed": [
-        "unified-process",
-        "split-services"
       ]
     },
     "environment": {
@@ -26,21 +20,19 @@
     }
   },
   "defaults": {
-    "developmentProfileId": "standalone.unified-process.development",
-    "productionProfileId": "cloud.split-services.production",
-    "desktopBuildProfileId": "standalone.unified-process.production",
+    "developmentProfileId": "standalone.development",
+    "productionProfileId": "cloud.production",
+    "desktopBuildProfileId": "standalone.production",
     "gatewayBind": "127.0.0.1:8080"
   },
   "profileFiles": {
-    "standalone.unified-process.development": "configs/topology/standalone.unified-process.development.env",
-    "standalone.unified-process.production": "configs/topology/standalone.unified-process.production.env",
-    "standalone.split-services.development": "configs/topology/standalone.split-services.development.env",
-    "cloud.split-services.development": "configs/topology/cloud.split-services.development.env",
-    "cloud.split-services.production": "configs/topology/cloud.split-services.production.env"
+    "standalone.development": "configs/topology/standalone.development.env",
+    "standalone.production": "configs/topology/standalone.production.env",
+    "cloud.development": "configs/topology/cloud.development.env",
+    "cloud.production": "configs/topology/cloud.production.env"
   },
   "envKeys": {
     "deploymentProfile": "SDKWORK_BROWSER_DEPLOYMENT_PROFILE",
-    "serviceLayout": "SDKWORK_BROWSER_SERVICE_LAYOUT",
     "environment": "SDKWORK_BROWSER_ENVIRONMENT",
     "profileId": "SDKWORK_BROWSER_PROFILE_ID",
     "clientDeploymentProfile": "VITE_SDKWORK_BROWSER_DEPLOYMENT_PROFILE",
@@ -98,7 +90,7 @@
   },
   "orchestration": {
     "profiles": {
-      "standalone.unified-process.development": {
+      "standalone.development": {
         "processes": [
           {
             "id": "application.public-ingress",
@@ -111,7 +103,7 @@
           "application.public-ingress"
         ]
       },
-      "cloud.split-services.development": {
+      "cloud.development": {
         "processes": [
           {
             "id": "platform.api-gateway",
@@ -132,7 +124,7 @@
           "platform.api-gateway"
         ]
       },
-      "cloud.split-services.production": {
+      "cloud.production": {
         "processes": [
           {
             "id": "platform.api-gateway",
@@ -151,6 +143,19 @@
         "healthSurfaces": [
           "application.public-ingress",
           "platform.api-gateway"
+        ]
+      },
+      "standalone.production": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-browser-standalone-gateway",
+            "binary": "sdkwork-browser-standalone-gateway",
+            "required": true
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
         ]
       }
     }

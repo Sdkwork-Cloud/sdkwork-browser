@@ -12,3 +12,9 @@ pub use response::{
     created_resource_json, ok_page_json, ok_resource_json, resolved_trace_id,
     success_created_resource_response, success_page_response, success_resource_response,
 };
+
+use axum::Router;
+
+pub fn gateway_mount() -> axum::Router {
+    axum::Router::new()
+}

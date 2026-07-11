@@ -4,7 +4,7 @@
   "applicationCode": "browser",
   "packageName": "sdkwork-browser-gateway-assembly",
   "crateDir": "crates/sdkwork-browser-gateway-assembly",
-  "generatedAt": "2026-06-25T13:08:05.509Z",
+  "generatedAt": "2026-07-08T01:33:36.224Z",
   "routeCrates": [
     {
       "packageName": "sdkwork-routes-browser-app-api",
@@ -25,6 +25,16 @@
       "mountOrder": 1,
       "hasGatewayMount": true,
       "hasGatewayRouteManifest": true
+    },
+    {
+      "packageName": "sdkwork-routes-browser-support",
+      "memberDir": "crates/sdkwork-routes-browser-support",
+      "libName": "sdkwork_routes_browser_support",
+      "surface": "unknown",
+      "pathPrefix": null,
+      "mountOrder": 2,
+      "hasGatewayMount": false,
+      "hasGatewayRouteManifest": false
     }
   ]
 }
