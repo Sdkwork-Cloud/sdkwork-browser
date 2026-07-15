@@ -130,7 +130,6 @@ function browserProxyPlugin(): PluginOption {
               "Content-Security-Policy",
               "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; frame-ancestors *;",
             );
-            cleanHeaders.set("Access-Control-Allow-Origin", "*");
 
             // Forward status and headers
             res.statusCode = response.status;
