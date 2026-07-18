@@ -6,6 +6,6 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
+sdkwork-browser-abstraction-service.workspace = true
 serde.workspace = true
 serde_json.workspace = true

@@ -18,7 +18,7 @@
     ],
     "paths": {
       "@sdkwork/browser-contracts": [
-        "apps/sdkwork-browser-common/packages/sdkwork-browser-contracts/src/index.ts"
+        "./apps/sdkwork-browser-common/packages/sdkwork-browser-contracts/src/index.ts"
       ],
       "@sdkwork/browser-pc-core": [
         "./apps/sdkwork-browser-pc/packages/sdkwork-browser-pc-core/src/index.ts"

@@ -14,8 +14,8 @@ sdkwork-web-axum.workspace = true
 sdkwork-iam-web-adapter.workspace = true
 sdkwork-routes-browser-support.workspace = true
 sdkwork-browser-platform-service.workspace = true
-sdkwork-browser-agent-service = { path = "../sdkwork-browser-agent-service" }
-sdkwork-browser-mcp-service = { path = "../sdkwork-browser-mcp-service" }
+sdkwork-browser-agent-service.workspace = true
+sdkwork-browser-mcp-service.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 axum.workspace = true

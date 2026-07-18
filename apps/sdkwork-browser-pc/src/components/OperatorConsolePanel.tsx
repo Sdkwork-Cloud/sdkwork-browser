@@ -40,8 +40,8 @@ function readEngines(page: { items?: unknown[] }): EngineRow[] {
   });
 }
 
-function readSessions(page: { items?: unknown[] }): SessionRow[] {
-  const sessions = page.items;
+function readSessions(data: { sessions?: unknown[] }): SessionRow[] {
+  const sessions = data.sessions;
   if (!Array.isArray(sessions)) {
     return [];
   }

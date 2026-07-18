@@ -49,9 +49,23 @@ sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-databa
 sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi" }
 sdkwork-database-sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx" }
 sdkwork-browser-database-host = { path = "crates/sdkwork-browser-database-host" }
+sdkwork-browser-abstraction-service = { path = "crates/sdkwork-browser-abstraction-service" }
+sdkwork-browser-agent-service = { path = "crates/sdkwork-browser-agent-service" }
+sdkwork-browser-engine-api-service = { path = "crates/sdkwork-browser-engine-api-service" }
+sdkwork-browser-engine-cef-service = { path = "crates/sdkwork-browser-engine-cef-service" }
+sdkwork-browser-engine-registry-service = { path = "crates/sdkwork-browser-engine-registry-service" }
+sdkwork-browser-engine-servo-service = { path = "crates/sdkwork-browser-engine-servo-service" }
+sdkwork-browser-engine-webview-service = { path = "crates/sdkwork-browser-engine-webview-service" }
+sdkwork-browser-gateway-assembly = { path = "crates/sdkwork-browser-gateway-assembly" }
+sdkwork-browser-mcp-service = { path = "crates/sdkwork-browser-mcp-service" }
+sdkwork-browser-network-service = { path = "crates/sdkwork-browser-network-service" }
+sdkwork-browser-plugin-service = { path = "crates/sdkwork-browser-plugin-service" }
+sdkwork-browser-tab-service = { path = "crates/sdkwork-browser-tab-service" }
 sdkwork-utils-rust = { path = "../sdkwork-utils/packages/sdkwork-utils-rust" }
 sdkwork-browser-platform-service = { path = "crates/sdkwork-browser-platform-service" }
 sdkwork-routes-browser-support = { path = "crates/sdkwork-routes-browser-support" }
+sdkwork-routes-browser-app-api = { path = "crates/sdkwork-routes-browser-app-api" }
+sdkwork-routes-browser-backend-api = { path = "crates/sdkwork-routes-browser-backend-api" }
 axum = { version = "0.8", default-features = false, features = ["json"] }
 bytes = "1"
 futures = "0.3"

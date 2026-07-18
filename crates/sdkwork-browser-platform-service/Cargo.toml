@@ -11,14 +11,14 @@ serde.workspace = true
 serde_json.workspace = true
 serde_yaml = "0.9"
 uuid.workspace = true
-sdkwork-browser-agent-service = { path = "../sdkwork-browser-agent-service" }
-sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
-sdkwork-browser-engine-registry-service = { path = "../sdkwork-browser-engine-registry-service" }
-sdkwork-browser-mcp-service = { path = "../sdkwork-browser-mcp-service" }
-sdkwork-browser-plugin-service = { path = "../sdkwork-browser-plugin-service" }
-sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
-sdkwork-browser-tab-service = { path = "../sdkwork-browser-tab-service" }
-sdkwork-browser-engine-cef-service = { path = "../sdkwork-browser-engine-cef-service" }
+sdkwork-browser-agent-service.workspace = true
+sdkwork-browser-engine-api-service.workspace = true
+sdkwork-browser-engine-registry-service.workspace = true
+sdkwork-browser-mcp-service.workspace = true
+sdkwork-browser-plugin-service.workspace = true
+sdkwork-browser-abstraction-service.workspace = true
+sdkwork-browser-tab-service.workspace = true
+sdkwork-browser-engine-cef-service.workspace = true
 sdkwork-utils-rust.workspace = true
 thiserror.workspace = true
 

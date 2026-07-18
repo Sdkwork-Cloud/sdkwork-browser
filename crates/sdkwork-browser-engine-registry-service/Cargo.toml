@@ -6,10 +6,10 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
-sdkwork-browser-engine-cef-service = { path = "../sdkwork-browser-engine-cef-service" }
-sdkwork-browser-engine-servo-service = { path = "../sdkwork-browser-engine-servo-service" }
-sdkwork-browser-engine-webview-service = { path = "../sdkwork-browser-engine-webview-service" }
+sdkwork-browser-engine-api-service.workspace = true
+sdkwork-browser-engine-cef-service.workspace = true
+sdkwork-browser-engine-servo-service.workspace = true
+sdkwork-browser-engine-webview-service.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]

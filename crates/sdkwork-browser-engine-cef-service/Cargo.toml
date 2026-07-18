@@ -8,7 +8,7 @@ license.workspace = true
 [dependencies]
 async-trait.workspace = true
 serde.workspace = true
-sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
+sdkwork-browser-engine-api-service.workspace = true
 thiserror.workspace = true
 
 [dependencies.cef]

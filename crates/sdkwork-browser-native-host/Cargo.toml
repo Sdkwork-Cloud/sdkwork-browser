@@ -7,9 +7,9 @@ license.workspace = true
 
 [dependencies]
 async-trait.workspace = true
-sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
-sdkwork-browser-engine-cef-service = { path = "../sdkwork-browser-engine-cef-service" }
-sdkwork-browser-network-service = { path = "../sdkwork-browser-network-service" }
+sdkwork-browser-abstraction-service.workspace = true
+sdkwork-browser-engine-cef-service.workspace = true
+sdkwork-browser-network-service.workspace = true
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt"] }

@@ -9,7 +9,7 @@ license.workspace = true
 path = "src/lib.rs"
 
 [dependencies]
-sdkwork-browser-database-host = { path = "../sdkwork-browser-database-host" }
+sdkwork-browser-database-host.workspace = true
 sdkwork-database-config.workspace = true
 sdkwork-database-sqlx.workspace = true
 serde.workspace = true

@@ -10,6 +10,6 @@ serde.workspace = true
 serde_json.workspace = true
 uuid.workspace = true
 ureq = { version = "2.12", default-features = false, features = ["json"] }
-sdkwork-browser-abstraction-service = { path = "../sdkwork-browser-abstraction-service" }
-sdkwork-browser-mcp-service = { path = "../sdkwork-browser-mcp-service" }
-sdkwork-browser-tab-service = { path = "../sdkwork-browser-tab-service" }
+sdkwork-browser-abstraction-service.workspace = true
+sdkwork-browser-mcp-service.workspace = true
+sdkwork-browser-tab-service.workspace = true

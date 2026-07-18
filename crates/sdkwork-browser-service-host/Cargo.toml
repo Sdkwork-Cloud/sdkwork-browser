@@ -6,9 +6,9 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
-sdkwork-browser-engine-registry-service = { path = "../sdkwork-browser-engine-registry-service" }
-sdkwork-browser-platform-service = { path = "../sdkwork-browser-platform-service" }
+sdkwork-browser-engine-api-service.workspace = true
+sdkwork-browser-engine-registry-service.workspace = true
+sdkwork-browser-platform-service.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]

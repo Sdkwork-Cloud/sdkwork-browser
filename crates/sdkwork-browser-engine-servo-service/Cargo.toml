@@ -7,7 +7,7 @@ license.workspace = true
 
 [dependencies]
 async-trait.workspace = true
-sdkwork-browser-engine-api-service = { path = "../sdkwork-browser-engine-api-service" }
+sdkwork-browser-engine-api-service.workspace = true
 
 [dev-dependencies]
 tokio.workspace = true
