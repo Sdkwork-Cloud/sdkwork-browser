@@ -8,5 +8,5 @@
 Regenerate from repository root:
 
 ```bash
-pnpm specs:generate
+pnpm build:component-specs
 ```

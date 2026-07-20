@@ -23,7 +23,7 @@ Rename to SDKWork canonical patterns:
 
 ## Consequences
 
-- Root `pnpm dev:server`, `gateway:run`, and `dev:gateway` target `sdkwork-browser-standalone-gateway`.
+- Root `pnpm dev:server`, `gateway:run`, and `dev:server` target `sdkwork-browser-standalone-gateway`.
 - Governance tests forbid retired crate directory names.
 - Repository bootstrap and SQLx bindings live in `sdkwork-platform-browser-repository-sqlx`.
 

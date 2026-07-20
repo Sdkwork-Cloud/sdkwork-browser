@@ -19,7 +19,7 @@ export function McpToolsPanel() {
         setStatus(`${listed.length} tools registered`);
         setStatusTone("ok");
       } else {
-        setStatus("Start the gateway with pnpm run dev:gateway or use the desktop host.");
+        setStatus("Start the gateway with pnpm run dev:server or use the desktop host.");
         setStatusTone("warn");
       }
     })();
