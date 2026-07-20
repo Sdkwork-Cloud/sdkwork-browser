@@ -72,8 +72,8 @@
   },
   "components": {
     "applicationServer": {
-      "crate": "sdkwork-browser-standalone-gateway",
-      "binary": "sdkwork-browser-standalone-gateway"
+      "crate": "sdkwork-api-browser-standalone-gateway",
+      "binary": "sdkwork-api-browser-standalone-gateway"
     }
   },
   "orchestration": {
@@ -82,8 +82,8 @@
         "processes": [
           {
             "id": "application.public-ingress",
-            "crate": "sdkwork-browser-standalone-gateway",
-            "binary": "sdkwork-browser-standalone-gateway",
+            "crate": "sdkwork-api-browser-standalone-gateway",
+            "binary": "sdkwork-api-browser-standalone-gateway",
             "required": true,
             "role": "api-standalone-gateway"
           }
@@ -103,8 +103,8 @@
         "processes": [
           {
             "id": "application.public-ingress",
-            "crate": "sdkwork-browser-standalone-gateway",
-            "binary": "sdkwork-browser-standalone-gateway",
+            "crate": "sdkwork-api-browser-standalone-gateway",
+            "binary": "sdkwork-api-browser-standalone-gateway",
             "required": true,
             "role": "api-standalone-gateway"
           }
@@ -118,8 +118,8 @@
         "processes": [
           {
             "id": "application.public-ingress",
-            "crate": "sdkwork-browser-standalone-gateway",
-            "binary": "sdkwork-browser-standalone-gateway",
+            "crate": "sdkwork-api-browser-standalone-gateway",
+            "binary": "sdkwork-api-browser-standalone-gateway",
             "required": true,
             "role": "api-standalone-gateway"
           }

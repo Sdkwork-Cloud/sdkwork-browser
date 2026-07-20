@@ -21,12 +21,12 @@ Rename to SDKWork canonical patterns:
 
 | Before | After |
 | --- | --- |
-| `sdkwork-browser-app-server` | `sdkwork-browser-standalone-gateway` |
+| `sdkwork-browser-app-server` | `sdkwork-api-browser-standalone-gateway` |
 | `sdkwork-browser-storage-sqlx-rust` | `sdkwork-platform-browser-repository-sqlx` |
 
 ## Consequences
 
-- Root `pnpm dev:server`, `gateway:run`, and `dev:server` target `sdkwork-browser-standalone-gateway`.
+- Root `pnpm dev:server`, `gateway:run`, and `dev:server` target `sdkwork-api-browser-standalone-gateway`.
 - Governance tests forbid retired crate directory names.
 - Repository bootstrap and SQLx bindings live in `sdkwork-platform-browser-repository-sqlx`.
 
@@ -34,5 +34,5 @@ Rename to SDKWork canonical patterns:
 
 - `pnpm run test:governance`
 - `cargo test -p sdkwork-platform-browser-repository-sqlx`
-- `cargo run -p sdkwork-browser-standalone-gateway` (manual smoke)
+- `cargo run -p sdkwork-api-browser-standalone-gateway` (manual smoke)
 

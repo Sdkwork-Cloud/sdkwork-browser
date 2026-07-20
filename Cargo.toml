@@ -1,7 +1,8 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/sdkwork-browser-gateway-assembly",
+    "crates/sdkwork-api-browser-assembly",
+    "crates/sdkwork-api-browser-assembly",
     "crates/sdkwork-browser-engine-api-service",
     "crates/sdkwork-browser-engine-registry-service",
     "crates/sdkwork-browser-engine-webview-service",
@@ -9,7 +10,7 @@ members = [
     "crates/sdkwork-browser-engine-servo-service",
     "crates/sdkwork-browser-platform-service",
     "crates/sdkwork-browser-service-host",
-    "crates/sdkwork-browser-standalone-gateway",
+    "crates/sdkwork-api-browser-standalone-gateway",
     "crates/sdkwork-routes-browser-app-api",
     "crates/sdkwork-routes-browser-backend-api",
     "crates/sdkwork-routes-browser-support",
@@ -56,7 +57,7 @@ sdkwork-browser-engine-cef-service = { path = "crates/sdkwork-browser-engine-cef
 sdkwork-browser-engine-registry-service = { path = "crates/sdkwork-browser-engine-registry-service" }
 sdkwork-browser-engine-servo-service = { path = "crates/sdkwork-browser-engine-servo-service" }
 sdkwork-browser-engine-webview-service = { path = "crates/sdkwork-browser-engine-webview-service" }
-sdkwork-browser-gateway-assembly = { path = "crates/sdkwork-browser-gateway-assembly" }
+sdkwork-api-browser-assembly = { path = "crates/sdkwork-api-browser-assembly" }
 sdkwork-browser-mcp-service = { path = "crates/sdkwork-browser-mcp-service" }
 sdkwork-browser-network-service = { path = "crates/sdkwork-browser-network-service" }
 sdkwork-browser-plugin-service = { path = "crates/sdkwork-browser-plugin-service" }

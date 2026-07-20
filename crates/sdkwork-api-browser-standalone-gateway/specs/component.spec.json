@@ -2,20 +2,21 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-browser-standalone-gateway",
+    "name": "sdkwork-api-browser-standalone-gateway",
     "displayName": "Sdkwork Browser Api Server",
     "version": "0.1.0",
-    "type": "rust-service",
-    "root": "sdkwork-browser/crates/sdkwork-browser-standalone-gateway",
+    "type": "rust-api-standalone-gateway",
+    "root": "crates/sdkwork-api-browser-standalone-gateway",
     "domain": "platform",
-    "capability": "browser",
+    "capability": "api-gateway",
     "languages": [
       "rust"
     ],
     "generated": false,
     "manifests": [
       "Cargo.toml"
-    ]
+    ],
+    "surface": "gateway-api"
   },
   "canonicalSpecs": [
     {
@@ -56,11 +57,12 @@
     "runtimeEntrypoints": [],
     "sdkClients": [],
     "events": [],
-    "configKeys": []
+    "configKeys": [],
+    "layerRole": "runtime-gateway"
   },
   "verification": {
     "commands": [
-      "cargo test -p sdkwork_browser_standalone_gateway"
+      "cargo test -p sdkwork_api_browser_standalone_gateway"
     ]
   }
 }

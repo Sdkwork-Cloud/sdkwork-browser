@@ -53,6 +53,6 @@ Browser Runtime Platform — PRD-aligned, SDKWork-compliant crate matrix.
 
 | Crate | Role |
 | --- | --- |
-| `sdkwork-browser-standalone-gateway` | HTTP API server (app-api + backend-api) |
+| `sdkwork-api-browser-standalone-gateway` | HTTP API server (app-api + backend-api) |
 | `sdkwork-routes-browser-app-api` | App-api manifest |
 | `sdkwork-routes-browser-backend-api` | Backend-api manifest |

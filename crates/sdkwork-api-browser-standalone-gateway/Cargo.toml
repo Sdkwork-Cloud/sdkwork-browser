@@ -1,5 +1,5 @@
 [package]
-name = "sdkwork-browser-standalone-gateway"
+name = "sdkwork-api-browser-standalone-gateway"
 description = "HTTP API server for SDKWork Browser app-api and backend-api surfaces."
 version.workspace = true
 edition.workspace = true
@@ -7,11 +7,11 @@ license.workspace = true
 
 
 [[bin]]
-name = "sdkwork-browser-standalone-gateway"
+name = "sdkwork-api-browser-standalone-gateway"
 path = "src/main.rs"
 
 [dependencies]
-sdkwork-browser-gateway-assembly.workspace = true
+sdkwork-api-browser-assembly.workspace = true
 axum.workspace = true
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
 tracing = "0.1"

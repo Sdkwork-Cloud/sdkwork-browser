@@ -10,7 +10,7 @@
     "dev:browser": "pnpm dev:browser:postgres:standalone",
     "dev:desktop": "pnpm dev:desktop:postgres:standalone",
     "dev:server": "pnpm exec sdkwork-app dev --runtime-target server --deployment-profile standalone",
-    "gateway:run": "cargo run -p sdkwork-browser-standalone-gateway",
+    "gateway:run": "cargo run -p sdkwork-api-browser-standalone-gateway",
     "build": "pnpm exec sdkwork-app build",
     "build:desktop": "pnpm --filter sdkwork-browser-pc build:desktop",
     "test": "pnpm exec sdkwork-app test",

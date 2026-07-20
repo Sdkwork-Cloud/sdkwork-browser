@@ -34,7 +34,7 @@ const requiredPaths = [
   "apis/backend-api/platform/routes/README.md",
   "database/ddl/baseline/sqlite/0001_browser_baseline.sql",
   "database/ddl/baseline/postgres/0001_browser_baseline.sql",
-  "crates/sdkwork-browser-standalone-gateway/Cargo.toml",
+  "crates/sdkwork-api-browser-standalone-gateway/Cargo.toml",
   "crates/sdkwork-platform-browser-repository-sqlx/Cargo.toml",
   "crates/sdkwork-browser-database-host/Cargo.toml",
   "crates/sdkwork-browser-shared-service/Cargo.toml",
@@ -65,7 +65,7 @@ for (const dep of [
   "sdkwork-database-config",
   "sdkwork-web-core",
   "sdkwork-utils-rust",
-  "sdkwork-browser-standalone-gateway",
+  "sdkwork-api-browser-standalone-gateway",
   "sdkwork-platform-browser-repository-sqlx",
 ]) {
   assert.match(cargoToml, new RegExp(dep), `Cargo.toml must declare ${dep}`);
@@ -100,7 +100,7 @@ const repositoryToml = readFileSync(
 assert.match(repositoryToml, /sdkwork-database-sqlx/);
 
 const apiServerToml = readFileSync(
-  join(root, "crates/sdkwork-browser-standalone-gateway/Cargo.toml"),
+  join(root, "crates/sdkwork-api-browser-standalone-gateway/Cargo.toml"),
   "utf8",
 );
 assert.match(apiServerToml, /sdkwork-web-bootstrap/);

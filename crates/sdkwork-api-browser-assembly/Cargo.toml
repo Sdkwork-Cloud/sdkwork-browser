@@ -1,19 +1,19 @@
 [package]
-name = "sdkwork-browser-gateway-assembly"
+name = "sdkwork-api-browser-assembly"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
-description = "Generated gateway assembly for sdkwork-browser application HTTP plane."
+description = "Generated API assembly for sdkwork-browser application HTTP plane."
 
 [lib]
-name = "sdkwork_browser_gateway_assembly"
+name = "sdkwork_api_browser_assembly"
 path = "src/lib.rs"
 
 [dependencies]
 axum.workspace = true
-anyhow = "1.0.98"
 tokio.workspace = true
+anyhow = "1.0.98"
 sdkwork-browser-platform-service.workspace = true
+sdkwork-routes-browser-support.workspace = true
 sdkwork-routes-browser-app-api.workspace = true
 sdkwork-routes-browser-backend-api.workspace = true
-sdkwork-routes-browser-support.workspace = true

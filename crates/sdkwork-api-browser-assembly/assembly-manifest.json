@@ -1,0 +1,32 @@
+{
+  "kind": "sdkwork.api.assembly",
+  "schemaVersion": 1,
+  "applicationCode": "browser",
+  "apiMode": "served",
+  "packageName": "sdkwork-api-browser-assembly",
+  "crateDir": "crates/sdkwork-api-browser-assembly",
+  "routeCrates": [
+    {
+      "packageName": "sdkwork-routes-browser-app-api",
+      "memberDir": "crates/sdkwork-routes-browser-app-api",
+      "libName": "sdkwork_routes_browser_app_api",
+      "surface": "app-api",
+      "pathPrefix": null,
+      "mountOrder": 0,
+      "componentRef": "crates/sdkwork-routes-browser-app-api/specs/component.spec.json",
+      "routeManifestRef": "crates/sdkwork-routes-browser-app-api/sdks/_route-manifests/<surface>/<packageName>.route-manifest.json",
+      "sourceRef": "crates/sdkwork-routes-browser-app-api/Cargo.toml"
+    },
+    {
+      "packageName": "sdkwork-routes-browser-backend-api",
+      "memberDir": "crates/sdkwork-routes-browser-backend-api",
+      "libName": "sdkwork_routes_browser_backend_api",
+      "surface": "backend-api",
+      "pathPrefix": null,
+      "mountOrder": 1,
+      "componentRef": "crates/sdkwork-routes-browser-backend-api/specs/component.spec.json",
+      "routeManifestRef": "crates/sdkwork-routes-browser-backend-api/sdks/_route-manifests/<surface>/<packageName>.route-manifest.json",
+      "sourceRef": "crates/sdkwork-routes-browser-backend-api/Cargo.toml"
+    }
+  ]
+}
