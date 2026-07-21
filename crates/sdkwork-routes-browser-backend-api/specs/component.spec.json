@@ -54,7 +54,7 @@
       "."
     ],
     "runtimeEntrypoints": [],
-    "routeManifest": "sdks/_route-manifests/<surface>/<packageName>.route-manifest.json",
+    "routeManifest": "sdks/_route-manifests/backend-api/sdkwork-routes-browser-backend-api.route-manifest.json",
     "sdkClients": [],
     "events": [],
     "configKeys": []
