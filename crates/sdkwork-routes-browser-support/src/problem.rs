@@ -4,22 +4,22 @@ use axum::{
 };
 use sdkwork_browser_platform_service::PlatformError;
 use sdkwork_utils_rust::SdkWorkResultCode;
-use sdkwork_web_core::{problem_response, ProblemCorrelation, WebFrameworkError, WebFrameworkErrorKind};
+use sdkwork_web_core::{
+    problem_response, ProblemCorrelation, WebFrameworkError, WebFrameworkErrorKind,
+};
 
 pub type BrowserApiResult<T> = Result<T, BrowserApiError>;
 
 #[derive(Debug, Clone)]
 pub struct BrowserApiError {
     status: StatusCode,
-    code: SdkWorkResultCode,
     detail: String,
 }
 
 impl BrowserApiError {
-    pub fn new(status: StatusCode, code: SdkWorkResultCode, detail: impl Into<String>) -> Self {
+    pub fn new(status: StatusCode, detail: impl Into<String>) -> Self {
         Self {
             status,
-            code,
             detail: detail.into(),
         }
     }
@@ -27,7 +27,6 @@ impl BrowserApiError {
     pub fn from_result_code(code: SdkWorkResultCode, detail: impl Into<String>) -> Self {
         Self::new(
             StatusCode::from_u16(code.http_status_code()).unwrap_or(StatusCode::BAD_REQUEST),
-            code,
             detail,
         )
     }
@@ -58,18 +57,15 @@ impl From<PlatformError> for BrowserApiError {
                 SdkWorkResultCode::InvalidParameter,
                 format!("invalid engine config: {value}"),
             ),
-            PlatformError::EngineNotStarted => Self::from_result_code(
-                SdkWorkResultCode::Conflict,
-                "engine not started",
-            ),
-            PlatformError::Registry(error) => Self::from_result_code(
-                SdkWorkResultCode::NotFound,
-                error.to_string(),
-            ),
-            PlatformError::Engine(error) => Self::from_result_code(
-                SdkWorkResultCode::InternalError,
-                error.to_string(),
-            ),
+            PlatformError::EngineNotStarted => {
+                Self::from_result_code(SdkWorkResultCode::Conflict, "engine not started")
+            }
+            PlatformError::Registry(error) => {
+                Self::from_result_code(SdkWorkResultCode::NotFound, error.to_string())
+            }
+            PlatformError::Engine(error) => {
+                Self::from_result_code(SdkWorkResultCode::InternalError, error.to_string())
+            }
         }
     }
 }

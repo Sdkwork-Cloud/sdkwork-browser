@@ -1,7 +1,4 @@
-use axum::{
-    routing::post,
-    Extension, Json, Router,
-};
+use axum::{routing::post, Extension, Json, Router};
 use sdkwork_browser_agent_service::{BrowserAiActionRequest, BrowserAiActionResult};
 use sdkwork_browser_platform_service::{BrowserPlatformSnapshot, PlatformError};
 use sdkwork_routes_browser_support::{
@@ -13,7 +10,7 @@ use serde_json::Value;
 use crate::paths;
 
 #[derive(Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct BrowserOperationCommand {
     #[serde(default)]
     action: String,
@@ -31,8 +28,6 @@ struct BrowserOperationCommand {
     tool_name: Option<String>,
     #[serde(default)]
     arguments: Option<Value>,
-    #[serde(flatten)]
-    extra: Value,
 }
 
 pub fn build_router(state: BrowserGatewayState) -> Router {
@@ -117,13 +112,17 @@ async fn create_ai_action(
             let guard = platform.lock().await;
             guard.list_mcp_tools()
         };
-        return Ok(success_resource_response(serde_json::json!({ "tools": tools })));
+        return Ok(success_resource_response(
+            serde_json::json!({ "tools": tools }),
+        ));
     }
     if normalized == "mcpinvoke" {
         let request = sdkwork_browser_mcp_service::McpToolInvokeRequest {
             connector_id: command.connector_id.unwrap_or_default(),
             tool_name: command.tool_name.unwrap_or_default(),
-            arguments: command.arguments.unwrap_or_else(|| Value::Object(Default::default())),
+            arguments: command
+                .arguments
+                .unwrap_or_else(|| Value::Object(Default::default())),
         };
         let result = {
             let guard = platform.lock().await;
