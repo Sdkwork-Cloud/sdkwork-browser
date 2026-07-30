@@ -1,11 +1,12 @@
 schema_version: 1
 kind: sdkwork.database.schema
+database_role: authoritative-server
 module_id: browser
 contract_version: 1.0.0
 owner_team: browser-platform
 compliance_level: L2
 engines:
-  - sqlite
+  - postgres
 table_prefix: browser_
 tables:
   - name: browser_bookmark

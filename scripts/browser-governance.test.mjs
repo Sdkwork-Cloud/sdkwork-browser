@@ -32,7 +32,7 @@ const requiredPaths = [
   "apis/app-api/platform/routes/README.md",
   "apis/backend-api/platform/openapi.yaml",
   "apis/backend-api/platform/routes/README.md",
-  "database/ddl/baseline/sqlite/0001_browser_baseline.sql",
+  "tests/fixtures/database/sqlite/ddl/baseline/0001_browser_baseline.sql",
   "database/ddl/baseline/postgres/0001_browser_baseline.sql",
   "crates/sdkwork-api-browser-standalone-gateway/Cargo.toml",
   "crates/sdkwork-platform-browser-repository-sqlx/Cargo.toml",

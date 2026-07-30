@@ -1,4 +1,4 @@
-﻿{
+{
   "license": "AGPL-3.0-or-later",
   "name": "@sdkwork/browser-workspace",
   "private": true,
@@ -35,7 +35,7 @@
     "sdk:build": "node scripts/check-browser-sdks.mjs",
     "sdk:check": "node scripts/check-browser-sdks.mjs",
     "db:plan": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . plan",
-    "db:materialize:contract": "node ../sdkwork-specs/tools/materialize-database-contract-from-baseline.mjs --root . --baseline database/ddl/baseline/postgres/0001_browser_baseline.sql --module-id browser --owner browser-platform --prefixes browser_ --engines sqlite,postgres",
+    "db:materialize:contract": "node ../sdkwork-specs/tools/materialize-database-contract-from-baseline.mjs --root . --baseline database/ddl/baseline/postgres/0001_browser_baseline.sql --module-id browser --owner browser-platform --prefixes browser_ --engines postgres",
     "db:validate": "node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .",
     "db:init": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . init",
     "db:migrate": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . migrate",
