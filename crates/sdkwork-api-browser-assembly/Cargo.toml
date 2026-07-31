@@ -13,6 +13,7 @@ path = "src/lib.rs"
 axum.workspace = true
 tokio.workspace = true
 sdkwork-web-bootstrap.workspace = true
+sdkwork-web-core.workspace = true
 anyhow = "1.0.98"
 sdkwork-browser-platform-service.workspace = true
 sdkwork-routes-browser-support.workspace = true
