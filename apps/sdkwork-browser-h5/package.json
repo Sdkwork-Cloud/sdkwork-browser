@@ -15,5 +15,8 @@
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     }
+  },
+  "dependencies": {
+    "@sdkwork/browser-h5-react": "workspace:*"
   }
 }

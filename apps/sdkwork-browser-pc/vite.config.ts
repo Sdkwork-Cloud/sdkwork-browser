@@ -232,11 +232,6 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss(), browserProxyPlugin()],
     resolve: {
       alias: {
-        "@sdkwork/browser-pc-core": path.join(pcPackages, "sdkwork-browser-pc-core/src/index.ts"),
-        "@sdkwork/browser-pc-commons": path.join(pcPackages, "sdkwork-browser-pc-commons/src/index.ts"),
-        "@sdkwork/browser-pc-browser": path.join(pcPackages, "sdkwork-browser-pc-browser/src/index.ts"),
-        "@sdkwork/browser-pc-shell": path.join(pcPackages, "sdkwork-browser-pc-shell/src/index.ts"),
-        "@sdkwork/browser-pc-react": path.join(pcPackages, "sdkwork-browser-pc-browser/src/index.ts"),
       },
     },
     server: {
