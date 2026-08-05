@@ -36,10 +36,7 @@ function resolveAuthToken(): string {
 }
 
 function resolveAccessToken(): string {
-  const configured =
-    typeof process !== "undefined"
-      ? String((process.env as Record<string, string | undefined>).SDKWORK_ACCESS_TOKEN ?? "").trim()
-      : "";
+  const configured = String(import.meta.env.SDKWORK_ACCESS_TOKEN ?? "").trim();
   if (configured.length > 0) {
     return configured;
   }
