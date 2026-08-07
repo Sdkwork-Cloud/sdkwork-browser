@@ -3,12 +3,27 @@
 -- Application is in initialization state: full DDL lives here; migrations/ is reserved for post-GA changes.
 
 -- baseline source: ddl/baseline/postgres/0001_browser_legacy_baseline.sql
+CREATE TABLE IF NOT EXISTS browser_session (
+    id BIGINT PRIMARY KEY,
+    uuid VARCHAR(64) NOT NULL UNIQUE,
+    tenant_id BIGINT NOT NULL DEFAULT 0,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    account_label VARCHAR(256) NOT NULL,
+    kind VARCHAR(64) NOT NULL DEFAULT 'persistent',
+    payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMPTZ,
+    deleted_by BIGINT
+);
+
 CREATE TABLE IF NOT EXISTS browser_bookmark (
     id BIGINT PRIMARY KEY,
     uuid VARCHAR(64) NOT NULL UNIQUE,
     tenant_id BIGINT NOT NULL DEFAULT 0,
     organization_id BIGINT NOT NULL DEFAULT 0,
-    session_uuid VARCHAR(64) NOT NULL,
+    session_uuid VARCHAR(64) NOT NULL CONSTRAINT fk_browser_bookmark_session REFERENCES browser_session(uuid),
     title VARCHAR(512) NOT NULL,
     url TEXT NOT NULL,
     folder VARCHAR(256) NOT NULL DEFAULT 'default',
@@ -25,7 +40,7 @@ CREATE TABLE IF NOT EXISTS browser_history (
     uuid VARCHAR(64) NOT NULL UNIQUE,
     tenant_id BIGINT NOT NULL DEFAULT 0,
     organization_id BIGINT NOT NULL DEFAULT 0,
-    session_uuid VARCHAR(64) NOT NULL,
+    session_uuid VARCHAR(64) NOT NULL CONSTRAINT fk_browser_history_session REFERENCES browser_session(uuid),
     title VARCHAR(512) NOT NULL,
     url TEXT NOT NULL,
     visited_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -37,27 +52,14 @@ CREATE TABLE IF NOT EXISTS browser_history (
     deleted_by BIGINT
 );
 
-CREATE TABLE IF NOT EXISTS browser_session (
-    id BIGINT PRIMARY KEY,
-    uuid VARCHAR(64) NOT NULL UNIQUE,
-    tenant_id BIGINT NOT NULL DEFAULT 0,
-    organization_id BIGINT NOT NULL DEFAULT 0,
-    account_label VARCHAR(256) NOT NULL,
-    kind VARCHAR(64) NOT NULL DEFAULT 'persistent',
-    payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    version BIGINT NOT NULL DEFAULT 0,
-    deleted_at TIMESTAMPTZ,
-    deleted_by BIGINT
-);
+
 
 CREATE TABLE IF NOT EXISTS browser_tab (
     id BIGINT PRIMARY KEY,
     uuid VARCHAR(64) NOT NULL UNIQUE,
     tenant_id BIGINT NOT NULL DEFAULT 0,
     organization_id BIGINT NOT NULL DEFAULT 0,
-    session_uuid VARCHAR(64) NOT NULL,
+    session_uuid VARCHAR(64) NOT NULL CONSTRAINT fk_browser_tab_session REFERENCES browser_session(uuid),
     title VARCHAR(512) NOT NULL,
     url TEXT NOT NULL,
     pin_state VARCHAR(32) NOT NULL DEFAULT 'unpinned',
@@ -76,7 +78,7 @@ CREATE TABLE IF NOT EXISTS browser_download (
     uuid VARCHAR(64) NOT NULL UNIQUE,
     tenant_id BIGINT NOT NULL DEFAULT 0,
     organization_id BIGINT NOT NULL DEFAULT 0,
-    session_uuid VARCHAR(64) NOT NULL,
+    session_uuid VARCHAR(64) NOT NULL CONSTRAINT fk_browser_download_session REFERENCES browser_session(uuid),
     file_name VARCHAR(512) NOT NULL,
     source_url TEXT NOT NULL,
     status VARCHAR(64) NOT NULL DEFAULT 'pending',
@@ -88,21 +90,9 @@ CREATE TABLE IF NOT EXISTS browser_download (
     deleted_by BIGINT
 );
 
-ALTER TABLE browser_bookmark
-    ADD CONSTRAINT fk_browser_bookmark_session
-    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
 
-ALTER TABLE browser_history
-    ADD CONSTRAINT fk_browser_history_session
-    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
 
-ALTER TABLE browser_tab
-    ADD CONSTRAINT fk_browser_tab_session
-    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
 
-ALTER TABLE browser_download
-    ADD CONSTRAINT fk_browser_download_session
-    FOREIGN KEY (session_uuid) REFERENCES browser_session(uuid);
 
 CREATE INDEX IF NOT EXISTS idx_browser_session_account_kind
     ON browser_session (account_label, kind, updated_at DESC)
