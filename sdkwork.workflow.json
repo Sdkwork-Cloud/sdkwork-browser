@@ -3,7 +3,7 @@
   "app": {
     "id": "sdkwork-browser",
     "name": "SDKWork Browser",
-    "repository": "Sdkwork-Cloud/sdkwork-browser",
+    "repository": "sdkwork-ai/sdkwork-browser",
     "sourcePath": ".",
     "configPath": "sdkwork.app.config.json"
   },
@@ -18,42 +18,42 @@
   "dependencies": [
     {
       "id": "sdkwork-appbase",
-      "repository": "Sdkwork-Cloud/sdkwork-appbase",
+      "repository": "sdkwork-ai/sdkwork-appbase",
       "ref": "main",
       "refInput": "SDKWORK_APPBASE_REF",
       "tokenSecret": "SDKWORK_RELEASE_TOKEN"
     },
     {
       "id": "sdkwork-sdk-commons",
-      "repository": "Sdkwork-Cloud/sdkwork-sdk-commons",
+      "repository": "sdkwork-ai/sdkwork-sdk-commons",
       "ref": "main",
       "refInput": "SDKWORK_SDK_COMMONS_REF",
       "tokenSecret": "SDKWORK_RELEASE_TOKEN"
     },
     {
       "id": "sdkwork-sdk-generator",
-      "repository": "Sdkwork-Cloud/sdkwork-sdk-generator",
+      "repository": "sdkwork-ai/sdkwork-sdk-generator",
       "ref": "main",
       "refInput": "SDKWORK_SDK_GENERATOR_REF",
       "tokenSecret": "SDKWORK_RELEASE_TOKEN"
     },
     {
       "id": "sdkwork-database",
-      "repository": "Sdkwork-Cloud/sdkwork-database",
+      "repository": "sdkwork-ai/sdkwork-database",
       "ref": "main",
       "refInput": "SDKWORK_DATABASE_REF",
       "tokenSecret": "SDKWORK_RELEASE_TOKEN"
     },
     {
       "id": "sdkwork-web-framework",
-      "repository": "Sdkwork-Cloud/sdkwork-web-framework",
+      "repository": "sdkwork-ai/sdkwork-web-framework",
       "ref": "main",
       "refInput": "SDKWORK_WEB_FRAMEWORK_REF",
       "tokenSecret": "SDKWORK_RELEASE_TOKEN"
     },
     {
       "id": "sdkwork-utils",
-      "repository": "Sdkwork-Cloud/sdkwork-utils",
+      "repository": "sdkwork-ai/sdkwork-utils",
       "ref": "main",
       "refInput": "SDKWORK_UTILS_REF",
       "tokenSecret": "SDKWORK_RELEASE_TOKEN"
