@@ -15,8 +15,8 @@ serde_json = "1"
 url = "2"
 tauri = { version = "2", features = ["unstable"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-sdkwork-browser-tauri-host = { path = "../../../../../crates/sdkwork-browser-tauri-host" }
-sdkwork-browser-platform-service = { path = "../../../../../crates/sdkwork-browser-platform-service" }
+sdkwork_browser_tauri_host.workspace = true
+sdkwork-browser-platform-service = { workspace = true }
 
 [lib]
 name = "sdkwork_browser_pc_desktop_lib"

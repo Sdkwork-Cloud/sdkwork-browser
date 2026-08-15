@@ -35,6 +35,8 @@ members = [
 ]
 
 [workspace.dependencies]
+sdkwork_browser_tauri_host = { path = "crates/sdkwork-browser-tauri-host", package = "sdkwork-browser-tauri-host" }
+
 sdkwork-web-bootstrap = { path = "../sdkwork-web-framework/crates/sdkwork-web-bootstrap" }
 sdkwork-web-core = { path = "../sdkwork-web-framework/crates/sdkwork-web-core" }
 sdkwork-web-axum = { path = "../sdkwork-web-framework/crates/sdkwork-web-axum" }
