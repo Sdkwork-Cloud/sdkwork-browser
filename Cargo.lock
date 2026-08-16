@@ -3707,6 +3707,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
+ "sdkwork-browser-database-host",
  "sdkwork-browser-platform-service",
  "sdkwork-database-sqlx",
  "sdkwork-routes-browser-app-api",
@@ -3724,9 +3725,7 @@ dependencies = [
  "axum",
  "sdkwork-api-browser-assembly",
  "sdkwork-iam-web-adapter",
- "sdkwork-web-axum",
  "sdkwork-web-bootstrap",
- "sdkwork-web-core",
  "tokio",
  "tracing",
  "tracing-subscriber",

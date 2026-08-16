@@ -45,7 +45,11 @@
     "publicExports": [
       "."
     ],
-    "runtimeEntrypoints": [],
+    "runtimeEntrypoints": [
+      "sdkwork_api_browser_assembly::assemble_api_router",
+      "sdkwork_api_browser_assembly::assemble_api_router_runtime",
+      "sdkwork_api_browser_assembly::assemble_api_router_with_pool"
+    ],
     "routeManifest": "assembly-manifest.json",
     "sdkClients": [],
     "sdkDependencies": [],

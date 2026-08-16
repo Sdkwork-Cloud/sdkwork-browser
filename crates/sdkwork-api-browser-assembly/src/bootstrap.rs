@@ -9,15 +9,18 @@ use std::sync::Arc;
 
 use axum::Router;
 use sdkwork_browser_platform_service::BrowserPlatform;
-use sdkwork_routes_browser_support::BrowserGatewayState;
 use sdkwork_database_sqlx::DatabasePool;
-use sdkwork_web_bootstrap::{
-    ApiAssemblyContribution, DatabasePoolReadinessCheck, ReadinessCheck,
-};
+use sdkwork_routes_browser_support::BrowserGatewayState;
+use sdkwork_web_bootstrap::{ApiAssemblyContribution, DatabasePoolReadinessCheck, ReadinessCheck};
 use sdkwork_web_core::HttpRouteManifest;
 
 /// Indivisible host-neutral API assembly contribution (web-bootstrap contract).
 pub type ApiAssembly = ApiAssemblyContribution;
+
+pub struct ApiAssemblyRuntime {
+    pub contribution: ApiAssembly,
+    pub database_pool: DatabasePool,
+}
 
 fn combined_route_manifest() -> HttpRouteManifest {
     let manifests = [
@@ -62,9 +65,24 @@ pub fn assemble_api_router() -> anyhow::Result<ApiAssembly> {
     .map_err(anyhow::Error::msg)
 }
 
+pub async fn assemble_api_router_runtime() -> Result<ApiAssemblyRuntime, String> {
+    let database_host =
+        sdkwork_browser_database_host::bootstrap_browser_database_from_env().await?;
+    let pool = database_host.pool().clone();
+    let contribution = contribution_from(
+        browser_router()?,
+        Arc::new(DatabasePoolReadinessCheck::new(pool.clone())),
+    )?;
+    Ok(ApiAssemblyRuntime {
+        contribution,
+        database_pool: pool,
+    })
+}
+
 /// Assemble the Browser contribution against a caller-provided database pool so
 /// the platform cloud gateway can share its process-wide PostgreSQL pool.
-pub fn assemble_api_router_with_pool(pool: DatabasePool) -> Result<ApiAssembly, String> {
+pub async fn assemble_api_router_with_pool(pool: DatabasePool) -> Result<ApiAssembly, String> {
+    sdkwork_browser_database_host::bootstrap_browser_database(pool.clone()).await?;
     contribution_from(
         browser_router()?,
         Arc::new(DatabasePoolReadinessCheck::new(pool)),

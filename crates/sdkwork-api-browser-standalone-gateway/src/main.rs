@@ -1,8 +1,15 @@
 mod gateway_manifest;
 
-use gateway_manifest::wrap_gateway_router_with_web_framework_from_env;
-use sdkwork_api_browser_assembly::assemble_api_router;
-use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
+use gateway_manifest::browser_gateway_public_path_prefixes;
+use sdkwork_api_browser_assembly::assemble_api_router_runtime;
+use sdkwork_iam_web_adapter::{
+    build_web_framework_builder, iam_web_request_context_resolver_from_database_pool_for_audiences,
+    iam_web_request_context_resolver_from_env, IamAuditEmitter, IamSecurityEventEmitter,
+};
+use sdkwork_web_bootstrap::ComposedApiAssembly;
+use std::sync::Arc;
+
+const APPLICATION_ID: &str = "sdkwork-browser";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -11,9 +18,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .init();
 
     let bind = std::env::var("BROWSER_APP_BIND").unwrap_or_else(|_| "127.0.0.1:8080".into());
-    let assembly = assemble_api_router()?;
-    let router = wrap_gateway_router_with_web_framework_from_env(assembly.router).await;
-    let router = service_router(router, ServiceRouterConfig::default().with_always_ready());
+    let runtime = assemble_api_router_runtime().await?;
+    let assembly = runtime.contribution;
+    let environment = std::env::var("SDKWORK_ENVIRONMENT")
+        .or_else(|_| std::env::var("SDKWORK_BROWSER_ENVIRONMENT"))
+        .unwrap_or_else(|_| "development".to_owned());
+    let production = matches!(
+        environment.trim().to_ascii_lowercase().as_str(),
+        "prod" | "production"
+    );
+    let resolver = if production {
+        iam_web_request_context_resolver_from_database_pool_for_audiences(
+            runtime.database_pool.clone(),
+            &[APPLICATION_ID],
+        )
+        .await?
+    } else {
+        iam_web_request_context_resolver_from_env().await
+    };
+    let mut framework = build_web_framework_builder(
+        resolver,
+        assembly.route_manifest.clone(),
+        browser_gateway_public_path_prefixes(),
+    );
+    if production {
+        let postgres_pool = runtime
+            .database_pool
+            .as_postgres()
+            .cloned()
+            .ok_or("production Browser gateway requires PostgreSQL")?;
+        framework = framework
+            .audit_emitter(Arc::new(IamAuditEmitter::new(
+                postgres_pool.clone(),
+                APPLICATION_ID,
+                environment.clone(),
+            )))
+            .security_event_emitter(Arc::new(IamSecurityEventEmitter::new(
+                postgres_pool,
+                environment,
+            )));
+    }
+    let router = ComposedApiAssembly::try_compose("SDKWork Browser API", vec![assembly])?
+        .into_hosted(framework)
+        .router;
 
     let listener = tokio::net::TcpListener::bind(&bind).await?;
     tracing::info!(%bind, "sdkwork-browser standalone-gateway listening (app-api + backend-api)");

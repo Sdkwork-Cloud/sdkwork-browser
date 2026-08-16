@@ -54,7 +54,16 @@
     "publicExports": [
       "."
     ],
-    "runtimeEntrypoints": [],
+    "requiredPorts": [
+      {
+        "name": "applicationApiAssembly",
+        "export": "sdkwork_api_browser_assembly::assemble_api_router_runtime",
+        "provider": "sdkwork-api-browser-assembly"
+      }
+    ],
+    "runtimeEntrypoints": [
+      "src/main.rs"
+    ],
     "sdkClients": [],
     "events": [],
     "configKeys": [],
