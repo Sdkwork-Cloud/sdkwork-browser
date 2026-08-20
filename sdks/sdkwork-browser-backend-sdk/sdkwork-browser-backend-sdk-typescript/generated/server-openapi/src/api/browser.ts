@@ -1,5 +1,5 @@
 import { backendApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { BrowserSessionsListData, SdkWorkPageData } from '../types';
 
@@ -13,8 +13,8 @@ export class BrowserSessionsApi {
 
 
 /** browser.sessions.list */
-  async list(): Promise<BrowserSessionsListData> {
-    return this.client.get<BrowserSessionsListData>(backendApiPath(`/browser/sessions`));
+  async list(requestOptions?: ApiRequestOptions): Promise<BrowserSessionsListData> {
+    return this.client.request<BrowserSessionsListData>(backendApiPath(`/browser/sessions`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'item' });
   }
 }
 
@@ -27,18 +27,16 @@ export class BrowserEnginesApi {
 
 
 /** browser.engines.list */
-  async list(): Promise<SdkWorkPageData> {
-    return this.client.get<SdkWorkPageData>(backendApiPath(`/browser/engines`));
+  async list(requestOptions?: ApiRequestOptions): Promise<SdkWorkPageData> {
+    return this.client.request<SdkWorkPageData>(backendApiPath(`/browser/engines`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 }
 
 export class BrowserApi {
-  private client: HttpClient;
   public readonly engines: BrowserEnginesApi;
   public readonly sessions: BrowserSessionsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.engines = new BrowserEnginesApi(client);
     this.sessions = new BrowserSessionsApi(client);
   }
@@ -47,12 +45,4 @@ export class BrowserApi {
 
 export function createBrowserApi(client: HttpClient): BrowserApi {
   return new BrowserApi(client);
-}
-
-function appendQueryString(path: string, rawQueryString: string): string {
-  const query = rawQueryString.replace(/^\?+/, '');
-  if (!query) {
-    return path;
-  }
-  return path.includes('?') ? `${path}&${query}` : `${path}?${query}`;
 }

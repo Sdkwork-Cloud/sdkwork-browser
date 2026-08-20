@@ -3,6 +3,6 @@ export interface AgentProviderDiagnostic {
   providerFamily: string;
   providerVersion: string;
   typedRegistered: boolean;
-  health?: Record<string, unknown>;
+  health?: { status?: string; };
   capabilities: string[];
 }

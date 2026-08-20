@@ -12,7 +12,7 @@
   "generatedFiles": [
     {
       "path": "bin/publish-core.mjs",
-      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+      "sha256": "a47e95119bf3eafcbcb2102f7024c147f967924e4e3f343d1a29effb4b6765df"
     },
     {
       "path": "bin/publish.ps1",
@@ -40,11 +40,11 @@
     },
     {
       "path": "package.json",
-      "sha256": "0bea00cf4707bcc798df7af754ca1a313b401cb61a5304eba32ed3d49a1190a3"
+      "sha256": "2c87f0b9a7aa745a70a8c67102f1a7bba04d1f6efd4bbaa30aa9bf7805fecaba"
     },
     {
       "path": "README.md",
-      "sha256": "8ff92d82435f51c3020b90b52e492abac6ec564e0acb0ad86b1e589a85b4fbc1"
+      "sha256": "003bfaeb4defc7337bc50921a8c34ac7ae12456c31b053ab8ec8d8a68637d339"
     },
     {
       "path": "sdkwork-sdk.json",
@@ -52,11 +52,11 @@
     },
     {
       "path": "src/api/base.ts",
-      "sha256": "02ad25e6bf331ff241ba387c2947ddf1900dd849038e08c2757416a3aa788a04"
+      "sha256": "94d136c54a008dfe7602e373a0b2c79176bbf2fc6e7c899fc23b1f12f750380f"
     },
     {
       "path": "src/api/browser.ts",
-      "sha256": "010d9151b1eb167602d1835be41f55d80f0747395789e71eef0210e9641c961d"
+      "sha256": "04b4b9b8469f74df58028f2dfd9c321ece35a62676f92d72ebc653559496e716"
     },
     {
       "path": "src/api/index.ts",
@@ -72,7 +72,7 @@
     },
     {
       "path": "src/http/client.ts",
-      "sha256": "6e389d5c14fb5845365972b6776af185d8af8eb8da7bb398e59be6c29e394ddf"
+      "sha256": "bab0f740731f04f1f6e3c591cba91b1577f0ca521054d187755f437925d3dc6d"
     },
     {
       "path": "src/http/index.ts",
@@ -88,7 +88,7 @@
     },
     {
       "path": "src/types/agent-provider-diagnostic.ts",
-      "sha256": "8f409c81069148ca3b7f2d47665031d0ee3eef3d3eb4ddc6e617b6b69906b797"
+      "sha256": "5b02d26dffd21a2edd4584c3d036166cf5aca6dbd0cd3927c4e08766c84b093c"
     },
     {
       "path": "src/types/agent-runtime-diagnostics.ts",
@@ -108,7 +108,7 @@
     },
     {
       "path": "src/types/browser-sessions-list-response.ts",
-      "sha256": "7687c7b202b5fbc0e82add9b7d87d04bb6041276f8d8655ba26c187c977a0043"
+      "sha256": "053a1d8e3ab2d849bf174df3c14012dfdb6980468dcfef4b0fdad0eadf9128b5"
     },
     {
       "path": "src/types/common.ts",

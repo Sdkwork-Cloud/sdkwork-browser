@@ -12,7 +12,7 @@
   "generatedFiles": [
     {
       "path": "bin/publish-core.mjs",
-      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+      "sha256": "a47e95119bf3eafcbcb2102f7024c147f967924e4e3f343d1a29effb4b6765df"
     },
     {
       "path": "bin/publish.ps1",
@@ -24,7 +24,7 @@
     },
     {
       "path": "Cargo.toml",
-      "sha256": "ef6e4ebb06042d6097dc631478c184d1bf652cc4fa7eefbaf357ec36fe2cf9fc"
+      "sha256": "a68939eb616ed4b69585682cf8db74bd765f89896418b225d70d9f8dd0af96fe"
     },
     {
       "path": "CHANGELOG.md",
@@ -40,7 +40,7 @@
     },
     {
       "path": "sdkwork-sdk.json",
-      "sha256": "5a60f614cad2a705e1128ab76c473b451c752a3faa35641f9a92c78a6c5da412"
+      "sha256": "63fe89664fe6cb5fff251e03e9fbc03fa51db565f6b20aa5042598a096ec2301"
     },
     {
       "path": "src/api/base.rs",
@@ -48,7 +48,7 @@
     },
     {
       "path": "src/api/browser.rs",
-      "sha256": "a478ba401f3e2a6d353a91b4cc2b4c05206d3c46368608cc94b7aabb13ba41f0"
+      "sha256": "01bc804c8ec76bc23b2b557123333811fad1c702e82b2a42a6723f13d4f9c172"
     },
     {
       "path": "src/api/mod.rs",
@@ -60,15 +60,15 @@
     },
     {
       "path": "src/client.rs",
-      "sha256": "72d4435724817efe06cd0ec46289dfef663764b4efa0319a6abc3fea17020204"
+      "sha256": "08649c435dd8239d8be8e8c72e05a02149f4ba547756829841f1b5c0b7ca0cbd"
     },
     {
       "path": "src/http/client.rs",
-      "sha256": "ffd88587750661cd174b1d0bae02a876d24f8537acdccaa67e297a549d0a927e"
+      "sha256": "6744c77f8c5d27ea5f0d35340b928589e8ed15c946174c184f67dd17a98b58ed"
     },
     {
       "path": "src/http/mod.rs",
-      "sha256": "fdf16d487ebd9180fb423d5630d4401ff18180721b86636dec085ad83940bb3d"
+      "sha256": "d09ef1f29c3fa0e631fc4f7287fc93dc7d3cee7e7261ac85091852a09243e90a"
     },
     {
       "path": "src/lib.rs",
@@ -92,7 +92,7 @@
     },
     {
       "path": "src/models/problem_detail.rs",
-      "sha256": "da504e3bda4a51de0ef6611283e5e708596bb5861bd71e0cd46e37a29734d452"
+      "sha256": "9f59542db02c2f8b6e71458381df7ef6e494afdd092133930a5ba6b0cb1deec5"
     },
     {
       "path": "src/models/sdk_work_api_response.rs",

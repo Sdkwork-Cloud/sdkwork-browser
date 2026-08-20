@@ -12,7 +12,7 @@
   "generatedFiles": [
     {
       "path": "bin/publish-core.mjs",
-      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+      "sha256": "a47e95119bf3eafcbcb2102f7024c147f967924e4e3f343d1a29effb4b6765df"
     },
     {
       "path": "bin/publish.ps1",
@@ -40,7 +40,7 @@
     },
     {
       "path": "sdkwork-sdk.json",
-      "sha256": "597dd6f64a6ee27b7f9205654458a7e629d535ebed8255ae8c4c8581a17eda84"
+      "sha256": "48aa8b5f541481d922d0b118bc479d80333eaf4357b10a6d1c9945ab9c151fd2"
     },
     {
       "path": "src/main/java/com/sdkwork/browser/app/sdk/api/ApiPaths.java",
@@ -56,7 +56,7 @@
     },
     {
       "path": "src/main/java/com/sdkwork/browser/app/sdk/http/HttpClient.java",
-      "sha256": "1bbd9ecfd87f5d51f6ae57c175b88702036660a43da5a7c7282fb8449e025f27"
+      "sha256": "f19e2b99583901cf6286b4b981b56f60d9b25387d2da47992220f6d4882c6a9d"
     },
     {
       "path": "src/main/java/com/sdkwork/browser/app/sdk/model/FieldError.java",

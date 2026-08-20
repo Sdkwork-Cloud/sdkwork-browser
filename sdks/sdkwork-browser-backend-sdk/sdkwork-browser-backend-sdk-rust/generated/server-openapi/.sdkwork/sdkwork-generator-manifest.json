@@ -12,7 +12,7 @@
   "generatedFiles": [
     {
       "path": "bin/publish-core.mjs",
-      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+      "sha256": "a47e95119bf3eafcbcb2102f7024c147f967924e4e3f343d1a29effb4b6765df"
     },
     {
       "path": "bin/publish.ps1",
@@ -24,7 +24,7 @@
     },
     {
       "path": "Cargo.toml",
-      "sha256": "1e0719ed19a87d6f2aa5469ffe1fb355cb6d3efeed4637c2383bdbada5e42756"
+      "sha256": "3a9220c2a4fd697b078ff1f5caa51512e041fd7e1d12496c61cf61a170a48dc1"
     },
     {
       "path": "CHANGELOG.md",
@@ -40,7 +40,7 @@
     },
     {
       "path": "sdkwork-sdk.json",
-      "sha256": "66ac5cfba9022e460aaa9630607535c0d84d52c52a7df79333eae30036e5a743"
+      "sha256": "e16fef4dcc4cdd8c3d48945126aa36e1212b4bba46d94a20171009b2514e1fdd"
     },
     {
       "path": "src/api/base.rs",
@@ -48,7 +48,7 @@
     },
     {
       "path": "src/api/browser.rs",
-      "sha256": "cac049485ee72a029bd4e3f65397bbe4f61e75db09c1fc73732babc6fd11733a"
+      "sha256": "94a7259316138ea7bd90f7da5a4e5752238126c1d729ebaa4c9742b8ceaca82b"
     },
     {
       "path": "src/api/mod.rs",
@@ -60,15 +60,15 @@
     },
     {
       "path": "src/client.rs",
-      "sha256": "3e4659f2a1f0e865443301b7f3e0ede0ab9452b9b196cc853a5a4f5382e7b39f"
+      "sha256": "7482e02877c02dab62ae77b1677a1f1b5e6a80612c230a04a70355f8098ba77c"
     },
     {
       "path": "src/http/client.rs",
-      "sha256": "ffd88587750661cd174b1d0bae02a876d24f8537acdccaa67e297a549d0a927e"
+      "sha256": "6744c77f8c5d27ea5f0d35340b928589e8ed15c946174c184f67dd17a98b58ed"
     },
     {
       "path": "src/http/mod.rs",
-      "sha256": "fdf16d487ebd9180fb423d5630d4401ff18180721b86636dec085ad83940bb3d"
+      "sha256": "d09ef1f29c3fa0e631fc4f7287fc93dc7d3cee7e7261ac85091852a09243e90a"
     },
     {
       "path": "src/lib.rs",

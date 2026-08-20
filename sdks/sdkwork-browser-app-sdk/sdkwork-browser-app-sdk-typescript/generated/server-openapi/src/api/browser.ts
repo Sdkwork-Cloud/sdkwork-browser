@@ -1,5 +1,5 @@
 import { appApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { BrowserOperationCommand } from '../types';
 
@@ -13,8 +13,8 @@ export class BrowserTabsApi {
 
 
 /** browser.tabs.create */
-  async create(body: BrowserOperationCommand): Promise<Record<string, unknown>> {
-    return this.client.post<Record<string, unknown>>(appApiPath(`/browser/tabs`), body, undefined, undefined, 'application/json');
+  async create(body: BrowserOperationCommand, requestOptions?: ApiRequestOptions): Promise<Record<string, unknown>> {
+    return this.client.request<Record<string, unknown>>(appApiPath(`/browser/tabs`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 }
 
@@ -27,8 +27,8 @@ export class BrowserSessionsApi {
 
 
 /** browser.sessions.create */
-  async create(body: BrowserOperationCommand): Promise<Record<string, unknown>> {
-    return this.client.post<Record<string, unknown>>(appApiPath(`/browser/sessions`), body, undefined, undefined, 'application/json');
+  async create(body: BrowserOperationCommand, requestOptions?: ApiRequestOptions): Promise<Record<string, unknown>> {
+    return this.client.request<Record<string, unknown>>(appApiPath(`/browser/sessions`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 }
 
@@ -41,19 +41,17 @@ export class BrowserAiActionsApi {
 
 
 /** browser.aiActions.create */
-  async create(body: BrowserOperationCommand): Promise<Record<string, unknown>> {
-    return this.client.post<Record<string, unknown>>(appApiPath(`/browser/ai/actions`), body, undefined, undefined, 'application/json');
+  async create(body: BrowserOperationCommand, requestOptions?: ApiRequestOptions): Promise<Record<string, unknown>> {
+    return this.client.request<Record<string, unknown>>(appApiPath(`/browser/ai/actions`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 }
 
 export class BrowserApi {
-  private client: HttpClient;
   public readonly aiActions: BrowserAiActionsApi;
   public readonly sessions: BrowserSessionsApi;
   public readonly tabs: BrowserTabsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.aiActions = new BrowserAiActionsApi(client);
     this.sessions = new BrowserSessionsApi(client);
     this.tabs = new BrowserTabsApi(client);
@@ -63,12 +61,4 @@ export class BrowserApi {
 
 export function createBrowserApi(client: HttpClient): BrowserApi {
   return new BrowserApi(client);
-}
-
-function appendQueryString(path: string, rawQueryString: string): string {
-  const query = rawQueryString.replace(/^\?+/, '');
-  if (!query) {
-    return path;
-  }
-  return path.includes('?') ? `${path}&${query}` : `${path}?${query}`;
 }

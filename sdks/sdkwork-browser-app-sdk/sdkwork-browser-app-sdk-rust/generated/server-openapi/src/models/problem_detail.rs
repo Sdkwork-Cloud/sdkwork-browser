@@ -16,7 +16,7 @@ pub struct ProblemDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instance: Option<String>,
 
-    /// Platform or domain error code per API_SPEC.md §15.3.
+    /// Platform or domain error code per API_SPEC.md 搂15.3.
     pub code: i64,
 
     /// Server-owned request correlation id.
